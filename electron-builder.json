@@ -1,0 +1,19 @@
+{
+  "productName": "Active Harmony",
+  "directories": {
+    "output": "app-builds"
+  },
+  "win": {
+    "icon": "dist",
+    "target": ["portable"]
+  },
+  "mac": {
+    "icon": "dist",
+    "target": ["dmg"]
+  },
+  "linux": {
+    "icon": "dist",
+    "category": "Development",
+    "target": ["AppImage"]
+  }
+}

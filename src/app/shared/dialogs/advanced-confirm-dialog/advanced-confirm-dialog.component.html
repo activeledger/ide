@@ -1,0 +1,16 @@
+<div class="dialog-wrapper">
+  <fa-icon [icon]="icon" class="icon"></fa-icon>
+  <br />
+  Please enter the following to confirm this action.
+  <hr />
+  {{ message }} <br />
+  <br />
+  <button mat-raised-button class="float-right" (click)="confirm()">
+    <!-- Do it -->
+    Yes
+  </button>
+  <button mat-raised-button class="float-right" (click)="close()">
+    <!-- Nah -->
+    No
+  </button>
+</div>

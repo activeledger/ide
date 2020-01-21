@@ -1,0 +1,10 @@
+.colourPicker {
+  position: relative;
+  top: 2px;
+  display: inline-block;
+  border-radius: 50%;
+  width: 14px;
+  height: 14px;
+  border: 1px solid #d4d4d4;
+  cursor: pointer;
+}

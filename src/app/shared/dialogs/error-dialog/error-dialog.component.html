@@ -1,0 +1,12 @@
+<div class="dialog-wrapper">
+  <fa-icon [icon]="faWarning" class="icon"></fa-icon>
+  <br/>
+  An error occurred
+  <br /> 
+  <span class="code">Error {{errorCode}}</span>
+ <hr />
+  {{errorMessage}}
+  <br/>
+  <br/>
+  <button mat-raised-button class="float-right" (click)="close()">Tah!</button>
+</div>

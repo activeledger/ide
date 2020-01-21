@@ -1,0 +1,126 @@
+<div class="wrapper">
+  <div class="left clearfix">
+    <div (click)="menuButtonClick()" class="menu-control accentFont-hover">
+      <fa-icon [icon]="burgerIco"></fa-icon>
+    </div>
+
+    <div class="quick-create">
+      <div
+        class="qc-left accent accent-hover"
+        matTooltip="New Contract"
+        (click)="goTo('/contracts/create', 'Create Contract')"
+      >
+        <fa-icon [icon]="newIco"></fa-icon>
+      </div>
+
+      <div class="qc-right accent accent-hover" (click)="quickCreate()">
+        <fa-icon [icon]="arrowIco"></fa-icon>
+      </div>
+    </div>
+  </div>
+
+  <div class="center">
+    <div class="page-title">{{ title | async }}</div>
+  </div>
+
+  <div class="right">
+    <div
+      id="workspaceMenu"
+      class="workspace accent-hover"
+      (click)="switchWorkspace()"
+      matTooltip="Workspaces"
+    >
+      <fa-icon [icon]="workspaceIco"></fa-icon>
+    </div>
+    <div
+      class="user-profile accent-hover"
+      (click)="goTo('/settings/account', 'Settings')"
+      matTooltip="Account"
+    >
+      <fa-icon [icon]="userIco"></fa-icon>
+    </div>
+    <div
+      class="settings accent-hover"
+      (click)="goTo('/settings', 'Settings')"
+      matTooltip="Settings"
+    >
+      <fa-icon [icon]="settingsIco"></fa-icon>
+    </div>
+  </div>
+</div>
+<div class="overlay">
+  <div
+    id="quickCreate"
+    class="quick-create-menu"
+    *ngIf="showQuickCreate"
+    (clickOutside)="quickCreate()"
+    [exclude]="'.qc-right'"
+  >
+    <div
+      class="qc-item"
+      (click)="
+        goTo('/contracts/create', 'Contracts - New Contract');
+        showQuickCreate = false
+      "
+    >
+      Contract
+    </div>
+    <div
+      class="qc-item"
+      (click)="goTo('/keys/create', 'Keys - Generate'); showQuickCreate = false"
+    >
+      Key
+    </div>
+    <div
+      class="qc-item"
+      (click)="
+        goTo('/identity/create', 'Identity - Create'); showQuickCreate = false
+      "
+    >
+      Identity
+    </div>
+    <div
+      class="qc-item"
+      (click)="
+        goTo('/settings/connection/create', 'Settings'); showQuickCreate = false
+      "
+    >
+      Connection
+    </div>
+    <!--
+      <div
+        class="qc-item"
+        (click)="
+          goTo('/settings/default/create', 'Settings'); showQuickCreate = false
+        "
+      >
+        Default
+      </div>
+    -->
+    <div
+      class="qc-item"
+      (click)="
+        goTo('/localnetwork/quick', 'Local Network'); showQuickCreate = false
+      "
+      *ngIf="electronService.isDev"
+    >
+      Local Network
+    </div>
+    <div class="qc-item" (click)="createWorkspace()">Workspace</div>
+  </div>
+
+  <div
+    id="workspaceList"
+    class="workspace-menu"
+    *ngIf="showWorkspaceSelect"
+    (clickOutside)="switchWorkspace()"
+    [exclude]="'#workspaceMenu'"
+    [ngStyle]="{ 'right.px': setup.workspaceMenuPosition }"
+  >
+    <div *ngFor="let space of workspaces">
+      <div class="workspace-item" (click)="openWorkspace(space)">
+        {{ space }}
+      </div>
+    </div>
+  </div>
+</div>

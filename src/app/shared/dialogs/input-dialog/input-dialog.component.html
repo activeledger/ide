@@ -1,0 +1,29 @@
+<div class="dialog-wrapper">
+  <fa-icon [icon]="icon" class="icon"></fa-icon>
+  <br />
+  Input required! {{ type }}
+  <hr />
+  {{ message }} <br />
+  <mat-form-field>
+    <input
+      matInput
+      placeholder="Input here..."
+      [(ngModel)]="input"
+      [type]="type"
+    />
+  </mat-form-field>
+  <br />
+  <button
+    mat-raised-button
+    class="float-left"
+    (click)="return()"
+    [disabled]="input.length <= 0"
+  >
+    <!-- Tell 'em! -->
+    Ok
+  </button>
+  <button mat-raised-button class="float-right" (click)="cancel()">
+    <!-- Shhhh... -->
+    Cancel
+  </button>
+</div>

@@ -1,0 +1,122 @@
+<ngx-spinner
+  bdColor="rgba(51, 51, 51, 0.8)"
+  size="large"
+  color="#fff"
+  loadingText="Processing transaction..."
+  type="line-scale-party"
+></ngx-spinner>
+
+<mat-card class="container wrapper">
+  <div class="row">
+    <div class="col">
+      <mat-tab-group
+        mat-align-tabs="center"
+        [(selectedIndex)]="setup.selectedTab"
+      >
+        <mat-tab label="List">
+          <mat-accordion multi="true">
+            <mat-expansion-panel
+              *ngFor="let identity of identities"
+              [id]="identity._id"
+            >
+              <mat-expansion-panel-header>
+                <mat-panel-title> {{ identity.name }} </mat-panel-title>
+              </mat-expansion-panel-header>
+
+              <ng-template matExpansionPanelContent>
+                <div class="container-fluid">
+                  <div class="row">
+                    <div class="col">Stream ID:</div>
+                    <div class="col">{{ identity.streamId }}</div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col">Key:</div>
+                    <div class="col">{{ getKeyName(identity.key) }}</div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col">Connections:</div>
+                    <div class="col">
+                      {{ getConnectionName(identity.connection) }}
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col">Description:</div>
+                    <div class="col">{{ identity.metadata.description }}</div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col">Namespace:</div>
+                    <div class="col">
+                      {{ getNamespaceName(identity.namespace) }}
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </mat-tab>
+
+        <mat-tab label="Create">
+          <div class="container create">
+            <div class="row">
+              <div class="col"></div>
+              <div class="col">
+                <mat-form-field class="w-100">
+                  <input
+                    matInput
+                    placeholder="Identity Name"
+                    name="identityName"
+                    [(ngModel)]="identity.name"
+                  />
+                </mat-form-field>
+                <br />
+                <mat-form-field class="w-100">
+                  <mat-select placeholder="Key" [(ngModel)]="key">
+                    <mat-option *ngFor="let key of keys" [value]="key">
+                      {{ key.name }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <br />
+                <mat-form-field class="w-100">
+                  <mat-select placeholder="Connection" [(ngModel)]="connection">
+                    <mat-option *ngFor="let conn of connections" [value]="conn">
+                      {{ conn.name }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <br />
+                <mat-form-field class="w-100">
+                  <input
+                    matInput
+                    placeholder="Description"
+                    name="identityDesc"
+                    [(ngModel)]="identity.metadata.description"
+                  />
+                </mat-form-field>
+                <br />
+
+                <div class="float-right">
+                  <button
+                    mat-raised-button
+                    (click)="createIdentity()"
+                    [disabled]="!connection || !key || !identity.name"
+                  >
+                    Create
+                  </button>
+                  &nbsp;&nbsp;
+                  <button mat-raised-button (click)="clearIdentityGenerate()">
+                    Clear
+                  </button>
+                </div>
+              </div>
+              <div class="col"></div>
+            </div>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+  </div>
+</mat-card>

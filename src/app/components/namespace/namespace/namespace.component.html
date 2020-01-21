@@ -1,0 +1,101 @@
+<ngx-spinner
+  bdColor="rgba(51, 51, 51, 0.8)"
+  size="large"
+  color="#fff"
+  loadingText="Processing transaction..."
+  type="line-scale-party"
+></ngx-spinner>
+
+<mat-card class="container wrapper">
+  <div class="row">
+    <div class="col">
+      <mat-tab-group
+        mat-align-tabs="center"
+        [(selectedIndex)]="setup.selectedTab"
+      >
+        <mat-tab label="List">
+          <mat-accordion>
+            <mat-expansion-panel *ngFor="let namespace of namespaces">
+              <mat-expansion-panel-header>
+                {{ namespace.name }}
+              </mat-expansion-panel-header>
+              <ng-template matExpansionPanelContent>
+                Identity: &nbsp;
+                {{ namespace.identity | identityName | async }}
+                <br />
+                Connection: &nbsp;
+                {{ namespace.identity | identityConnectionName | async }}
+              </ng-template>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </mat-tab>
+
+        <mat-tab label="Create">
+          <div class="container create-wrapper">
+            <div class="row">
+              <div class="col"></div>
+              <div class="col-6">
+                <div
+                  *ngIf="setup.noIdentities"
+                  class="w-100"
+                  style="text-align: center;"
+                >
+                  There are no identities.
+                </div>
+
+                <div
+                  *ngIf="setup.noAvailableIdentities"
+                  class="w-100"
+                  style="text-align: center;"
+                >
+                  There are no identities without a namespace.
+                </div>
+
+                <mat-form-field *ngIf="!setup.idSet" class="w-100">
+                  <mat-select
+                    [(ngModel)]="identity"
+                    placeholder="Identity"
+                    [disabled]="setup.noIdentitiess"
+                  >
+                    <mat-option
+                      *ngFor="let identity of identities"
+                      [value]="identity"
+                    >
+                      {{ identity.name }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <br />
+
+                <mat-form-field class="w-100">
+                  <input
+                    matInput
+                    [(ngModel)]="namespace.name"
+                    placeholder="Name"
+                    [disabled]="setup.noIdentities"
+                  />
+                </mat-form-field>
+                <br />
+
+                <div class="float-right">
+                  <button
+                    mat-raised-button
+                    (click)="save()"
+                    [disabled]="setup.noIdentities"
+                  >
+                    Save
+                  </button>
+                  &nbsp;&nbsp;
+                  <button mat-raised-button (click)="clearNamespaceInputs()">
+                    Clear
+                  </button>
+                </div>
+              </div>
+              <div class="col"></div>
+            </div>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+  </div>
+</mat-card>

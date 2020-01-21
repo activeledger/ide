@@ -1,0 +1,11 @@
+.wrapper {
+  padding-top: 20px;
+
+  /deep/.col {
+    width:auto;
+  }
+
+  /deep/.information-container, /deep/.scheme-container {
+    display:none
+  }
+}

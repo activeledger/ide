@@ -1,0 +1,130 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col">
+      <h3>
+        IMPORTANT! Backups currently only include data from the open workspace.
+      </h3>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <mat-checkbox class="basic-margin" [(ngModel)]="encryptBackup"
+        >Encrypt</mat-checkbox
+      >
+
+      <br />
+      <mat-form-field *ngIf="encryptBackup">
+        <input
+          matInput
+          name="password"
+          placeholder="Password"
+          type="password"
+          [(ngModel)]="backupPassword"
+        />
+        <mat-hint>8 or more characters.</mat-hint>
+      </mat-form-field>
+      <br />
+      <br />
+      <button mat-raised-button (click)="export(true)">Backup All</button>
+      &nbsp;
+      <button
+        mat-raised-button
+        (click)="setup.exportSelected = !setup.exportSelected"
+      >
+        Backup Selected
+      </button>
+    </div>
+
+    <div class="col" *ngIf="setup.exportSelected">
+      <!--
+        TODO: Can probably replace [checked] and (change) with [(ngModel)]
+      -->
+      <mat-slide-toggle
+        class="exportSelectItem"
+        [checked]="exportsSelected.keys"
+        (change)="exportsSelected.keys = !exportsSelected.keys"
+      >
+        Keys
+      </mat-slide-toggle>
+      <br />
+
+      <mat-slide-toggle
+        class="exportSelectItem"
+        [checked]="exportsSelected.identities"
+        (change)="exportsSelected.identities = !exportsSelected.identities"
+      >
+        Identities
+      </mat-slide-toggle>
+
+      <br />
+      <mat-slide-toggle
+        class="exportSelectItem"
+        [checked]="exportsSelected.namespaces"
+        (change)="exportsSelected.namespaces = !exportsSelected.namespaces"
+      >
+        Namespaces
+      </mat-slide-toggle>
+      <br />
+
+      <mat-slide-toggle
+        class="exportSelectItem"
+        [checked]="exportsSelected.contracts"
+        (change)="exportsSelected.contracts = !exportsSelected.contracts"
+      >
+        Contracts
+      </mat-slide-toggle>
+      <br />
+
+      <mat-slide-toggle
+        class="exportSelectItem"
+        [checked]="exportsSelected.workflows"
+        (change)="exportsSelected.workflows = !exportsSelected.workflows"
+      >
+        Workflows
+      </mat-slide-toggle>
+      <br />
+
+      <mat-slide-toggle
+        class="exportSelectItem"
+        [checked]="exportsSelected.connections"
+        (change)="exportsSelected.connections = !exportsSelected.connections"
+      >
+        Connections
+      </mat-slide-toggle>
+      <br />
+
+      <mat-slide-toggle
+        class="exportSelectItem"
+        [checked]="exportsSelected.savedTransactions"
+        (change)="
+          exportsSelected.savedTransactions = !exportsSelected.savedTransactions
+        "
+      >
+        Saved Transactions
+      </mat-slide-toggle>
+      <br />
+
+      <mat-slide-toggle
+        class="exportSelectItem"
+        [checked]="exportsSelected.historicalTransactions"
+        (change)="
+          exportsSelected.historicalTransactions = !exportsSelected.historicalTransactions
+        "
+      >
+        Transaction history
+      </mat-slide-toggle>
+      <br />
+
+      <br />
+      <button mat-raised-button (click)="export()">Start backup</button>
+    </div>
+  </div>
+
+  <div class="row">
+    <mat-progress-bar
+      class="progressBar"
+      mode="indeterminate"
+      *ngIf="setup.exportInProgress"
+    ></mat-progress-bar>
+  </div>
+</div>

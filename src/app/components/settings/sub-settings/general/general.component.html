@@ -1,0 +1,25 @@
+<div class="appearance">
+  <span class="title">Appearance</span> <br />
+  <u>Accents</u> <br />
+  <div
+    [(colorPicker)]="generalSettings.apperance.accent"
+    [style.background]="generalSettings.apperance.accent"
+    class="colourPicker"
+    (colorPickerChange)="setAccentColours()"
+  ></div>
+  Accent <br />
+  <div
+    [(colorPicker)]="generalSettings.apperance.accentHover"
+    [style.background]="generalSettings.apperance.accentHover"
+    class="colourPicker"
+    (colorPickerChange)="setAccentColours()"
+  ></div>
+  Accent - Hover <br />
+  <div
+    [(colorPicker)]="generalSettings.apperance.fontColour"
+    [style.background]="generalSettings.apperance.fontColour"
+    class="colourPicker"
+    (colorPickerChange)="setAccentColours()"
+  ></div>
+  Font Colour
+</div>

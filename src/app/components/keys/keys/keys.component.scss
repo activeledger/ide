@@ -1,0 +1,26 @@
+.wrapper {
+  margin-top: 20px;
+}
+
+.details {
+  color: rgb(73, 73, 73);
+}
+
+.create-wrapper {
+  padding-bottom: 20px;
+}
+
+.rename {
+  opacity: 0.5;
+  transition: opacity 0.2s linear;
+  cursor: pointer;
+  font-size: 0.9em;
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+.rename-key-butt {
+  margin-left: 20px;
+}

@@ -1,0 +1,137 @@
+<div class="wrapper">
+  <div class="sidemenu">
+    <app-sidemenu class="sidemenu">
+      <div class="top">
+        <div
+          class="saved"
+          [ngClass]="setup.showSaved ? 'active' : 'inactive'"
+          (click)="setup.showSaved = true"
+        >
+          Saved
+        </div>
+
+        <div
+          class="history"
+          [ngClass]="!setup.showSaved ? 'active' : 'inactive'"
+          (click)="setup.showSaved = false"
+        >
+          History
+        </div>
+      </div>
+
+      <div class="bottom">
+        <div class="savedTransactions" *ngIf="setup.showSaved">
+          <div
+            class="savedTransaction"
+            *ngFor="let transaction of savedTransactions"
+            (click)="openTransaction(transaction)"
+          >
+            {{ transaction.name }}
+          </div>
+        </div>
+
+        <div class="transactionHistory" *ngIf="!setup.showSaved">
+          <div class="transactions">
+            <div
+              class="historicalTransaction"
+              *ngFor="let transaction of historicalTransactions"
+              (click)="openTransaction(transaction)"
+            >
+              {{ transaction.connectionName }} -
+              {{ transaction.timestamp | date: "short" }}
+            </div>
+          </div>
+          <div class="clear" (click)="clearHistory()">Clear</div>
+        </div>
+      </div>
+    </app-sidemenu>
+  </div>
+
+  <div class="main-content">
+    <div class="control-bar">
+      <mat-form-field class="connection-select">
+        <mat-select placeholder="Connection" [(ngModel)]="selectedConnection">
+          <mat-option
+            *ngFor="let connection of connections"
+            [value]="connection"
+          >
+            {{ connection.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field class="connection-input">
+        <input
+          matInput
+          placeholder="Custom connection"
+          [(ngModel)]="customConnection"
+        />
+      </mat-form-field>
+
+      <button class="button" (click)="runTransaction()">Run</button>
+
+      <div class="encryptTransaction">
+        <mat-slide-toggle
+          [checked]="
+            encryptedTransaction &&
+            (customConnection && customConnection !== '')
+          "
+          [disabled]="!customConnection || customConnection === ''"
+        ></mat-slide-toggle>
+        Encrypt Transaction
+      </div>
+    </div>
+
+    <div class="editor">
+      <div class="topper">
+        <input
+          class="transactionName"
+          placeholder="Unsaved"
+          [(ngModel)]="transactionName"
+        />
+        <div class="save">
+          <fa-icon [icon]="saveIcon" (click)="saveTransaction()"></fa-icon>
+        </div>
+      </div>
+      <div id="json-editor" class="ace-internal"></div>
+    </div>
+
+    <div class="viewer">
+      <div class="topper">
+        <div class="left">
+          Response
+        </div>
+        <div class="right" [hidden]="!setup.gotResponse">
+          <div class="response-time">
+            Response time
+            <span class="response-data">{{ response.time || 0 }}ms</span>
+          </div>
+          <div class="payload-size">
+            Response size
+            <span class="response-data">{{ response.size || 0 }}</span>
+          </div>
+        </div>
+      </div>
+      <div
+        class="initial-message"
+        *ngIf="!setup.runningTransaction && !setup.gotResponse"
+      >
+        Run a transaction
+      </div>
+      <div class="loader" *ngIf="setup.runningTransaction">
+        <div style="color: #e7986a" class="loader-disp la-fire la-2x">
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+
+        <div class="loader-text">Processing transaction...</div>
+      </div>
+      <div
+        id="response-output"
+        class="ace-internal"
+        [hidden]="!setup.gotResponse"
+      ></div>
+    </div>
+  </div>
+</div>

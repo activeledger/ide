@@ -1,0 +1,12 @@
+Active Harmony is a Smart Contract IDE and Activeledger management tool. It is
+created and maintained by Activeledger.io <br />
+<b>You are running: {{ version }}</b> <br />
+
+<span *ngIf="setup.isLoggedIn">
+  <b>
+    The latest release is: {{ latestVersion.version }} released on
+    {{ latestVersion.released | date: "dd/MM/yyyy" }}.
+  </b>
+  You can download it
+  <span class="link" (click)="openDownloadPage()">here.</span>
+</span>

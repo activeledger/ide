@@ -1,0 +1,66 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col">
+      <mat-form-field>
+        <mat-select placeholder="Workspace" [(ngModel)]="workspace">
+          <mat-option *ngFor="let workspace of workspaces" [value]="workspace">
+            {{ workspace }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+  <hr />
+  <div class="row">
+    <div class="col">
+      <span
+        matBadge="!"
+        matBadgePosition="before"
+        matBadgeOverlap="false"
+        matBadgeColor="warn"
+      >
+        Restart forced.
+      </span>
+      <br />
+      <br />
+      <button
+        mat-raised-button
+        (click)="setup.showRename = !setup.showRename"
+        [disabled]="!workspace"
+      >
+        Rename
+      </button>
+      &nbsp;
+      <span *ngIf="setup.showRename">
+        <mat-form-field>
+          <input
+            matInput
+            placeholder="Workspace name"
+            [value]="workspace"
+            [(ngModel)]="newWorkspaceName"
+          />
+        </mat-form-field>
+        &nbsp;
+        <button
+          mat-button
+          (click)="rename()"
+          [disabled]="
+            newWorkspaceName === undefined || newWorkspaceName.length <= 0
+          "
+        >
+          Save
+        </button>
+      </span>
+
+      <br />
+      <br />
+      <button mat-raised-button (click)="delete()" [disabled]="!workspace">
+        Delete
+      </button>
+      &nbsp;
+      <mat-slide-toggle [(ngModel)]="cleanWorkspace"
+        >Just Data</mat-slide-toggle
+      >
+    </div>
+  </div>
+</div>

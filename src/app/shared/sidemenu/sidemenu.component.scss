@@ -1,0 +1,33 @@
+.sidemenu-wrapper {
+  background: rgb(47, 42, 56);
+  height: 100%;
+  color: #fff;
+
+  min-width: 250px;
+
+  transition: width 0.7s ease-out;
+
+  .sidemenu-content {
+    float: left;
+    width: 100% !important;
+    height: 100%;
+  }
+
+  .sidebar {
+    width: 20px;
+    height: 100%;
+    // cursor: ew-resize;
+    overflow: hidden;
+
+    position: relative;
+    bottom: 100%;
+    left: calc(100% - 10px);
+    z-index: 10;
+
+    .displayLine {
+      background: #6e49ff;
+      width: 1px;
+      margin: 0 auto;
+    }
+  }
+}

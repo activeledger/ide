@@ -1,0 +1,28 @@
+.dialog-wrapper {
+  text-align: center;
+  word-wrap: break-word;
+}
+
+.icon {
+  font-size: 2em;
+  color: rgb(47, 161, 255);
+}
+
+.data {
+  text-align: left;
+  margin: 0 auto;
+}
+
+.button-holder {
+  width: 100%;
+  height: 47px;
+}
+
+.copy {
+  margin-right: 6px;
+}
+
+.copy-success {
+  color: #00a1ff;
+  text-align: right;
+}

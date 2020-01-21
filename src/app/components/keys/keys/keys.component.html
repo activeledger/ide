@@ -1,0 +1,177 @@
+<ngx-spinner
+  bdColor="rgba(51, 51, 51, 0.8)"
+  size="large"
+  color="#fff"
+  loadingText="Processing..."
+  type="line-scale-party"
+></ngx-spinner>
+<mat-card class="container wrapper">
+  <div class="row">
+    <div class="col">
+      <mat-tab-group
+        [(selectedIndex)]="setup.selectedTab"
+        mat-align-tabs="center"
+      >
+        <mat-tab label="Manage">
+          <mat-accordion multi="true">
+            <mat-expansion-panel *ngFor="let key of keys" [id]="key._id">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  {{ key.name }}
+                  <!--
+                    &nbsp;&nbsp; <fa-icon class="rename" [icon]="editIco" (click)="enableRename(key.id)"></fa-icon>
+                  -->
+                </mat-panel-title>
+                <mat-panel-description> </mat-panel-description>
+              </mat-expansion-panel-header>
+
+              <ng-template matExpansionPanelContent>
+                <div class="container-fluid">
+                  <div class="row">
+                    <div class="col details">
+                      <div class="row">
+                        <div class="col">Description:</div>
+                        <div class="col">{{ key.metadata.description }}</div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col">Type:</div>
+                        <div class="col">
+                          {{
+                            key.encryption === "secp256k1"
+                              ? "Elliptic Curve"
+                              : "RSA"
+                          }}
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-1">
+                          <button
+                            mat-button
+                            (click)="setup.showPem = !setup.showPem"
+                          >
+                            <fa-icon [icon]="pemIcon"></fa-icon>
+                          </button>
+                        </div>
+                        <div class="col-1" *ngIf="setup.showPem">
+                          PEM:
+                        </div>
+                        <div class="col" *ngIf="setup.showPem">
+                          {{ key.pub.pkcs8pem }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <br />
+
+                <div *ngIf="keyRename === key._id">
+                  <mat-form-field>
+                    <input
+                      matInput
+                      [placeholder]="key.name"
+                      [id]="key._id + '-input'"
+                      autofocus
+                      [(ngModel)]="changedKeyName"
+                    />
+                  </mat-form-field>
+                  <button
+                    mat-button
+                    class="rename-key-butt"
+                    (click)="cancelRename()"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    mat-button
+                    class="rename-key-butt"
+                    (click)="saveKeyName(key)"
+                  >
+                    Save
+                  </button>
+                </div>
+
+                <mat-action-row>
+                  <button
+                    mat-button
+                    *ngIf="key.onboarded"
+                    (click)="manageNamespaces(key._id)"
+                  >
+                    Namespaces
+                  </button>
+                  <button mat-button (click)="enableRename(key._id)">
+                    Rename
+                  </button>
+                </mat-action-row>
+              </ng-template>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </mat-tab>
+
+        <!--
+          <mat-tab label="Import">
+
+
+
+          </mat-tab>
+        -->
+
+        <mat-tab label="Generate">
+          <div class="container create-wrapper">
+            <div class="row">
+              <div class="col"></div>
+              <div class="col-6">
+                <mat-form-field class="w-100">
+                  <input
+                    matInput
+                    placeholder="Key Name"
+                    name="keyName"
+                    [(ngModel)]="keyData.name"
+                  />
+                </mat-form-field>
+                <br />
+
+                <mat-select
+                  class="w-100"
+                  placeholder="Key Type"
+                  style="width:10%"
+                  [(ngModel)]="keyData.encryption"
+                >
+                  <mat-option *ngFor="let key of keyTypes" [value]="key.type">
+                    {{ key.name }}
+                  </mat-option>
+                </mat-select>
+                <br />
+
+                <mat-form-field class="w-100">
+                  <textarea
+                    matInput
+                    placeholder="Description"
+                    name="keyDescription"
+                    [(ngModel)]="keyData.description"
+                  ></textarea>
+                </mat-form-field>
+
+                <br />
+                <br />
+
+                <div class="float-right">
+                  <button mat-raised-button (click)="generateKey()">
+                    Generate
+                  </button>
+                  &nbsp;&nbsp;
+                  <button mat-raised-button (click)="clearKeyGenerate()">
+                    Clear
+                  </button>
+                </div>
+              </div>
+              <div class="col"></div>
+            </div>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+  </div>
+</mat-card>

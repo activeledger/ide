@@ -1,0 +1,67 @@
+<div class="wrapper">
+  <mat-card>
+    <!-- <div
+      class="backButton"
+      (click)="router.navigateByUrl('/contracts/open/' + contractId)"
+    >
+      <fa-icon [icon]="backIcon"></fa-icon>
+    </div> -->
+    <mat-card-title>Create a workflow</mat-card-title>
+    <mat-divider></mat-divider>
+
+    <br />
+    <mat-form-field>
+      <input
+        matInput
+        placeholder="Name"
+        name="workflowname"
+        [(ngModel)]="workflow.name"
+      />
+    </mat-form-field>
+
+    <br />
+    <br />
+
+    <mat-form-field class="identity">
+      <mat-select
+        placeholder="Identity"
+        name="identity"
+        [(ngModel)]="workflow.identity"
+      >
+        <mat-option *ngFor="let identity of identities" [value]="identity._id">
+          {{ identity.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <br />
+    <br />
+    <mat-slide-toggle name="increment" [(ngModel)]="workflow.incrementVersion">
+      Automatically increment version
+    </mat-slide-toggle>
+
+    <br />
+    <br />
+    <mat-form-field>
+      <input
+        matInput
+        placeholder="Starting version"
+        name="version"
+        [(ngModel)]="workflow.versionStart"
+      />
+    </mat-form-field>
+
+    <br />
+    <br />
+
+    <button
+      mat-raised-button
+      (click)="save()"
+      [disabled]="
+        !workflow.name || workflow.name.length < 1 || !workflow.identity
+      "
+    >
+      Save
+    </button>
+  </mat-card>
+</div>

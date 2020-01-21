@@ -1,0 +1,33 @@
+<div class="dialog-wrapper">
+  <fa-icon [icon]="faInfo" class="icon"></fa-icon>
+  <br />
+  <!-- Just so you know -->
+  Info
+  <hr />
+  <div *ngFor="let contract of contractData">
+    <span
+      >{{ contract.name }}: <b>{{ contract.id }}</b></span
+    >
+    <br />
+    <button
+      *ngIf="showCopy"
+      mat-raised-button
+      class="copy"
+      ngxClipboard
+      [cbContent]="contract.id"
+      (cbOnSuccess)="copySuccess = true"
+    >
+      Copy to clipboard
+    </button>
+    <hr />
+  </div>
+  <br />
+  <div class="copy-success" *ngIf="copySuccess">Data copied to clipboard!</div>
+  <br />
+  <div class="button-holder">
+    <div class="float-right">
+      <!-- <button mat-raised-button (click)="close()">Cool</button> -->
+      <button mat-raised-button (click)="close()">OK</button>
+    </div>
+  </div>
+</div>

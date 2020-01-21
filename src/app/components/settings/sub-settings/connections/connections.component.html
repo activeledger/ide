@@ -1,0 +1,193 @@
+<mat-accordion>
+  <mat-expansion-panel
+    *ngFor="let connection of connections"
+    [id]="connection._id"
+  >
+    <mat-expansion-panel-header>
+      <mat-panel-title> {{ connection.name }} </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    Connection: &nbsp;
+    <span
+      *ngIf="
+        renameSelector.id !== connection._id ||
+        renameSelector.type !== 'connectionDetails'
+      "
+    >
+      {{ connection.protocol }}:// {{ connection.address }} :
+      {{ connection.port }} <br />
+      Encrypt Transactions: {{ connection.encrypt }}
+    </span>
+    <br />
+    <span
+      *ngIf="
+        renameSelector.id === connection._id &&
+        renameSelector.type === 'connectionDetails'
+      "
+    >
+      <mat-form-field>
+        <mat-select placeholder="Protocol" [(ngModel)]="connection.protocol">
+          <mat-option *ngFor="let protocol of protocols" [value]="protocol">
+            {{ protocol }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      &nbsp;
+      <mat-form-field>
+        <input
+          matInput
+          [placeholder]="connection.address"
+          [(ngModel)]="connectionModificationData.address"
+        />
+      </mat-form-field>
+      :
+      <mat-form-field>
+        <input
+          matInput
+          [placeholder]="connection.port"
+          [(ngModel)]="connectionModificationData.port"
+        />
+      </mat-form-field>
+      <br />
+      <mat-checkbox
+        name="connectionEncrypt"
+        class="float-left"
+        labelPosition="before"
+        [(ngModel)]="connectionModificationData.encrypt"
+        >Encrypt Transactions</mat-checkbox
+      >
+
+      <button
+        mat-raised-button
+        class="float-right"
+        (click)="saveEdit(connection._id)"
+      >
+        Save
+      </button>
+    </span>
+
+    <br
+      *ngIf="
+        renameSelector.id === connection._id &&
+        renameSelector.type === 'connectionDetails'
+      "
+    />
+    <br />
+
+    <button
+      class="button-spacer"
+      mat-raised-button
+      *ngIf="
+        renameSelector.id !== connection._id ||
+        renameSelector.type !== 'connectionDetails'
+      "
+      (click)="enableEdit(connection, 'connectionDetails')"
+    >
+      Edit
+    </button>
+
+    &nbsp;
+    <button mat-raised-button (click)="testConnection(connection._id)">
+      Test
+    </button>
+    <br />
+    <div
+      class="conTest-success"
+      *ngIf="connectionTestResult[connection._id] === 'wait'"
+    >
+      Testing please wait...
+    </div>
+    <div
+      class="conTest-success"
+      *ngIf="connectionTestResult[connection._id] === 'success'"
+    >
+      Connection successful!
+    </div>
+    <div
+      class="conTest-fail"
+      *ngIf="connectionTestResult[connection._id] === 'failed'"
+    >
+      Unable to connect!
+    </div>
+  </mat-expansion-panel>
+</mat-accordion>
+<br />
+
+<button mat-button (click)="setup.showAddConnection = !setup.showAddConnection">
+  Add
+</button>
+
+<br />
+
+<div *ngIf="setup.showAddConnection">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col"></div>
+
+      <div class="col-6">
+        <form (ngSubmit)="saveConnection()" #newConnectionForm="ngForm">
+          <mat-form-field>
+            <input
+              matInput
+              placeholder="Name"
+              name="connectionName"
+              [(ngModel)]="newConnection.name"
+              required
+            />
+          </mat-form-field>
+          <br />
+
+          <mat-form-field>
+            <mat-select
+              placeholder="Protocol"
+              [(ngModel)]="newConnection.protocol"
+              name="protocol"
+            >
+              <mat-option *ngFor="let protocol of protocols" [value]="protocol">
+                {{ protocol }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <br />
+
+          <mat-form-field>
+            <input
+              matInput
+              placeholder="Address"
+              name="connectionAddress"
+              [(ngModel)]="newConnection.address"
+              required
+            />
+          </mat-form-field>
+          <br />
+
+          <mat-form-field>
+            <input
+              matInput
+              placeholder="Port"
+              name="connectionPort"
+              [(ngModel)]="newConnection.port"
+            />
+          </mat-form-field>
+          <br />
+
+          <mat-checkbox
+            name="connectionEncrypt"
+            [(ngModel)]="newConnection.encrypt"
+            >Encrypt Transactions</mat-checkbox
+          >
+          <br />
+
+          <button mat-button [disabled]="!newConnectionForm.form.valid">
+            Save
+          </button>
+          <button mat-button (click)="setup.showAddConnection = false">
+            Cancel
+          </button>
+        </form>
+      </div>
+
+      <div class="col"></div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,125 @@
+<ngx-spinner
+  bdColor="rgba(51, 51, 51, 0.8)"
+  size="large"
+  color="#fff"
+  loadingText="Processing transaction..."
+  loadingText="Processing transaction..."
+  type="line-scale-party"
+></ngx-spinner>
+<div class="container wrapper" (konami)="setup.showDBOptions = true">
+  <div class="row">
+    <div class="col">
+      <mat-accordion>
+        <!-- ABOUT -->
+        <mat-expansion-panel [expanded]="setup.section === 'about'">
+          <mat-expansion-panel-header>
+            <mat-panel-title> About </mat-panel-title>
+            <mat-panel-description>
+              About Active Harmony
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <app-settings-about></app-settings-about>
+        </mat-expansion-panel>
+
+        <!-- ACCOUNT -->
+        <mat-expansion-panel [expanded]="setup.section === 'account'">
+          <mat-expansion-panel-header>
+            <mat-panel-title> Account </mat-panel-title>
+            <mat-panel-description> Account details </mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <app-settings-account></app-settings-account>
+        </mat-expansion-panel>
+
+        <!-- GENERAl -->
+        <!-- FIXME: Currently not working
+          <mat-expansion-panel [expanded]="setup.section === 'general'">
+          <mat-expansion-panel-header>
+            <mat-panel-title> General </mat-panel-title>
+            <mat-panel-description> General settings </mat-panel-description>
+          </mat-expansion-panel-header>
+          <app-settings-general></app-settings-general>
+        </mat-expansion-panel> -->
+
+        <!-- BACKUP -->
+        <mat-expansion-panel [expanded]="setup.section === 'backup'">
+          <mat-expansion-panel-header>
+            <mat-panel-title> Backup </mat-panel-title>
+            <mat-panel-description> Create a backup </mat-panel-description>
+          </mat-expansion-panel-header>
+          <app-settings-backup></app-settings-backup>
+        </mat-expansion-panel>
+
+        <!-- RESTORE -->
+        <mat-expansion-panel [expanded]="setup.section === 'restore'">
+          <mat-expansion-panel-header>
+            <mat-panel-title> Restore </mat-panel-title>
+            <mat-panel-description> Restore backup </mat-panel-description>
+          </mat-expansion-panel-header>
+          <app-settings-restore></app-settings-restore>
+        </mat-expansion-panel>
+
+        <!-- CONNECTION -->
+        <mat-expansion-panel [expanded]="setup.section === 'connection'">
+          <mat-expansion-panel-header>
+            <mat-panel-title> Connections </mat-panel-title>
+            <mat-panel-description>
+              Add and view connections
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <app-settings-connections></app-settings-connections>
+        </mat-expansion-panel>
+
+        <!-- DEFAULT -->
+        <!--
+          <mat-expansion-panel [expanded]="setup.section === 'default'">
+            <mat-expansion-panel-header>
+              <mat-panel-title> Defaults </mat-panel-title>
+              <mat-panel-description> Manage defaults </mat-panel-description>
+            </mat-expansion-panel-header>
+            <app-settings-defaults></app-settings-defaults>
+          </mat-expansion-panel>
+        -->
+
+        <!-- DATABASE -->
+        <!-- THIS SHOULD ALWAYS BE A DEV ONLY OPTION -->
+        <mat-expansion-panel
+          *ngIf="electronService.isDev || setup.showDBOptions"
+        >
+          <mat-expansion-panel-header>
+            <mat-panel-title> Developer </mat-panel-title>
+            <mat-panel-description>
+              Development and Testing
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <app-settings-developer></app-settings-developer>
+        </mat-expansion-panel>
+
+        <!-- UPDATE -->
+        <mat-expansion-panel
+          *ngIf="electronService.isDev"
+          [expanded]="setup.section === 'update'"
+        >
+          <mat-expansion-panel-header>
+            <mat-panel-title> Update </mat-panel-title>
+            <mat-panel-description> Update </mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <app-settings-update></app-settings-update>
+        </mat-expansion-panel>
+
+        <!-- WORKSPACE -->
+        <mat-expansion-panel [expanded]="setup.section === 'workspace'">
+          <mat-expansion-panel-header>
+            <mat-panel-title> Workspace </mat-panel-title>
+            <mat-panel-description>
+              Manage your workspaces
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <app-settings-workspace></app-settings-workspace>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </div>
+</div>

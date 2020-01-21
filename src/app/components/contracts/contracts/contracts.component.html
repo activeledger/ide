@@ -1,0 +1,18 @@
+<div id="container" class="container-fluid h-100">
+  <div class="row h-100 workflow-holder" [hidden]="!setup.contractOpened">
+    <div class="col h-100">
+      <app-workflow-contracts></app-workflow-contracts>
+    </div>
+  </div>
+
+  <div
+    class="row h-100 edit-holder"
+    [ngClass]="setup.contractOpened ? '' : 'w-100'"
+  >
+    <div class="col h-100">
+      <app-edit-contracts
+        (editorLoaded)="editorInit = true"
+      ></app-edit-contracts>
+    </div>
+  </div>
+</div>

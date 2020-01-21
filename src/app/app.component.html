@@ -1,0 +1,179 @@
+<div class="app-wrapper">
+  <div
+    *ngIf="!electronService.isMac"
+    class="topBar accent"
+    style="-webkit-app-region: drag"
+  >
+    <div class="icon"></div>
+    <span class="title">Active Harmony</span>
+
+    <span class="window-menu">
+      <div class="window-menu-item minButt" (click)="minimise()">
+        <div id="minimise-button"></div>
+      </div>
+
+      <div class="window-menu-item maxButt" (click)="maximise()">
+        <div *ngIf="!setup.isMaximised" id="maximise-button"></div>
+        <div *ngIf="setup.isMaximised" id="restore-button"></div>
+      </div>
+
+      <div class="window-menu-item closeButt" (click)="close()">
+        <div id="close-button-windows"></div>
+      </div>
+    </span>
+  </div>
+
+  <style></style>
+
+  <div
+    *ngIf="electronService.isMac"
+    class="topBar-mac accent"
+    style="-webkit-app-region: drag"
+  >
+    <span class="window-menu">
+      <div class="window-menu-item closeButt" (click)="close()">
+        <div id="close-button"></div>
+      </div>
+
+      <div class="window-menu-item minButt" (click)="minimise()">
+        <div id="minimise-button"></div>
+      </div>
+
+      <div class="window-menu-item maxButt" (click)="maximise()">
+        <div *ngIf="!setup.isMaximised" id="maximise-button"></div>
+        <div *ngIf="setup.isMaximised" id="restore-button"></div>
+      </div>
+    </span>
+
+    <div class="title">Active Harmony</div>
+  </div>
+
+  <app-quick-bar (changeMenuState)="toggleMenu()"></app-quick-bar>
+
+  <div
+    id="side-menu"
+    [ngClass]="setup.hideMenuNames ? 'smallSideMenu' : 'normalSideMenu'"
+  >
+    <ul>
+      <li
+        (click)="goTo('/', 'Home')"
+        matTooltip="Home"
+        class="accentFont-hover"
+      >
+        <fa-icon [icon]="homeIco"></fa-icon>
+        <span [hidden]="setup.hideMenuNames" class="sideMenu-item"
+          >&nbsp;&nbsp;&nbsp;&nbsp;Home</span
+        >
+      </li>
+      <li
+        (click)="goTo('/contracts', 'Contracts')"
+        matTooltip="Contracts"
+        class="accentFont-hover"
+      >
+        <fa-icon [icon]="contractsIco"></fa-icon>
+        <span *ngIf="!setup.hideMenuNames" class="sideMenu-item"
+          >&nbsp;&nbsp;&nbsp;&nbsp;Contracts</span
+        >
+      </li>
+      <li
+        (click)="goTo('/keys', 'Keys')"
+        matTooltip="Keys"
+        class="accentFont-hover"
+      >
+        <fa-icon [icon]="keysIco"></fa-icon>
+        <span *ngIf="!setup.hideMenuNames" class="sideMenu-item"
+          >&nbsp;&nbsp;&nbsp;&nbsp;Keys</span
+        >
+      </li>
+      <li
+        (click)="goTo('/identity', 'Identities')"
+        matTooltip="Identities"
+        class="accentFont-hover"
+      >
+        <fa-icon [icon]="identityIco"></fa-icon>
+        <span *ngIf="!setup.hideMenuNames" class="sideMenu-item"
+          >&nbsp;&nbsp;&nbsp;&nbsp;Identities</span
+        >
+      </li>
+      <li
+        (click)="goTo('/namespaces', 'Namespaces')"
+        matTooltip="Namespaces"
+        class="accentFont-hover"
+      >
+        <fa-icon [icon]="namespacesIco"></fa-icon>
+        <span *ngIf="!setup.hideMenuNames" class="sideMenu-item"
+          >&nbsp;&nbsp;&nbsp;&nbsp;Namespaces</span
+        >
+      </li>
+      <li
+        (click)="goTo('/signing', 'Signing')"
+        matTooltip="Signing"
+        class="accentFont-hover"
+      >
+        <fa-icon [icon]="signingIco"></fa-icon>
+        <span *ngIf="!setup.hideMenuNames" class="sideMenu-item"
+          >&nbsp;&nbsp;&nbsp;&nbsp;Signing</span
+        >
+      </li>
+      <li
+        (click)="goTo('/run', 'Run')"
+        matTooltip="Run"
+        class="accentFont-hover"
+      >
+        <fa-icon [icon]="runIco"></fa-icon>
+        <span *ngIf="!setup.hideMenuNames" class="sideMenu-item"
+          >&nbsp;&nbsp;&nbsp;&nbsp;Run</span
+        >
+      </li>
+      <li
+        (click)="goTo('/swagger', 'Core API')"
+        matTooltip="Core API"
+        class="accentFont-hover"
+      >
+        <fa-icon [icon]="coreApiIco"></fa-icon>
+        <span *ngIf="!setup.hideMenuNames" class="sideMenu-item"
+          >&nbsp;&nbsp;&nbsp;&nbsp;Core API</span
+        >
+      </li>
+    </ul>
+  </div>
+
+  <div
+    id="main-wrapper"
+    [ngClass]="
+      setup.hideMenuNames ? 'smallSideMenuWrapper' : 'normalSideMenuWrapper'
+    "
+  >
+    <router-outlet></router-outlet>
+  </div>
+</div>
+
+<app-console
+  id="console"
+  class="console"
+  (minimise)="this.setup.console = !this.setup.console"
+  (initComplete)="loadConsole()"
+  [ngClass]="setup.console ? 'console-show' : 'console-hide'"
+></app-console>
+
+<div id="bottom-bar" (click)="this.setup.console = !this.setup.console">
+  <span class="version">{{ version }}</span>
+  <span class="float-right unselect">
+    <span (click)="openConsoleTo('output', $event)" matTooltip="All">
+      <fa-icon [icon]="allIco"></fa-icon>
+      {{ consoleCounts.all }}
+    </span>
+    <span (click)="openConsoleTo('info', $event)" matTooltip="Info">
+      <fa-icon [icon]="infoIco"></fa-icon>
+      {{ consoleCounts.info }}
+    </span>
+    <span (click)="openConsoleTo('warning', $event)" matTooltip="Warning">
+      <fa-icon [icon]="warningIco"></fa-icon>
+      {{ consoleCounts.warning }}
+    </span>
+    <span (click)="openConsoleTo('error', $event)" matTooltip="Error">
+      <fa-icon [icon]="errorIco"></fa-icon>
+      {{ consoleCounts.error }}
+    </span>
+  </span>
+</div>

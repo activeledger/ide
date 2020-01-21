@@ -1,0 +1,48 @@
+<div class="container wrapper">
+  <div class="row">
+    <div class="col">
+      <mat-card class="example-card">
+        <mat-card-header>
+          <mat-card-title>Select Ledger Connection</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col">
+                <mat-form-field>
+                  <mat-select
+                    placeholder="Core API Connection"
+                    [ngModel]="connections"
+                    (selectionChange)="loadApi($event)"
+                  >
+                    <mat-option
+                      *ngFor="let connection of connections"
+                      [value]="connection"
+                    >
+                      {{ connection.name }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+                &nbsp;&nbsp;&nbsp; or &nbsp;&nbsp;&nbsp;
+                <mat-form-field class="w-50">
+                  <input
+                    #customApi
+                    matInput
+                    placeholder="Custom API Url"
+                    name="customApi"
+                    (focusout)="loadCustomApi(customApi.value)"
+                  />
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      <br />
+      <mat-card class="container" [hidden]="!noswag">
+        <div id="swaggerId"></div>
+      </mat-card>
+      <br />
+    </div>
+  </div>
+</div>

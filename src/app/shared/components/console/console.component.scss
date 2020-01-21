@@ -1,0 +1,85 @@
+@font-face {
+  font-family: "Space Mono";
+  font-style: normal;
+  font-weight: 300;
+  src: local("Space Mono"), local("SpaceMono-Regular"), url(../../../../assets/fonts/SpaceMono.woff2) format('woff2');
+}
+
+.console {
+  height: 100%;
+  width: 100%;
+  background: rgb(12, 15, 34);
+  color: #fff;
+
+  #console-body {
+    height: 90%;
+    overflow-y: auto;
+    word-wrap:break-word;  
+
+    padding: 6px;
+
+    .mainWrapper {
+      font-family: "Space Mono";
+      font-size: 12px;
+      letter-spacing: 1px;
+
+      white-space: pre-wrap;
+
+      .info-highlight{
+        color: #fff;
+      }
+
+      .warning-highlight{
+        color: rgb(255, 217, 136);
+      }
+
+      .error-highlight{
+        color: rgb(255, 107, 107);
+      }
+    }
+  }
+}
+
+.top-bar {
+  height: 10%;
+  padding: 6px;
+
+  .top-bar-tab {
+    margin-right: 10px;
+    color: rgb(167, 167, 167);
+    transition: all 0.4s linear;
+    text-transform: uppercase;
+  
+    &:hover {
+      cursor: pointer;
+      color: #fff;
+    }
+
+  }
+  
+  .active {
+    color: #fff;
+    text-decoration: underline rgb(80, 25, 230);
+  }
+
+  .min-button {
+    margin-right: 6px;
+    cursor: pointer;
+    transition: all 0.2s linear;
+
+    &:hover {
+      color: rgb(116, 88, 238);
+    }
+  }
+
+  .clear-button {
+    cursor: pointer;
+    transition: all 0.2s linear;
+
+    &:hover {
+      color: rgb(238, 88, 88);
+    }
+  }
+}
+
+

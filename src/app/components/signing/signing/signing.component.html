@@ -1,0 +1,65 @@
+<div class="wrapper">
+  <mat-card class="container">
+    <div class="row">
+      <div class="col editor-container">
+        <!-- <mat-form-field class="transaction w-100">
+          <textarea
+            matInput
+            placeholder="Transaction"
+            [(ngModel)]="transaction"
+          ></textarea>
+        </mat-form-field> -->
+        <div id="json-editor"></div>
+      </div>
+    </div>
+
+    <br />
+
+    <div class="row">
+      <div class="col">
+        <mat-form-field class="w-100">
+          <mat-select placeholder="Key" [(ngModel)]="key">
+            <mat-option *ngFor="let key of keys" [value]="key">
+              {{ key.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col"></div>
+      <div class="col"></div>
+    </div>
+  </mat-card>
+
+  <br />
+
+  <mat-card class="container">
+    <button mat-raised-button (click)="sign()">Sign</button> &nbsp; &nbsp;
+    <mat-slide-toggle (click)="switchType()" [(ngModel)]="outputHex"
+      >Output HEX</mat-slide-toggle
+    >
+  </mat-card>
+
+  <br />
+
+  <mat-card class="container">
+    <div class="row">
+      <div class="col">
+        <mat-form-field class="signature w-100">
+          <textarea
+            matInput
+            placeholder="Signature"
+            readonly
+            [value]="signature"
+          ></textarea>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <button mat-raised-button ngxClipboard [cbContent]="signature">
+          Copy to clipboard
+        </button>
+      </div>
+    </div>
+  </mat-card>
+</div>

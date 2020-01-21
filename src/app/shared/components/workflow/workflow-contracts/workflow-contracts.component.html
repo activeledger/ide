@@ -1,0 +1,87 @@
+<div class="wrapper">
+  <div class="container-fluid w-100 h-100">
+    <div class="row top">
+      <div class="col">
+        <div class="uploadUpdateButton">
+          <div class="left" (click)="uploadOrUpdate()">
+            <span *ngIf="!showSelectIdentity && isUpload">Upload</span>
+            <span *ngIf="!showSelectIdentity && !isUpload">Update</span>
+            <span *ngIf="showSelectIdentity">Select identity</span>
+          </div>
+          <div
+            class="right toggleSelectIdentityButton"
+            (click)="toggleSelectIdentity()"
+            [hidden]="progressIndicator.show && !progressIndicator.workflowId"
+          >
+            <mat-icon>arrow_drop_down</mat-icon>
+          </div>
+          <div
+            *ngIf="progressIndicator.show && !progressIndicator.workflowId"
+            class="la-ball-fall la-sm progressIndicator"
+          >
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+        <div
+          class="selectIdentityMenu"
+          [hidden]="!showSelectIdentityMenu"
+          (clickOutside)="
+            showSelectIdentityMenu ? toggleSelectIdentity(true) : ''
+          "
+          [exclude]="'.toggleSelectIdentityButton'"
+        >
+          <div
+            class="selectIdentityItem"
+            *ngFor="let identity of identities"
+            (click)="selectIdentity(identity._id)"
+            [ngClass]="
+              checkSelectedIdentity(identity._id) ? 'selectedIdentity' : ''
+            "
+          >
+            {{ identity.name }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row middle">
+      <div class="col w-100">
+        <div class="workflow-list w-100">
+          <div
+            class="workflow-list-item  w-100"
+            *ngFor="let workflow of workflows"
+          >
+            <div class="button-left" (click)="run(workflow._id)">
+              {{ workflow.name }}
+            </div>
+            <div
+              *ngIf="
+                !(
+                  progressIndicator.show &&
+                  progressIndicator.workflowId === workflow._id
+                )
+              "
+              class="button-right float-right"
+              (click)="router.navigateByUrl('/workflow/' + workflow._id)"
+            >
+              <fa-icon [icon]="editIco"></fa-icon>
+            </div>
+            <div
+              *ngIf="
+                progressIndicator.show &&
+                progressIndicator.workflowId === workflow._id
+              "
+              class="la-ball-fall la-sm progressIndicator"
+            >
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

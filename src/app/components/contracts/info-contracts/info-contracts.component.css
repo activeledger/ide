@@ -1,0 +1,25 @@
+.wrapper {
+  margin-top: 20px;
+}
+
+.back:hover {
+  cursor: pointer;
+}
+
+.label-control {
+  opacity: 0.7;
+  transition: all 0.4s linear;
+  cursor: pointer;
+}
+
+.label-control:hover {
+  opacity: 1;
+}
+
+.metadata-display {
+  margin-bottom: 20px;
+}
+
+.metadata-display:last-child {
+  margin-bottom: 0;
+}

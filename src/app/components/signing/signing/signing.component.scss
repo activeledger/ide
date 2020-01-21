@@ -1,0 +1,26 @@
+.wrapper {
+  padding-top: 20px;
+
+  .editor-container {
+    display: flex;
+    flex-flow: column wrap;
+
+    height: 300px;
+
+    border-radius: 8px;
+    background: #1c1c1c;
+    padding: 8px;
+
+    margin: 8px;
+
+    #json-editor {
+      flex: 1 100%;
+    }
+  }
+}
+
+.signature {
+  textarea {
+    min-height: 60px;
+  }
+}

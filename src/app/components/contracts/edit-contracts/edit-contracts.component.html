@@ -1,0 +1,187 @@
+<ngx-spinner
+  bdColor="rgba(51, 51, 51, 0.8)"
+  size="large"
+  color="#fff"
+  loadingText="Processing Contract..."
+  type="line-scale-party"
+></ngx-spinner>
+
+<!-- Background loader -->
+<div [hidden]="setup.showLoader" class="loader">
+  <div style="color: #6e49ff" class="la-pacman la-2x">
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+  <br />
+  Loading contract...
+</div>
+
+<div class="full-contract-wrapper">
+  <div class="top-bar" [hidden]="setup.showLoader">
+    <div class="left">
+      <button
+        (click)="showLoader()"
+        [hidden]="!setup.showEditor"
+        matTooltip="Back to load"
+      >
+        <fa-icon [icon]="backIco"></fa-icon>
+      </button>
+      <button
+        (click)="saveContract()"
+        [hidden]="!setup.showEditor"
+        matTooltip="Save"
+      >
+        <fa-icon [icon]="saveIco"></fa-icon>
+      </button>
+    </div>
+
+    <div class="vSelect center">
+      <div class="cvs name-wrapper" (click)="toggleVersionSelect()">
+        <div class="contract-name">{{ contract.name || "Unsaved" }}</div>
+        <span class="noselect" *ngIf="contract.name">&nbsp;-&nbsp;</span>
+        <div class="contract-version" *ngIf="contract.name">
+          {{ selectedVersion }}
+        </div>
+        <fa-icon
+          class="contract-version-select"
+          [icon]="downIco"
+          *ngIf="contract.name"
+        ></fa-icon>
+      </div>
+    </div>
+
+    <div class="right float-right">
+      <button
+        (click)="toggleOptionsMenu()"
+        [hidden]="!setup.showEditor"
+        matTooltip="Options"
+        class="optionsButton"
+      >
+        <fa-icon [icon]="kebabIco"></fa-icon>
+      </button>
+    </div>
+  </div>
+
+  <div
+    class="version-selector"
+    [hidden]="!setup.showVersionSelect"
+    (clickOutside)="toggleVersionSelect(true)"
+    [exclude]="'.vSelect'"
+  >
+    <div
+      class="version-item"
+      *ngFor="let version of versions"
+      (click)="openVersion(version)"
+    >
+      {{ version }}
+    </div>
+  </div>
+
+  <div
+    id="optionsMenu"
+    class="options-menu"
+    [hidden]="!setup.showOptionsMenu"
+    (clickOutside)="toggleOptionsMenu(true)"
+    [exclude]="'.optionsButton'"
+  >
+    <div class="options-item" (click)="export()">Export</div>
+    <div class="options-item" (click)="showContractInfo()">Show info</div>
+    <div class="options-item" (click)="clearEditor()">Clear</div>
+    <div class="options-item" [hidden]="electronService.isDev">Template</div>
+  </div>
+
+  <div class="loader-wrapper" [hidden]="!setup.showLoader">
+    <div class="control-bar">
+      <button
+        mat-button
+        class="control"
+        (click)="router.navigateByUrl('/contracts/create')"
+      >
+        Create Contract
+      </button>
+      <button
+        mat-button
+        class="control"
+        (click)="router.navigateByUrl('/workflow/')"
+      >
+        Create Workflow
+      </button>
+    </div>
+
+    <div class="loader" class="w-100 h-100">
+      <table mat-table #table [dataSource]="contracts" class="w-100">
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Name</th>
+          <td mat-cell *matCellDef="let contract">{{ contract.name }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="created">
+          <th mat-header-cell *matHeaderCellDef>Created</th>
+          <td mat-cell *matCellDef="let contract">
+            {{ contract.created | date: "HH:mm:ss dd/MM/yyyy" }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="updated">
+          <th mat-header-cell *matHeaderCellDef>Updated</th>
+          <td mat-cell *matCellDef="let contract">
+            {{ contract.updated | date: "HH:mm:ss dd/MM/yyyy" }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="uploaded">
+          <th mat-header-cell *matHeaderCellDef>Uploaded</th>
+          <td mat-cell *matCellDef="let contract">
+            {{ contract.uploaded | date: "HH:mm:ss dd/MM/yyyy" }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="streamid">
+          <th mat-header-cell *matHeaderCellDef>Stream ID</th>
+          <td mat-cell *matCellDef="let contract">
+            <button
+              mat-button
+              (click)="getID(contract); $event.stopPropagation()"
+              *ngIf="contract.uploaded"
+            >
+              Show
+            </button>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="info">
+          <th mat-header-cell *matHeaderCellDef>Info</th>
+          <td mat-cell *matCellDef="let contract">
+            <button
+              mat-button
+              (click)="showContractInfo(contract); $event.stopPropagation()"
+            >
+              Show
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: displayedColumns"
+          (click)="open(row)"
+          class="customTableRow"
+        ></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="editor" [hidden]="!setup.showEditor">
+    <div class="monaco">
+      <app-monaco-editor
+        id="monacoCreate"
+        (editorLoaded)="loadContract()"
+      ></app-monaco-editor>
+    </div>
+  </div>
+</div>

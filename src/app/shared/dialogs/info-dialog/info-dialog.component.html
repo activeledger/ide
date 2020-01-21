@@ -1,0 +1,29 @@
+<div class="dialog-wrapper">
+  <fa-icon [icon]="faInfo" class="icon"></fa-icon>
+  <br />
+  <!-- Just so you know -->
+  Info
+  <hr />
+  <div innerHTML="{{message | ntob}}"></div>
+  <br />
+  <div class="copy-success" *ngIf="copySuccess">Data copied to clipboard!</div>
+  <br />
+  <div class="button-holder">
+    <div class="float-right">
+      <button
+        *ngIf="showCopy"
+        mat-raised-button
+        class="copy"
+        ngxClipboard
+        [cbContent]="stringToCopy"
+        (cbOnSuccess)="copySuccess = true"
+      >
+        Copy to clipboard
+      </button>
+      <button mat-raised-button (click)="close()">
+        <!-- Cool -->
+        Ok
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,337 @@
+.app-wrapper {
+  max-height: calc(100% - 18px) !important;
+  height: calc(100% - 18px) !important;
+  overflow: hidden;
+}
+
+.unselect {
+  user-select: none; /* Standard */
+}
+
+.accent {
+  background-color: #6e49ff;
+}
+
+.topBar {
+  color: #f9f9f9;
+  font-size: 0.7em;
+  min-height: 25px;
+  max-height: 25px;
+
+  overflow: hidden;
+
+  .icon {
+    float: left;
+    background: url(../assets/icons/favicon.20x20.png) no-repeat;
+    background-size: 17px 17px;
+    height: 17px;
+    width: 17px;
+
+    margin: 5px 0 0 6px;
+  }
+
+  .title {
+    float: left;
+    margin: 5px 0 0 10px;
+  }
+
+  .window-menu {
+    float: right;
+    height: 25px;
+    overflow: hidden;
+
+    .window-menu-item {
+      height: 25px;
+      padding: 7px 18px 0;
+      display: inline-block;
+      cursor: pointer;
+      -webkit-app-region: no-drag;
+
+      transition: all 0.2s linear;
+
+      // font-size: 1.2em;
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.3);
+      }
+    }
+
+    #minimise-button {
+      background: url(../assets/icons/titlebar/windows/minimise_white.svg)
+        no-repeat;
+      background-size: 12px 1px;
+      width: 12px;
+      height: 14px;
+
+      margin-top: 5px;
+      opacity: 0.5;
+    }
+
+    #minimise-button-mac {
+      background: url(../assets/icons/titlebar/mac/minimise_default.svg)
+        no-repeat;
+      background-size: 12px 12px;
+      width: 12px;
+      height: 12px;
+
+      // margin-top:5px;
+
+      &:hover {
+        background: url(../assets/icons/titlebar/mac/minimise_hover.svg)
+          no-repeat;
+      }
+    }
+
+    #maximise-button {
+      background: url(../assets/icons/titlebar/windows/maximise_white.svg)
+        no-repeat;
+      background-size: 10px 10px;
+      width: 10px;
+      height: 10px;
+    }
+
+    #restore-button {
+      background: url(../assets/icons/titlebar/windows/restore_white.svg)
+        no-repeat;
+      background-size: 11px 11px;
+      width: 11px;
+      height: 11px;
+    }
+
+    #close-button-windows {
+      background: url(../assets/icons/titlebar/windows/close_white.svg)
+        no-repeat;
+      background-size: 10px 10px;
+      width: 10px;
+      height: 10px;
+    }
+
+    .window-menu-item:hover #close-button-windows {
+      background: url(../assets/icons/titlebar/windows/win_close_hover.svg)
+        no-repeat;
+    }
+  }
+}
+
+.topBar-mac {
+  color: #f9f9f9;
+  font-size: 0.7em;
+  min-height: 25px;
+  max-height: 25px;
+
+  overflow: hidden;
+
+  .title {
+    position: realtive;
+    padding-left: 42%;
+    transform: translateY(-42%);
+    display: inline-block;
+  }
+
+  .window-menu {
+    height: 25px;
+    overflow: hidden;
+    width: 5%;
+
+    .window-menu-item {
+      height: 25px;
+      padding: 7px 4px 0 8px;
+      display: inline-block;
+      cursor: pointer;
+      -webkit-app-region: no-drag;
+
+      transition: all 0.2s linear;
+    }
+
+    #minimise-button {
+      background: url(../assets/icons/titlebar/mac/minimise_default.svg)
+        no-repeat;
+      background-size: 12px 12px;
+      width: 12px;
+      height: 12px;
+
+      &:hover {
+        background: url(../assets/icons/titlebar/mac/minimise_hover.svg)
+          no-repeat;
+      }
+    }
+
+    #maximise-button {
+      background: url(../assets/icons/titlebar/mac/maximise_default.svg)
+        no-repeat;
+      background-size: 12px 12px;
+      width: 12px;
+      height: 12px;
+
+      &:hover {
+        background: url(../assets/icons/titlebar/mac/maximise_hover.svg)
+          no-repeat;
+      }
+    }
+
+    #restore-button {
+      background: url(../assets/icons/titlebar/mac/maximise_default.svg)
+        no-repeat;
+      background-size: 12px 12px;
+      width: 12px;
+      height: 12px;
+
+      &:hover {
+        background: url(../assets/icons/titlebar/mac/maximise_hover.svg)
+          no-repeat;
+      }
+    }
+
+    #close-button {
+      background: url(../assets/icons/titlebar/mac/close_default.svg) no-repeat;
+      background-size: 12px 12px;
+      width: 12px;
+      height: 12px;
+    }
+
+    .window-menu-item:hover #close-button:hover {
+      background: url(../assets/icons/titlebar/mac/close_hover.svg) no-repeat;
+    }
+  }
+}
+
+app-quick-bar {
+  background: #3d3e51;
+  color: #fff;
+  height: 40px;
+  width: 100%;
+  display: block;
+}
+
+#side-menu {
+  display: inline-block;
+  user-select: none;
+
+  background: #333;
+  height: calc(100% - 58px);
+
+  color: #fff;
+
+  margin: 0;
+  padding: 0;
+
+  ul {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+
+    position: relative;
+
+    li {
+      margin: 0;
+      padding: 10px 16px;
+
+      width: 100%;
+
+      list-style: none;
+
+      font-weight: 100;
+
+      transition: all 0.2s linear;
+
+      cursor: pointer;
+
+      &:hover {
+        background: rgb(61, 62, 84);
+        // color: rgb(110, 73, 255);
+      }
+
+      &:first-child {
+        border-top: #3d3e51 1px solid;
+      }
+    }
+
+    .settings {
+      position: absolute;
+      bottom: 4px;
+    }
+  }
+}
+
+.smallSideMenu {
+  width: 48px;
+}
+
+.normalSideMenu {
+  width: 180px;
+}
+
+#main-wrapper {
+  height: calc(100% - 65px);
+  // min-width: calc(100% - 180px);
+
+  float: right;
+  overflow: auto;
+
+  width: 100%;
+}
+
+.smallSideMenuWrapper {
+  width: calc(100% - 48px) !important;
+}
+
+.normalSideMenuWrapper {
+  width: calc(100% - 180px) !important;
+}
+
+body,
+html {
+  width: 100%;
+  height: 100%;
+}
+
+.console {
+  position: fixed;
+  bottom: 18px;
+  z-index: 1000;
+
+  width: 100%;
+}
+
+.console-show {
+  height: 36%;
+}
+
+.console-hide {
+  height: 0;
+}
+
+#bottom-bar {
+  color: #9e94b6;
+  font-size: 0.8em;
+
+  padding: 0 10px;
+
+  height: 18px;
+  width: 100%;
+  background: rgb(41, 41, 41);
+
+  position: fixed;
+  bottom: 0;
+
+  z-index: 1000;
+
+  transition: all 0.2s linear;
+
+  &:hover {
+    cursor: pointer;
+    background: rgb(35, 35, 35);
+  }
+
+  span {
+    span {
+      height: 100%;
+      padding: 0 3px;
+      transition: all 0.2s;
+
+      &:hover {
+        background: rgba(110, 73, 255, 0.5);
+      }
+    }
+  }
+}

@@ -1,0 +1,25 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col">
+      <button mat-raised-button (click)="import()" class="button-spacer">
+        Restore
+      </button>
+      &nbsp;
+      <button
+        mat-raised-button
+        (click)="import(true)"
+        *ngIf="electronService.isDev"
+      >
+        Load Snapshot
+      </button>
+    </div>
+  </div>
+
+  <div class="row">
+    <mat-progress-bar
+      class="progressBar"
+      mode="indeterminate"
+      *ngIf="setup.importInProgress"
+    ></mat-progress-bar>
+  </div>
+</div>

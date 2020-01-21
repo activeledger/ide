@@ -1,0 +1,71 @@
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <h6 *ngIf="!setup.loggedIn">You are not logged in.</h6>
+      <h6 *ngIf="setup.loggedIn">
+        {{ user.firstname || "" }} {{ user.lastname || "" }}
+      </h6>
+      <div class="container-fluid" *ngIf="setup.loggedIn">
+        <div class="row">
+          <div class="col">Username</div>
+          <div class="col">{{ user.username || "Error" }}</div>
+        </div>
+
+        <div class="row">
+          <div class="col">Email</div>
+          <div class="col">{{ user.email || "Error" }}</div>
+        </div>
+
+        <div class="row">
+          <div class="col">Account type</div>
+          <div class="col">{{ user.accountType || "Error" }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr />
+  <div class="row">
+    <div class="col">
+      <button
+        *ngIf="!setup.loggedIn"
+        mat-raised-button
+        (click)="setup.loggingIn = true; login()"
+        [disabled]="setup.loggingIn"
+      >
+        Login
+      </button>
+
+      <button
+        *ngIf="setup.loggedIn"
+        mat-raised-button
+        (click)="manage()"
+        [disabled]="setup.loggingIn"
+      >
+        Manage
+      </button>
+      &nbsp;
+      <button
+        *ngIf="setup.loggedIn"
+        mat-raised-button
+        (click)="logout(); setup.loggingIn = true"
+        [disabled]="setup.loggingIn"
+      >
+        Logout
+      </button>
+    </div>
+    <div class="col loader">
+      <div
+        *ngIf="setup.loggingIn"
+        style="color: #333; margin: 0 auto"
+        class="la-ball-circus la-2x"
+      >
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    </div>
+    <div class="col"></div>
+  </div>
+</div>

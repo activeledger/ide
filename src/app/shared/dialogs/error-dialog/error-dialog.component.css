@@ -1,0 +1,13 @@
+.dialog-wrapper {
+  text-align: center;
+}
+
+.icon {
+  font-size: 2em;
+  color: rgb(255, 89, 47);
+}
+
+.code {
+  font-weight: 700;
+  color: rgb(129, 129, 129);
+}

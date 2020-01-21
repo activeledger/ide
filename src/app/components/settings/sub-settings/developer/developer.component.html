@@ -1,0 +1,59 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col">
+      <h6>Database</h6>
+      <button mat-raised-button (click)="wipe(true)">Wipe All</button>
+      &nbsp;&nbsp;
+      <button
+        mat-raised-button
+        (click)="setup.showSelectiveWipe = !setup.showSelectiveWipe"
+      >
+        Selective Wipe
+      </button>
+      &nbsp;&nbsp; <button mat-raised-button (click)="listDb()">List</button>
+      <br />
+    </div>
+  </div>
+
+  <hr *ngIf="setup.showSelectiveWipe" />
+
+  <div class="row" *ngIf="setup.showSelectiveWipe">
+    <div class="col">
+      <mat-form-field>
+        <mat-select [(ngModel)]="workspace" placeholder="Workspaces">
+          <mat-option
+            *ngFor="let workspace of workspaces.workspaces"
+            [value]="workspace"
+          >
+            {{ workspace }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      &nbsp;
+      <mat-checkbox [(ngModel)]="justData">Just wipe data</mat-checkbox>
+
+      <br />
+      <button mat-raised-button (click)="wipe()">Wipe selected</button>
+    </div>
+  </div>
+
+  <hr />
+
+  <div class="row">
+    <div class="col">
+      <h6>Local User Store</h6>
+      <button mat-raised-button (click)="wipeUser()">Wipe</button> &nbsp;&nbsp;
+      <button mat-raised-button (click)="listUserDb()">List</button> <br />
+    </div>
+  </div>
+
+  <hr />
+
+  <div class="row">
+    <div class="col">
+      <h6>Other</h6>
+
+      <button mat-raised-button (click)="restart()">Restart Harmony</button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,32 @@
+<div class="dialog-wrapper">
+  <fa-icon [icon]="icon" class="icon"></fa-icon>
+  <br />
+  Login
+  <hr />
+  <mat-form-field>
+    <input matInput placeholder="Username" [(ngModel)]="loginData.username" />
+  </mat-form-field>
+  <br />
+  <mat-form-field>
+    <input
+      matInput
+      placeholder="Password"
+      type="password"
+      [(ngModel)]="loginData.password"
+    />
+  </mat-form-field>
+  <br />
+  <button
+    mat-raised-button
+    class="float-left"
+    [disabled]="!loginData.username || !loginData.password"
+    (click)="return()"
+  >
+    <!-- Tell 'em! -->
+    Login
+  </button>
+  <button mat-raised-button class="float-right" (click)="cancel()">
+    <!-- Shhhh... -->
+    Cancel
+  </button>
+</div>

@@ -1,0 +1,150 @@
+<mat-card class="container wrapper">
+  <div class="back accentFont-hover" (click)="back()">
+    <fa-icon [icon]="backIco"></fa-icon>
+  </div>
+
+  <mat-card-title> {{ contract.name }} </mat-card-title>
+
+  <mat-card-content>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-2">Created</div>
+        <div class="col">
+          {{ contract.created | date: "HH:mm:ss dd/MM/yyyy" }}
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-2">Updated</div>
+        <div class="col">
+          {{ contract.updated | date: "HH:mm:ss dd/MM/yyyy" }}
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<!-- <mat-card class="container wrapper" *ngIf="contractUploaded">
+  <mat-card-title>Labels</mat-card-title>
+
+  <mat-card-content>
+    <div class="row">
+      <div class="col">
+        <fa-icon
+          [icon]="addIco"
+          (click)="createLabel()"
+          class="label-control"
+        ></fa-icon>
+      </div>
+    </div>
+    <hr />
+
+    <ng-container *ngFor="let label of labels">
+      <div class="row">
+        <div class="col-2">{{ label }}</div>
+        <div class="col-1">
+          <fa-icon
+            [icon]="deleteIco"
+            (click)="removeLabel(label)"
+            class="label-control"
+          ></fa-icon>
+        </div>
+      </div>
+      <br />
+      <hr />
+      <br />
+    </ng-container>
+  </mat-card-content>
+</mat-card> -->
+
+<div class="wrapper" *ngIf="contractUploaded">
+  <mat-card class="container metadata-display" *ngFor="let data of displayData">
+    <div class="container">
+      <div class="row">
+        <div class="col-2">Identity</div>
+        <div class="col">{{ data.identityName }}</div>
+      </div>
+
+      <div class="row">
+        <div class="col-2">Connection</div>
+        <div class="col">{{ data.connectionName }}</div>
+      </div>
+
+      <div class="row">
+        <div class="col-2">Stream ID</div>
+        <div class="col">{{ data.streamId }}</div>
+      </div>
+
+      <div class="row">
+        <div class="col-2">Namespace</div>
+        <div class="col">{{ data.namespaceName }}</div>
+      </div>
+
+      <div class="row">
+        <div class="col-2">Last Uploaded</div>
+        <div class="col">{{ data.uploaded | date: "HH:mm:ss dd/MM/yyyy" }}</div>
+      </div>
+
+      <div class="row">
+        <div class="col-2">Latest Version</div>
+        <div class="col">{{ data.latestVersion }}</div>
+      </div>
+
+      <div class="row">
+        <div class="col-2">Uploaded Versions</div>
+        <div class="col">{{ data.versionCount }}</div>
+      </div>
+    </div>
+
+    <br />
+
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <h4>Labels</h4>
+        </div>
+        <div class="col"></div>
+
+        <div class="col"></div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <fa-icon
+            [icon]="addIco"
+            (click)="createLabel(data)"
+            class="label-control"
+          ></fa-icon>
+        </div>
+      </div>
+      <hr />
+
+      <ng-container *ngFor="let label of data.labels">
+        <div class="row">
+          <div class="col-2">{{ label }}</div>
+          <div class="col-1">
+            <fa-icon
+              [icon]="deleteIco"
+              (click)="removeLabel(label, data)"
+              class="label-control"
+            ></fa-icon>
+          </div>
+        </div>
+        <br />
+        <hr />
+        <br />
+      </ng-container>
+    </div>
+
+    <div class="row">
+      <div class="col"></div>
+      <div class="col"></div>
+      <div class="col"></div>
+    </div>
+
+    <div class="row">
+      <div class="col"></div>
+      <div class="col"></div>
+      <div class="col"></div>
+    </div>
+  </mat-card>
+</div>

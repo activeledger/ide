@@ -1,0 +1,17 @@
+<div class="dialog-wrapper">
+  <fa-icon [icon]="icon" class="icon"></fa-icon>
+  <br />
+  <!-- Are you sure you want to do this? -->
+  Confirm this action.
+  <hr />
+  {{ message }} <br />
+  <br />
+  <button mat-raised-button class="float-left" (click)="confirm()">
+    <!-- Do it -->
+    Yes
+  </button>
+  <button mat-raised-button class="float-right" (click)="reject()">
+    <!-- Nah -->
+    No
+  </button>
+</div>

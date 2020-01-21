@@ -1,0 +1,17 @@
+.dialog-wrapper {
+  text-align: center;
+  word-wrap: break-word;
+}
+
+.icon {
+  font-size: 2em;
+  color: rgb(47, 161, 255);
+}
+
+.save-button {
+  margin-right: 20px;
+}
+
+.center {
+  margin: 0 auto;
+}

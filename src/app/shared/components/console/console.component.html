@@ -1,0 +1,40 @@
+<div class="console">
+  <div class="top-bar">
+    <span id="output" class="top-bar-tab active" (click)="show('output')">Output</span>
+    <span id="info" class="top-bar-tab" (click)="show('info')">Info</span>
+    <span id="warning" class="top-bar-tab" (click)="show('warning')">Warnings</span>
+    <span id="error" class="top-bar-tab" (click)="show('error')">Errors</span>
+
+    <span class="float-right">
+      <span class="min-button" (click)="minimiseConsole()">
+        <fa-icon [icon]="minimizeIcon"></fa-icon>
+      </span>
+      <span class="clear-button" (click)="clear()">
+        <fa-icon [icon]="clearIcon"></fa-icon>
+      </span>
+    </span>
+  </div>
+
+  <div id="console-body">
+    <div class="mainWrapper">
+  
+        <div class="output" *ngIf="setup.show.output">
+          <span>{{data.output}}</span>
+        </div>
+    
+        <div class="info" *ngIf="setup.show.info">
+          <span>{{data.info}}</span>
+        </div>
+        
+        <div class="warning" *ngIf="setup.show.warning">
+          <span>{{data.warning}}</span>
+        </div>
+        
+        <div class="error" *ngIf="setup.show.error">
+          <span>{{data.error}}</span>
+        </div>
+    
+      </div>
+  </div>
+  
+</div>
