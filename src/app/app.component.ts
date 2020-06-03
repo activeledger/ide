@@ -115,9 +115,9 @@ export class AppComponent {
    * @type {ElementRef}
    * @memberof AppComponent
    */
-  @ViewChild("sideMenu", { static: false })
+  @ViewChild("sideMenu")
   sideMenu: ElementRef;
-  @ViewChild("mainWrapper", { static: false })
+  @ViewChild("mainWrapper")
   mainWrapper: ElementRef;
 
   /**

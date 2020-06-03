@@ -21,7 +21,7 @@
  * SOFTWARE.
  */
 
-import { Injectable, EventEmitter, Output } from "@angular/core";
+import { Injectable, EventEmitter, Output, Directive } from "@angular/core";
 import {
   IWorkflow,
   IWorkflowData,
@@ -36,6 +36,7 @@ import { UploadService } from "./upload.service";
 import { IIdentityData } from "../interfaces/identity.interfaces";
 import { DBTypes } from "../enums/db.enum";
 
+@Directive()
 @Injectable({
   providedIn: "root"
 })
