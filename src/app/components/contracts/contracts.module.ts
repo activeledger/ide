@@ -34,11 +34,9 @@ import { WebviewDirective } from "../../directives/webview.directive";
 import { ContractsComponent } from "./contracts/contracts.component";
 import { ContractsRoutingModule } from "./contracts-routing.module";
 import { WorkflowModule } from "../../shared/components/workflow/workflow.module";
-import {
-  MatCardModule,
-  MatButtonModule,
-  MatDividerModule
-} from "@angular/material";
+import { MatButtonModule } from "@angular/material/button";
+import { MatCardModule } from "@angular/material/card";
+import { MatDividerModule } from "@angular/material/divider";
 
 @NgModule({
   declarations: [

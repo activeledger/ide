@@ -22,7 +22,7 @@
  */
 
 import { Injectable } from "@angular/core";
-import { MatDialog, MatDialogRef } from "@angular/material";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { ErrorDialogComponent } from "../dialogs/error-dialog/error-dialog.component";
 import { AdvancedConfirmDialogComponent } from "../dialogs/advanced-confirm-dialog/advanced-confirm-dialog.component";
 import { ConfirmDialogComponent } from "../dialogs/confirm-dialog/confirm-dialog.component";

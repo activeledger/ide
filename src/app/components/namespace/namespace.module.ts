@@ -27,14 +27,12 @@ import { CommonModule } from "@angular/common";
 import { NamespaceRoutingModule } from "./namespace-routing.module";
 import { NamespaceComponent } from "./namespace/namespace.component";
 import { NgxSpinnerModule } from "ngx-spinner";
-import {
-  MatTabsModule,
-  MatExpansionModule,
-  MatSelectModule,
-  MatCardModule,
-  MatInputModule,
-  MatButtonModule
-} from "@angular/material";
+import { MatButtonModule } from "@angular/material/button";
+import { MatCardModule } from "@angular/material/card";
+import { MatExpansionModule } from "@angular/material/expansion";
+import { MatInputModule } from "@angular/material/input";
+import { MatSelectModule } from "@angular/material/select";
+import { MatTabsModule } from "@angular/material/tabs";
 import {
   IdentityNamePipe,
   IdentityConnectionNamePipe

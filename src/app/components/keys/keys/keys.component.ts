@@ -23,7 +23,7 @@
 
 import { Component, OnInit, OnDestroy } from "@angular/core";
 import { Router, ActivatedRoute, NavigationEnd } from "@angular/router";
-import { MatDialogRef } from "@angular/material";
+import { MatDialogRef } from "@angular/material/dialog";
 
 import { faPencilAlt, faInfo } from "@fortawesome/free-solid-svg-icons";
 
