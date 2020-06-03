@@ -102,10 +102,10 @@ export class AppComponent {
    * @type {ConsoleComponent}
    * @memberof AppComponent
    */
-  @ViewChild(ConsoleComponent)
+  @ViewChild(ConsoleComponent, { static: true })
   customConsole: ConsoleComponent;
 
-  @ViewChild(QuickBarComponent)
+  @ViewChild(QuickBarComponent, { static: true })
   quickBar: QuickBarComponent;
 
   /**
@@ -115,9 +115,9 @@ export class AppComponent {
    * @type {ElementRef}
    * @memberof AppComponent
    */
-  @ViewChild("sideMenu")
+  @ViewChild("sideMenu", { static: false })
   sideMenu: ElementRef;
-  @ViewChild("mainWrapper")
+  @ViewChild("mainWrapper", { static: false })
   mainWrapper: ElementRef;
 
   /**

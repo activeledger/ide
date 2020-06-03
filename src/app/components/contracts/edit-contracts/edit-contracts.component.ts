@@ -189,7 +189,7 @@ export class EditContractsComponent
    * @type {MonacoEditorComponent}
    * @memberof EditContractsComponent
    */
-  @ViewChild(MonacoEditorComponent)
+  @ViewChild(MonacoEditorComponent, { static: true })
   monaco: MonacoEditorComponent;
 
   // #endregion

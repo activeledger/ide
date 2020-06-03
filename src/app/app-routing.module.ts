@@ -27,51 +27,51 @@ import { Routes, RouterModule } from "@angular/router";
 const routes: Routes = [
   {
     path: "",
-    loadChildren: "./components/home/home.module#HomeModule"
+    loadChildren: () => import('./components/home/home.module').then(m => m.HomeModule)
   },
   {
     path: "keys",
-    loadChildren: "./components/keys/keys.module#KeysModule",
+    loadChildren: () => import('./components/keys/keys.module').then(m => m.KeysModule),
     runGuardsAndResolvers: "paramsChange"
   },
   {
     path: "identity",
-    loadChildren: "./components/identity/identity.module#IdentityModule",
+    loadChildren: () => import('./components/identity/identity.module').then(m => m.IdentityModule),
     runGuardsAndResolvers: "paramsChange"
   },
   {
     path: "contracts",
-    loadChildren: "./components/contracts/contracts.module#ContractsModule",
+    loadChildren: () => import('./components/contracts/contracts.module').then(m => m.ContractsModule),
     runGuardsAndResolvers: "paramsChange"
   },
   {
     path: "settings",
-    loadChildren: "./components/settings/settings.module#SettingsModule",
+    loadChildren: () => import('./components/settings/settings.module').then(m => m.SettingsModule),
     runGuardsAndResolvers: "paramsChange"
   },
   {
     path: "namespaces",
-    loadChildren: "./components/namespace/namespace.module#NamespaceModule"
+    loadChildren: () => import('./components/namespace/namespace.module').then(m => m.NamespaceModule)
   },
   {
     path: "signing",
-    loadChildren: "./components/signing/signing.module#SigningModule"
+    loadChildren: () => import('./components/signing/signing.module').then(m => m.SigningModule)
   },
   {
     path: "run",
-    loadChildren: "./components/run/run.module#RunModule"
+    loadChildren: () => import('./components/run/run.module').then(m => m.RunModule)
   },
   {
     path: "swagger",
-    loadChildren: "./components/swagger/swagger.module#SwaggerModule"
+    loadChildren: () => import('./components/swagger/swagger.module').then(m => m.SwaggerModule)
   },
   {
     path: "signing",
-    loadChildren: "./components/signing/signing.module#SigningModule"
+    loadChildren: () => import('./components/signing/signing.module').then(m => m.SigningModule)
   },
   {
     path: "workflow",
-    loadChildren: "./shared/components/workflow/workflow.module#WorkflowModule"
+    loadChildren: () => import('./shared/components/workflow/workflow.module').then(m => m.WorkflowModule)
   }
 ];
 
