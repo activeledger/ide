@@ -94,7 +94,11 @@ export class ElectronService {
    * @memberof ElectronService
    */
   get isDev() {
-    return window.process.mainModule.filename.indexOf("app.asar") === -1;
+    if (window.process.mainModule) {
+      return window.process.mainModule.filename.indexOf("app.asar") === -1;
+    } else {
+      return true;
+    }
   }
 
   /**

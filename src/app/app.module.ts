@@ -97,7 +97,7 @@ import { KeysModule } from "./components/keys/keys.module";
 import { NamespaceModule } from "./components/namespace/namespace.module";
 import { SwaggerModule } from "./components/swagger/swagger.module";
 import { SigningModule } from "./components/signing/signing.module";
-import { MonacoEditorModule } from "ngx-monaco-editor";
+import { MonacoEditorModule } from "@materia-ui/ngx-monaco-editor";
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -105,18 +105,6 @@ export function HttpLoaderFactory(http: HttpClient) {
 }
 
 @NgModule({
-  /* entryComponents: [
-    ErrorDialogComponent,
-    WarningDialogComponent,
-    InfoDialogComponent,
-    BlockedDialogComponent,
-    ConfirmDialogComponent,
-    AdvancedConfirmDialogComponent,
-    InputDialogComponent,
-    SaveContractDialogComponent,
-    ContractInfoDialogComponent,
-    LoginDialogComponent
-  ], */
   declarations: [
     AppComponent,
     ErrorDialogComponent,
@@ -164,6 +152,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatBadgeModule,
     MatIconModule,
     MatSnackBarModule,
+    MonacoEditorModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -172,7 +161,6 @@ export function HttpLoaderFactory(http: HttpClient) {
       },
     }),
     NgJsonEditorModule,
-    MonacoEditorModule.forRoot(),
     // Internal modules
     HomeModule,
     IdentityModule,

@@ -1,10 +1,5 @@
-<ngx-spinner
-  bdColor="rgba(51, 51, 51, 0.8)"
-  size="large"
-  color="#fff"
-  loadingText="Processing Contract..."
-  type="line-scale-party"
-></ngx-spinner>
+<ngx-spinner bdColor="rgba(51, 51, 51, 0.8)" size="large" color="#fff" loadingText="Processing Contract..."
+  type="line-scale-party"></ngx-spinner>
 
 <!-- Background loader -->
 <div [hidden]="setup.showLoader" class="loader">
@@ -23,18 +18,10 @@
 <div class="full-contract-wrapper">
   <div class="top-bar" [hidden]="setup.showLoader">
     <div class="left">
-      <button
-        (click)="showLoader()"
-        [hidden]="!setup.showEditor"
-        matTooltip="Back to load"
-      >
+      <button (click)="showLoader()" [hidden]="!setup.showEditor" matTooltip="Back to load">
         <fa-icon [icon]="backIco"></fa-icon>
       </button>
-      <button
-        (click)="saveContract()"
-        [hidden]="!setup.showEditor"
-        matTooltip="Save"
-      >
+      <button (click)="saveContract()" [hidden]="!setup.showEditor" matTooltip="Save">
         <fa-icon [icon]="saveIco"></fa-icon>
       </button>
     </div>
@@ -46,48 +33,26 @@
         <div class="contract-version" *ngIf="contract.name">
           {{ selectedVersion }}
         </div>
-        <fa-icon
-          class="contract-version-select"
-          [icon]="downIco"
-          *ngIf="contract.name"
-        ></fa-icon>
+        <fa-icon class="contract-version-select" [icon]="downIco" *ngIf="contract.name"></fa-icon>
       </div>
     </div>
 
     <div class="right float-right">
-      <button
-        (click)="toggleOptionsMenu()"
-        [hidden]="!setup.showEditor"
-        matTooltip="Options"
-        class="optionsButton"
-      >
+      <button (click)="toggleOptionsMenu()" [hidden]="!setup.showEditor" matTooltip="Options" class="optionsButton">
         <fa-icon [icon]="kebabIco"></fa-icon>
       </button>
     </div>
   </div>
 
-  <div
-    class="version-selector"
-    [hidden]="!setup.showVersionSelect"
-    (clickOutside)="toggleVersionSelect(true)"
-    [exclude]="'.vSelect'"
-  >
-    <div
-      class="version-item"
-      *ngFor="let version of versions"
-      (click)="openVersion(version)"
-    >
+  <div class="version-selector" [hidden]="!setup.showVersionSelect" (clickOutside)="toggleVersionSelect(true)"
+    [exclude]="'.vSelect'">
+    <div class="version-item" *ngFor="let version of versions" (click)="openVersion(version)">
       {{ version }}
     </div>
   </div>
 
-  <div
-    id="optionsMenu"
-    class="options-menu"
-    [hidden]="!setup.showOptionsMenu"
-    (clickOutside)="toggleOptionsMenu(true)"
-    [exclude]="'.optionsButton'"
-  >
+  <div id="optionsMenu" class="options-menu" [hidden]="!setup.showOptionsMenu" (clickOutside)="toggleOptionsMenu(true)"
+    [exclude]="'.optionsButton'">
     <div class="options-item" (click)="export()">Export</div>
     <div class="options-item" (click)="showContractInfo()">Show info</div>
     <div class="options-item" (click)="clearEditor()">Clear</div>
@@ -96,18 +61,10 @@
 
   <div class="loader-wrapper" [hidden]="!setup.showLoader">
     <div class="control-bar">
-      <button
-        mat-button
-        class="control"
-        (click)="router.navigateByUrl('/contracts/create')"
-      >
+      <button mat-button class="control" (click)="router.navigateByUrl('/contracts/create')">
         Create Contract
       </button>
-      <button
-        mat-button
-        class="control"
-        (click)="router.navigateByUrl('/workflow/')"
-      >
+      <button mat-button class="control" (click)="router.navigateByUrl('/workflow/')">
         Create Workflow
       </button>
     </div>
@@ -143,11 +100,7 @@
         <ng-container matColumnDef="streamid">
           <th mat-header-cell *matHeaderCellDef>Stream ID</th>
           <td mat-cell *matCellDef="let contract">
-            <button
-              mat-button
-              (click)="getID(contract); $event.stopPropagation()"
-              *ngIf="contract.uploaded"
-            >
+            <button mat-button (click)="getID(contract); $event.stopPropagation()" *ngIf="contract.uploaded">
               Show
             </button>
           </td>
@@ -156,32 +109,20 @@
         <ng-container matColumnDef="info">
           <th mat-header-cell *matHeaderCellDef>Info</th>
           <td mat-cell *matCellDef="let contract">
-            <button
-              mat-button
-              (click)="showContractInfo(contract); $event.stopPropagation()"
-            >
+            <button mat-button (click)="showContractInfo(contract); $event.stopPropagation()">
               Show
             </button>
           </td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr
-          mat-row
-          *matRowDef="let row; columns: displayedColumns"
-          (click)="open(row)"
-          class="customTableRow"
-        ></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns" (click)="open(row)" class="customTableRow"></tr>
       </table>
     </div>
   </div>
 
   <div class="editor" [hidden]="!setup.showEditor">
     <div class="monaco">
-      <app-monaco-editor
-        id="monacoCreate"
-        (editorLoaded)="loadContract()"
-      ></app-monaco-editor>
+      <ngx-monaco-editor style="height: 100%" [options]="editorOptions" [(ngModel)]="code"></ngx-monaco-editor>
     </div>
   </div>
-</div>

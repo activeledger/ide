@@ -29,22 +29,20 @@ import { NgxSpinnerModule } from "ngx-spinner";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { ClickOutsideModule } from "ng-click-outside";
 import { MatTableModule } from "@angular/material/table";
-import { MonacoEditorComponent } from "../../shared/components/monaco-editor/monaco-editor.component";
-import { WebviewDirective } from "../../directives/webview.directive";
 import { ContractsComponent } from "./contracts/contracts.component";
 import { ContractsRoutingModule } from "./contracts-routing.module";
 import { WorkflowModule } from "../../shared/components/workflow/workflow.module";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
 import { MatDividerModule } from "@angular/material/divider";
+import { MonacoEditorModule } from "@materia-ui/ngx-monaco-editor";
+import { FormsModule } from "@angular/forms";
 
 @NgModule({
   declarations: [
     ContractsComponent,
     EditContractsComponent,
     InfoContractsComponent,
-    MonacoEditorComponent,
-    WebviewDirective
   ],
   imports: [
     CommonModule,
@@ -56,7 +54,9 @@ import { MatDividerModule } from "@angular/material/divider";
     MatTableModule,
     MatCardModule,
     MatButtonModule,
-    MatDividerModule
-  ]
+    MatDividerModule,
+    MonacoEditorModule,
+    FormsModule,
+  ],
 })
 export class ContractsModule {}
