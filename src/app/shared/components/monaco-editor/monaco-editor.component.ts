@@ -28,7 +28,7 @@ import { ElectronService } from "../../services/electron.service";
 @Component({
   selector: "app-monaco-editor",
   templateUrl: "./monaco-editor.component.html",
-  styleUrls: ["./monaco-editor.component.css"]
+  styleUrls: ["./monaco-editor.component.css"],
 })
 export class MonacoEditorComponent implements OnInit {
   @Output() loaded = new EventEmitter<boolean>();
@@ -74,16 +74,12 @@ export class MonacoEditorComponent implements OnInit {
     console.log(e);
   }
 
-  public getValue(): Promise<any> {
-    return new Promise((resolve, reject) => {
-      try {
-        this.wv.executeJavaScript("getValue()", null, (result: any) => {
-          resolve(result);
-        });
-      } catch (err) {
-        reject(err);
-      }
-    });
+  public async getValue(): Promise<any> {
+    try {
+      return await this.wv.executeJavaScript("getValue()");
+    } catch (err) {
+      throw err;
+    }
   }
 
   public setValue(body): void {
@@ -116,7 +112,7 @@ export class MonacoEditorComponent implements OnInit {
    * @param {WebviewTag} wv
    * @memberof ContractsComponent
    */
-  private loadDefinitions(wv: WebviewTag) {
+  private async loadDefinitions(wv: WebviewTag): Promise<void> {
     // Definition files to read and send
     const definitionFiles = [
       `${this.definitionsPath}/@activeledger/activecrypto/index.d.ts`,
@@ -145,7 +141,7 @@ export class MonacoEditorComponent implements OnInit {
       `${this.definitionsPath}/@activeledger/activetoolkits/index.d.ts`,
       `${this.definitionsPath}/@activeledger/activetoolkits/pdf/index.d.ts`,
       `${this.definitionsPath}/@activeledger/activetoolkits/pdf/interfaces.d.ts`,
-      `${this.definitionsPath}/@types/node/index.d`
+      `${this.definitionsPath}/@types/node/index.d`,
     ];
 
     // Loop Definition files
@@ -169,10 +165,9 @@ export class MonacoEditorComponent implements OnInit {
       }
 
       // Send to Monaco inside webview element
-      wv.executeJavaScript(
-        `def("${fileContents}","node_modules/${importName}");`,
-        null,
-        () => {}
+      // TODO: await might not be needed here
+      await wv.executeJavaScript(
+        `def("${fileContents}","node_modules/${importName}");`
       );
     }
   }
@@ -184,10 +179,12 @@ export class MonacoEditorComponent implements OnInit {
    * @param {WebviewTag} wv
    * @memberof ContractsComponent
    */
-  private loadEditor(wv: WebviewTag) {
-    wv.executeJavaScript(`load()`, null, () => {
-      // console.log("Loaded Editor");
+  private async loadEditor(wv: WebviewTag): Promise<void> {
+    try {
+      await wv.executeJavaScript(`load()`);
       this.loaded.emit(true);
-    });
+    } catch (error) {
+      throw error;
+    }
   }
 }

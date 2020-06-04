@@ -31,7 +31,7 @@ import { ElectronService } from "./electron.service";
  * @class FileService
  */
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class FileService {
   /**
@@ -57,29 +57,31 @@ export class FileService {
    * @returns {Promise<void>}
    * @memberof FileService
    */
-  public getSaveLocation(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const dialog = this.electron.remote.dialog;
+  public async getSaveLocation(): Promise<void> {
+    const dialog = this.electron.remote.dialog;
 
-      this.fileLocation = dialog.showSaveDialog(
-        {
-          filters: [
-            {
-              name: "TypeScript",
-              extensions: ["ts"]
-            }
-          ]
-        },
-        (filename: string) => {
-          if (filename) {
-            this.fileLocation = filename;
-            resolve();
-          } else {
-            reject("Error saving to this location.");
-          }
-        }
-      );
-    });
+    try {
+      const dialogResp = await dialog.showSaveDialog(null, {
+        filters: [
+          {
+            name: "TypeScript",
+            extensions: ["ts"],
+          },
+        ],
+      });
+
+      if (dialogResp.canceled) {
+        return;
+      }
+
+      if (dialogResp.filePath) {
+        this.fileLocation = dialogResp.filePath;
+      } else {
+        throw new Error("Unable to get file path");
+      }
+    } catch (error) {
+      throw error;
+    }
   }
 
   /**
@@ -91,7 +93,7 @@ export class FileService {
    */
   public save(data: any): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.electron.fs.writeFile(this.fileLocation, data, err => {
+      this.electron.fs.writeFile(this.fileLocation, data, (err) => {
         if (err) {
           reject(err);
         }
@@ -108,29 +110,31 @@ export class FileService {
    * @returns {Promise<void>}
    * @memberof FileService
    */
-  public getOpenLocation(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const dialog = this.electron.remote.dialog;
+  public async getOpenLocation(): Promise<void> {
+    const dialog = this.electron.remote.dialog;
 
-      dialog.showOpenDialog(
-        {
-          filters: [
-            {
-              name: "TypeScript",
-              extensions: ["ts"]
-            }
-          ]
-        },
-        (filepaths: string[]) => {
-          if (filepaths[0]) {
-            this.fileLocation = filepaths[0];
-            resolve();
-          } else {
-            reject("Error saving to this location.");
-          }
-        }
-      );
-    });
+    try {
+      const dialogResp = await dialog.showOpenDialog(null, {
+        filters: [
+          {
+            name: "TypeScript",
+            extensions: ["ts"],
+          },
+        ],
+      });
+
+      if (dialogResp.canceled) {
+        return;
+      }
+
+      if (dialogResp.filePaths && dialogResp.filePaths.length > 0) {
+        this.fileLocation = dialogResp.filePaths[0];
+      } else {
+        throw new Error("No file paths found.");
+      }
+    } catch (error) {
+      throw error;
+    }
   }
 
   /**

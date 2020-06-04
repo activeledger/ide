@@ -83,7 +83,7 @@ export class ElectronService {
    * @memberof ElectronService
    */
   get isElectron() {
-    return window && window.process && window.process.type;
+    return !!(window && window.process && window.process.type);
   }
 
   /**
@@ -119,11 +119,11 @@ export class ElectronService {
       // Linux : process.env.APPIMAGE
       if (window.process.env.PORTABLE_EXECUTABLE_FILE) {
         this.remote.app.relaunch({
-          execPath: window.process.env.PORTABLE_EXECUTABLE_FILE
+          execPath: window.process.env.PORTABLE_EXECUTABLE_FILE,
         });
       } else if (window.process.env.APPIMAGE) {
         this.remote.app.relaunch({
-          execPath: window.process.env.APPIMAGE
+          execPath: window.process.env.APPIMAGE,
         });
       }
     } else {

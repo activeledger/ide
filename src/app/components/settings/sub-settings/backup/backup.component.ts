@@ -29,7 +29,7 @@ import { BackupService } from "../../../../shared/services/backup.service";
 @Component({
   selector: "app-settings-backup",
   templateUrl: "./backup.component.html",
-  styleUrls: ["./backup.component.css"]
+  styleUrls: ["./backup.component.css"],
 })
 export class BackupComponent implements OnInit {
   // #region UI Data
@@ -40,7 +40,7 @@ export class BackupComponent implements OnInit {
    */
   public setup = {
     exportSelected: false,
-    exportInProgress: false
+    exportInProgress: false,
   };
 
   /**
@@ -56,7 +56,7 @@ export class BackupComponent implements OnInit {
     workflows: false,
     connections: false,
     savedTransactions: false,
-    historicalTransactions: false
+    historicalTransactions: false,
   };
 
   /**
@@ -111,20 +111,25 @@ export class BackupComponent implements OnInit {
    * @param {boolean} [all]
    * @memberof SettingsComponent
    */
-  public export(all?: boolean): void {
+  public async export(all?: boolean): Promise<void> {
     const dialog = this.electronService.remote.dialog;
 
-    const saveLocation = dialog.showSaveDialog({
-      filters: [
-        {
-          name: "Active Harmony Backup",
-          extensions: ["ahb"]
-        }
-      ]
-    });
+    try {
+      const saveLocation = await dialog.showSaveDialog({
+        filters: [
+          {
+            name: "Active Harmony Backup",
+            extensions: ["ahb"],
+          },
+        ],
+      });
 
-    if (saveLocation) {
-      this.exportFile(saveLocation, all);
+      if (saveLocation.filePath) {
+        this.exportFile(saveLocation.filePath, all);
+      }
+    } catch (error) {
+      this.logger.error(`Export failed.\n${error}`);
+      this.dialogService.error("Exporting failed.");
     }
   }
 
