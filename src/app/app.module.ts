@@ -105,7 +105,7 @@ export function HttpLoaderFactory(http: HttpClient) {
 }
 
 @NgModule({
-  entryComponents: [
+  /* entryComponents: [
     ErrorDialogComponent,
     WarningDialogComponent,
     InfoDialogComponent,
@@ -116,7 +116,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     SaveContractDialogComponent,
     ContractInfoDialogComponent,
     LoginDialogComponent
-  ],
+  ], */
   declarations: [
     AppComponent,
     ErrorDialogComponent,
@@ -131,7 +131,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     NtobPipe,
     ContractInfoDialogComponent,
     LoginDialogComponent,
-    BlockedDialogComponent
+    BlockedDialogComponent,
   ],
   imports: [
     NgxSpinnerModule,
@@ -143,7 +143,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatFormFieldModule,
     MatSelectModule,
     MatButtonModule,
-    BrowserAnimationsModule,
+    // BrowserAnimationsModule,
     NoopAnimationsModule,
     PrettyJsonModule,
     MatTabsModule,
@@ -168,8 +168,8 @@ export function HttpLoaderFactory(http: HttpClient) {
       loader: {
         provide: TranslateLoader,
         useFactory: HttpLoaderFactory,
-        deps: [HttpClient]
-      }
+        deps: [HttpClient],
+      },
     }),
     NgJsonEditorModule,
     MonacoEditorModule.forRoot(),
@@ -181,7 +181,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     SigningModule,
     SwaggerModule,
     ContractsModule,
-    SettingsModule
+    SettingsModule,
   ],
   providers: [
     ElectronService,
@@ -194,8 +194,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     DataService,
     ConsoleService,
     SettingsService,
-    QuickBarComponent
+    QuickBarComponent,
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule {}

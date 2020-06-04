@@ -38,7 +38,7 @@ const packages = [
   "activequery",
   "activeutilities",
   "activecontracts",
-  "activetoolkits"
+  "activetoolkits",
 ];
 
 console.log("====================");
@@ -46,14 +46,14 @@ console.log("Setting Definitions");
 console.log("====================");
 
 // Loop Eaach and copy
-packages.forEach(element => {
+packages.forEach((element) => {
   // Path
   let path = inFolder + element + "/lib";
 
   console.log("Copying definitions for " + element);
 
   // Read Directory
-  fs.readdir(path, function(err, items) {
+  fs.readdir(path, function (err, items) {
     // Loop all items
     for (var i = 0; i < items.length; i++) {
       // Write out
@@ -107,11 +107,11 @@ console.log("====================");
 console.log("Definitions Complete");
 console.log("====================");
 
-console.log();
+/* console.log();
 console.log("***** Start Temporary Fix *****");
 console.log("Removing @types/selenium-webdriver");
 var rimraf = require("rimraf");
 rimraf("node_modules/@types/selenium-webdriver", function() {
   console.log("***** Stop Temporary Fix *****");
   console.log();
-});
+}); */

@@ -33,6 +33,7 @@ import { MatSelectModule } from "@angular/material/select";
 import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { FormsModule } from "@angular/forms";
 import { ClipboardModule } from "ngx-clipboard";
+import { NgJsonEditorModule } from "ang-jsoneditor";
 
 @NgModule({
   declarations: [SigningComponent],
@@ -45,7 +46,8 @@ import { ClipboardModule } from "ngx-clipboard";
     MatCardModule,
     MatSlideToggleModule,
     ClipboardModule,
-    MatButtonModule
-  ]
+    MatButtonModule,
+    NgJsonEditorModule,
+  ],
 })
 export class SigningModule {}
