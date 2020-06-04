@@ -34,7 +34,6 @@ import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { FormsModule } from "@angular/forms";
 import { SidemenuModule } from "../../shared/sidemenu/sidemenu.module";
 import { MonacoEditorModule } from "ngx-monaco-editor";
-import { AceEditorModule } from "ng2-ace-editor";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 @NgModule({
   declarations: [RunComponent],
@@ -48,9 +47,8 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
     MatButtonModule,
     SidemenuModule,
     MonacoEditorModule,
-    AceEditorModule,
     FontAwesomeModule,
-    MatSlideToggleModule
-  ]
+    MatSlideToggleModule,
+  ],
 })
 export class RunModule {}

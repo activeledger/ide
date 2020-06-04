@@ -27,61 +27,89 @@ import { Routes, RouterModule } from "@angular/router";
 const routes: Routes = [
   {
     path: "",
-    loadChildren: () => import('./components/home/home.module').then(m => m.HomeModule)
+    loadChildren: () =>
+      import("./components/home/home.module").then((m) => m.HomeModule),
   },
   {
     path: "keys",
-    loadChildren: () => import('./components/keys/keys.module').then(m => m.KeysModule),
-    runGuardsAndResolvers: "paramsChange"
+    loadChildren: () =>
+      import("./components/keys/keys.module").then((m) => m.KeysModule),
+    runGuardsAndResolvers: "paramsChange",
   },
   {
     path: "identity",
-    loadChildren: () => import('./components/identity/identity.module').then(m => m.IdentityModule),
-    runGuardsAndResolvers: "paramsChange"
+    loadChildren: () =>
+      import("./components/identity/identity.module").then(
+        (m) => m.IdentityModule
+      ),
+    runGuardsAndResolvers: "paramsChange",
   },
   {
     path: "contracts",
-    loadChildren: () => import('./components/contracts/contracts.module').then(m => m.ContractsModule),
-    runGuardsAndResolvers: "paramsChange"
+    loadChildren: () =>
+      import("./components/contracts/contracts.module").then(
+        (m) => m.ContractsModule
+      ),
+    runGuardsAndResolvers: "paramsChange",
   },
   {
     path: "settings",
-    loadChildren: () => import('./components/settings/settings.module').then(m => m.SettingsModule),
-    runGuardsAndResolvers: "paramsChange"
+    loadChildren: () =>
+      import("./components/settings/settings.module").then(
+        (m) => m.SettingsModule
+      ),
+    runGuardsAndResolvers: "paramsChange",
   },
   {
     path: "namespaces",
-    loadChildren: () => import('./components/namespace/namespace.module').then(m => m.NamespaceModule)
+    loadChildren: () =>
+      import("./components/namespace/namespace.module").then(
+        (m) => m.NamespaceModule
+      ),
   },
   {
     path: "signing",
-    loadChildren: () => import('./components/signing/signing.module').then(m => m.SigningModule)
+    loadChildren: () =>
+      import("./components/signing/signing.module").then(
+        (m) => m.SigningModule
+      ),
   },
   {
     path: "run",
-    loadChildren: () => import('./components/run/run.module').then(m => m.RunModule)
+    loadChildren: () =>
+      import("./components/run/run.module").then((m) => m.RunModule),
   },
   {
     path: "swagger",
-    loadChildren: () => import('./components/swagger/swagger.module').then(m => m.SwaggerModule)
+    loadChildren: () =>
+      import("./components/swagger/swagger.module").then(
+        (m) => m.SwaggerModule
+      ),
   },
   {
     path: "signing",
-    loadChildren: () => import('./components/signing/signing.module').then(m => m.SigningModule)
+    loadChildren: () =>
+      import("./components/signing/signing.module").then(
+        (m) => m.SigningModule
+      ),
   },
   {
     path: "workflow",
-    loadChildren: () => import('./shared/components/workflow/workflow.module').then(m => m.WorkflowModule)
-  }
+    loadChildren: () =>
+      import("./shared/components/workflow/workflow.module").then(
+        (m) => m.WorkflowModule
+      ),
+  },
 ];
 
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, {
       useHash: true,
-      onSameUrlNavigation: "reload"
-    })
+      onSameUrlNavigation: "reload",
+      paramsInheritanceStrategy: "always",
+    }),
   ],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class AppRoutingModule {}

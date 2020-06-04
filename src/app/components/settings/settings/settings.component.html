@@ -1,12 +1,7 @@
-<ngx-spinner
-  bdColor="rgba(51, 51, 51, 0.8)"
-  size="large"
-  color="#fff"
-  loadingText="Processing transaction..."
-  loadingText="Processing transaction..."
-  type="line-scale-party"
-></ngx-spinner>
-<div class="container wrapper" (konami)="setup.showDBOptions = true">
+<ngx-spinner bdColor="rgba(51, 51, 51, 0.8)" size="large" color="#fff" loadingText="Processing transaction..."
+  loadingText="Processing transaction..." type="line-scale-party"></ngx-spinner>
+<!-- <div class="container wrapper" (konami)="setup.showDBOptions = true"> -->
+<div class="container wrapper">
   <div class="row">
     <div class="col">
       <mat-accordion>
@@ -83,9 +78,7 @@
 
         <!-- DATABASE -->
         <!-- THIS SHOULD ALWAYS BE A DEV ONLY OPTION -->
-        <mat-expansion-panel
-          *ngIf="electronService.isDev || setup.showDBOptions"
-        >
+        <mat-expansion-panel *ngIf="electronService.isDev || setup.showDBOptions">
           <mat-expansion-panel-header>
             <mat-panel-title> Developer </mat-panel-title>
             <mat-panel-description>
@@ -96,10 +89,7 @@
         </mat-expansion-panel>
 
         <!-- UPDATE -->
-        <mat-expansion-panel
-          *ngIf="electronService.isDev"
-          [expanded]="setup.section === 'update'"
-        >
+        <mat-expansion-panel *ngIf="electronService.isDev" [expanded]="setup.section === 'update'">
           <mat-expansion-panel-header>
             <mat-panel-title> Update </mat-panel-title>
             <mat-panel-description> Update </mat-panel-description>
