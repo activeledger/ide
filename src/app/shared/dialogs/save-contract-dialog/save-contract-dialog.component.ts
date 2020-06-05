@@ -23,7 +23,7 @@
 
 import { Component, OnInit, Inject } from "@angular/core";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
-import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material";
+import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 
 @Component({
   selector: "app-save-contract-dialog",

@@ -26,12 +26,10 @@ import { CommonModule } from "@angular/common";
 
 import { SwaggerRoutingModule } from "./swagger-routing.module";
 import { SwaggerComponent } from "./swagger/swagger.component";
-import {
-  MatCardModule,
-  MatSelectModule,
-  MatInputModule,
-  MatButtonModule
-} from "@angular/material";
+import { MatButtonModule } from "@angular/material/button";
+import { MatCardModule } from "@angular/material/card";
+import { MatInputModule } from "@angular/material/input";
+import { MatSelectModule } from "@angular/material/select";
 import { FormsModule } from "@angular/forms";
 
 @NgModule({

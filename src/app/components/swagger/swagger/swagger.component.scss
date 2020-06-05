@@ -1,11 +1,11 @@
 .wrapper {
   padding-top: 20px;
 
-  /deep/.col {
+  ::ng-deep.col {
     width:auto;
   }
 
-  /deep/.information-container, /deep/.scheme-container {
+  ::ng-deep.information-container, ::ng-deep.scheme-container {
     display:none
   }
 }

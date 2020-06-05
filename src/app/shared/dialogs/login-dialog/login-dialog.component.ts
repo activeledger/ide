@@ -23,7 +23,7 @@
 
 import { Component, OnInit, Inject } from "@angular/core";
 import { faUserAstronaut } from "@fortawesome/free-solid-svg-icons";
-import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material";
+import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { ILoginData } from "../../interfaces/user.interfaces";
 
 @Component({

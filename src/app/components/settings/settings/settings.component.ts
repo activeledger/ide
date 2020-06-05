@@ -67,7 +67,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
    * @type {ConnectionsComponent}
    * @memberof SettingsComponent
    */
-  @ViewChild(ConnectionsComponent) private connections: ConnectionsComponent;
+  @ViewChild(ConnectionsComponent, { static: true }) private connections: ConnectionsComponent;
   // #endregion
 
   /**

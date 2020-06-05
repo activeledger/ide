@@ -29,20 +29,19 @@ import {
   Output,
   AfterViewInit,
   ChangeDetectorRef,
-  OnDestroy
+  OnDestroy,
 } from "@angular/core";
 import { NgxSpinnerService } from "ngx-spinner";
 import {
   faSave,
   faEllipsisV,
   faArrowLeft,
-  faChevronDown
+  faChevronDown,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { Router } from "@angular/router";
 import { Subscription } from "rxjs/Subscription";
 import { ContractData } from "../../../shared/structures/contract.structures";
-import { MonacoEditorComponent } from "../../../shared/components/monaco-editor/monaco-editor.component";
 import { DialogService } from "../../../shared/services/dialog.service";
 import { DataService } from "../../../shared/services/data.service";
 import { GeneralService } from "../../../shared/services/general.service";
@@ -54,6 +53,12 @@ import { WorkflowService } from "../../../shared/services/workflow.service";
 import { ContractService } from "../../../shared/services/contract.service";
 import { ISaveData } from "../../../shared/interfaces/contract.interfaces";
 import { SaveErrorData } from "../../../shared/classes/errors.classes";
+import {
+  MonacoEditorLoaderService,
+  MonacoEditorComponent,
+} from "@materia-ui/ngx-monaco-editor";
+import { filter, take } from "rxjs/operators";
+import { ContractTemplatesService } from "./contract-templates.service";
 
 /**
  * Contract editor
@@ -67,10 +72,18 @@ import { SaveErrorData } from "../../../shared/classes/errors.classes";
 @Component({
   selector: "app-edit-contracts",
   templateUrl: "./edit-contracts.component.html",
-  styleUrls: ["./edit-contracts.component.scss"]
+  styleUrls: ["./edit-contracts.component.scss"],
 })
 export class EditContractsComponent
   implements OnInit, AfterViewInit, OnDestroy {
+  public editorOptions = {
+    theme: "vs-dark",
+    language: "typescript",
+    autoClosingBrackets: true,
+    autoIndent: true,
+  };
+  public code: string = 'function x() {\nconsole.log("Hello world!");\n}';
+
   // #region UI Data
 
   /**
@@ -127,7 +140,7 @@ export class EditContractsComponent
     showEditor: false,
     showLoader: true,
     showVersionSelect: false,
-    showOptionsMenu: false
+    showOptionsMenu: false,
   };
 
   /**
@@ -150,7 +163,7 @@ export class EditContractsComponent
     "updated",
     "uploaded",
     "streamid",
-    "info"
+    "info",
   ];
 
   // #endregion
@@ -184,13 +197,13 @@ export class EditContractsComponent
   private logger = (window as any).logger;
 
   /**
-   * Monaco sub component
+   * Instance of the monaco editor from the window
    *
-   * @type {MonacoEditorComponent}
+   * @private
+   * @type {*}
    * @memberof EditContractsComponent
    */
-  @ViewChild(MonacoEditorComponent)
-  monaco: MonacoEditorComponent;
+  private monaco: any;
 
   // #endregion
 
@@ -275,8 +288,20 @@ export class EditContractsComponent
     private fileService: FileService,
     private cd: ChangeDetectorRef,
     private workflowService: WorkflowService,
-    private contractService: ContractService
+    private contractService: ContractService,
+    private monacoLoadService: MonacoEditorLoaderService,
+    private contractTemplateService: ContractTemplatesService
   ) {
+    this.monacoLoadService.isMonacoLoaded$
+      .pipe(
+        filter((isLoaded) => isLoaded),
+        take(1)
+      )
+      .subscribe(() => {
+        this.monaco = (window as any).monaco;
+        this.initialiseMonaco();
+      });
+
     this.contract = new ContractData();
   }
 
@@ -296,36 +321,32 @@ export class EditContractsComponent
   ngAfterViewInit() {
     this.editorLoaded.next();
     this.runWorkflowSubscription = this.workflowService.runWorkflowEvent.subscribe(
-      $event => {
+      ($event) => {
         this.runWorkflow($event.workflowId);
       }
     );
 
     this.uploadContractSubscription = this.contractService.uploadContractEvent.subscribe(
-      $event => {
-        this.monaco
-          .getValue()
-          .then((body: string) => {
-            return this.contractService.uploadContract(
-              body,
-              this.contract,
-              this.selectedVersion,
-              $event.identityId,
-              $event.update
-            );
-          })
-          .then(() => {
-            this.workflowService.sendShowUpdateButtonEvent(this.contract._id);
-            this.getContracts();
-          })
-          .catch((err: unknown) => {
-            console.error(err);
-          });
+      async ($event) => {
+        try {
+          await this.contractService.uploadContract(
+            this.code,
+            this.contract,
+            this.selectedVersion,
+            $event.identityId,
+            $event.update
+          );
+
+          this.workflowService.sendShowUpdateButtonEvent(this.contract._id);
+          this.getContracts();
+        } catch (error) {
+          console.error(error);
+        }
       }
     );
 
     this.openContractSubscription = this.contractService.openContractEvent.subscribe(
-      $event => {
+      ($event) => {
         this.contract = $event.contract;
         this.openContractSubscription.unsubscribe();
       }
@@ -333,6 +354,100 @@ export class EditContractsComponent
   }
 
   // #endregion
+
+  // #region Initialisation
+
+  /**
+   * Initialise the editor
+   * Setup compiler options
+   * Set definition files
+   *
+   * @memberof EditContractsComponent
+   */
+  public initialiseMonaco(): void {
+    // Definition files
+    let definitionsPath = `${__dirname}/assets/definitions`; // For Build
+    const definitionsPathDev = "src/assets/definitions"; // For development
+
+    if (this.electronService.isDev) {
+      definitionsPath = definitionsPathDev;
+    }
+
+    this.monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
+      target: monaco.languages.typescript.ScriptTarget.ES2016,
+      allowNonTsExtensions: true,
+      module: monaco.languages.typescript.ModuleKind.CommonJS,
+      noEmit: true,
+    });
+
+    this.code = this.contractTemplateService.default;
+
+    // Definition files to read and send
+    const definitionFiles = [
+      `${definitionsPath}/@activeledger/activecrypto/index.d.ts`,
+      `${definitionsPath}/@activeledger/activecrypto/crypto/index.d.ts`,
+      `${definitionsPath}/@activeledger/activecrypto/crypto/hash.d.ts`,
+      `${definitionsPath}/@activeledger/activecrypto/crypto/keypair.d.ts`,
+      `${definitionsPath}/@activeledger/activelogger/index.d.ts`,
+      `${definitionsPath}/@activeledger/activedefinitions/index.d.ts`,
+      `${definitionsPath}/@activeledger/activedefinitions/definitions/index.d.ts`,
+      `${definitionsPath}/@activeledger/activedefinitions/definitions/document.d.ts`,
+      `${definitionsPath}/@activeledger/activedefinitions/definitions/ledger.d.ts`,
+      `${definitionsPath}/@activeledger/activequery/index.d.ts`,
+      `${definitionsPath}/@activeledger/activecontracts/index.d.ts`,
+      `${definitionsPath}/@activeledger/activecontracts/stream.d.ts`,
+      `${definitionsPath}/@activeledger/activecontracts/standard.d.ts`,
+      `${definitionsPath}/@activeledger/activecontracts/query.d.ts`,
+      `${definitionsPath}/@activeledger/activecontracts/event.d.ts`,
+      `${definitionsPath}/@activeledger/activecontracts/queryevent.d.ts`,
+      `${definitionsPath}/@activeledger/activecontracts/postprocess.d.ts`,
+      `${definitionsPath}/@activeledger/activecontracts/postprocessevent.d.ts`,
+      `${definitionsPath}/@activeledger/activecontracts/postprocessquery.d.ts`,
+      `${definitionsPath}/@activeledger/activecontracts/postprocessqueryevent.d.ts`,
+      `${definitionsPath}/@activeledger/activeutilities/index.d.ts`,
+      `${definitionsPath}/@activeledger/activeutilities/gzip.d.ts`,
+      `${definitionsPath}/@activeledger/activeutilities/request.d.ts`,
+      `${definitionsPath}/@activeledger/activetoolkits/index.d.ts`,
+      `${definitionsPath}/@activeledger/activetoolkits/pdf/index.d.ts`,
+      `${definitionsPath}/@activeledger/activetoolkits/pdf/interfaces.d.ts`,
+      `${definitionsPath}/@types/node/index.d`,
+    ];
+
+    // Loop Definition files
+    for (const file of definitionFiles) {
+      console.log("Reading file at ");
+      console.log(file);
+
+      // Read File & Prepare for sending to webview
+      const fileContents = this.electronService.fs
+        .readFileSync(file)
+        .toString()
+        .replace(/\n|\r/g, "")
+        .replace(/\"/g, `\\"`);
+
+      // Get import name
+      let importName = file.replace(definitionsPath + "/", "");
+
+      // Typescript is special for building
+      if (importName === "@types/node/index.d") {
+        importName += ".ts";
+      }
+
+      this.monaco.languages.typescript.typescriptDefaults.addExtraLib(
+        fileContents,
+        `node_modules/${importName}`
+      );
+
+      // ! Not sure if this is needed, it errors when live
+      /* this.monaco.editor.createModel(
+        fileContents,
+        "typescript",
+        new monaco.Uri().with({ path: `node_modules/${importName}` })
+      ); */
+    }
+
+    // #endregion
+  }
 
   // #region External
   /**
@@ -394,13 +509,13 @@ export class EditContractsComponent
     this.contract = new ContractData();
 
     if (this.setup.showEditor) {
-      this.monaco.setDefault();
+      this.code = this.contractTemplateService.default;
     } else {
       this.setup.showLoader = false;
       this.showEditor();
-      this.monaco.setDefault();
+      this.code = this.contractTemplateService.default;
       // Change detection due to out of scope call (this.setupCreateComponent)
-      this.cd.detectChanges();
+      // this.cd.detectChanges();
     }
   }
 
@@ -411,7 +526,7 @@ export class EditContractsComponent
    * @memberof EditContractsComponent
    */
   public clearEditor(): void {
-    this.monaco.clearEditor();
+    this.code = "";
   }
 
   /**
@@ -490,7 +605,7 @@ export class EditContractsComponent
   public getID(contract: ContractData) {
     this.dialogService.contractInfo(contract, {
       width: "800px",
-      allowCopy: true
+      allowCopy: true,
     });
   }
 
@@ -531,12 +646,12 @@ export class EditContractsComponent
       const body = this.contract.versions[this.selectedVersion];
 
       if (this.generalService.isb64(body)) {
-        this.monaco.setValue(atob(body));
+        this.code = atob(body);
       } else {
-        this.monaco.setValue(body);
+        this.code = body;
       }
     } else {
-      this.monaco.setDefault();
+      this.code = this.contractTemplateService.default;
     }
     this.setup.showLoader = false;
     this.showEditor();
@@ -576,7 +691,7 @@ export class EditContractsComponent
 
     const checks = {
       isSet: false,
-      used: false
+      used: false,
     };
 
     // Check the version has actually been set
@@ -602,7 +717,7 @@ export class EditContractsComponent
 
     const payload = {
       validity: valid,
-      checked: checks
+      checked: checks,
     };
 
     return payload;
@@ -613,33 +728,32 @@ export class EditContractsComponent
    *
    * @memberof EditContractsComponent
    */
-  public saveContract(): void {
+  public async saveContract(): Promise<void> {
     this.selectedVersion = "";
 
-    this.monaco
-      .getValue()
-      .then((body: string) => {
-        return this.saveService.saveContract(this.contract, body, true);
-      })
-      .then((response: any) => {
-        this.getContracts();
-        this.contract = response.contract;
-        this.getVersions();
-        this.selectedVersion = response.version;
-        this.spinner.hide();
+    try {
+      const response = await this.saveService.saveContract(
+        this.contract,
+        this.code,
+        true
+      );
+      this.getContracts();
+      this.contract = response.contract;
+      this.getVersions();
+      this.selectedVersion = response.version;
+      this.spinner.hide();
 
-        if (response.close) {
-          this.showLoader();
-        }
-      })
-      .catch((err: SaveErrorData) => {
-        this.spinner.hide();
+      if (response.close) {
+        this.showLoader();
+      }
+    } catch (error) {
+      this.spinner.hide();
 
-        if (err.error !== "cancelled") {
-          console.error(err);
-          this.dialogService.error(err.description, err.code);
-        }
-      });
+      if (error.error !== "cancelled") {
+        console.error(error);
+        this.dialogService.error(error.description, error.code);
+      }
+    }
   }
 
   /**
@@ -682,21 +796,21 @@ export class EditContractsComponent
    * @param {string} workflowId
    * @memberof EditContractsComponent
    */
-  private runWorkflow(workflowId: string): void {
-    this.monaco
-      .getValue()
-      .then((body: string) => {
-        return this.workflowService.run(workflowId, this.contract, body);
-      })
-      .then((savedData: ISaveData) => {
-        this.contract = savedData.contract;
-        this.selectedVersion = savedData.version;
-        this.workflowService.sendShowUpdateButtonEvent(this.contract._id);
-        this.getContracts();
-      })
-      .catch((err: unknown) => {
-        console.error(err);
-      });
+  private async runWorkflow(workflowId: string): Promise<void> {
+    try {
+      const savedData = await this.workflowService.run(
+        workflowId,
+        this.contract,
+        this.code
+      );
+      this.contract = savedData.contract;
+      this.selectedVersion = savedData.version;
+      this.workflowService.sendShowUpdateButtonEvent(this.contract._id);
+      this.getContracts();
+    } catch (error) {
+      this.dialogService.error("There was an error running the workflow.");
+      console.error(error);
+    }
   }
   // #endregion
 }

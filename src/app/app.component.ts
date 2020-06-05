@@ -102,10 +102,10 @@ export class AppComponent {
    * @type {ConsoleComponent}
    * @memberof AppComponent
    */
-  @ViewChild(ConsoleComponent)
+  @ViewChild(ConsoleComponent, { static: true })
   customConsole: ConsoleComponent;
 
-  @ViewChild(QuickBarComponent)
+  @ViewChild(QuickBarComponent, { static: true })
   quickBar: QuickBarComponent;
 
   /**

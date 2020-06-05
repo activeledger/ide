@@ -33,19 +33,17 @@ import { DeveloperComponent } from "./sub-settings/developer/developer.component
 import { UpdateComponent } from "./sub-settings/update/update.component";
 import { WorkspaceComponent } from "./sub-settings/workspace/workspace.component";
 import { SettingsComponent } from "./settings/settings.component";
-import { KonamiModule } from "ngx-konami";
+// import { KonamiModule } from "ngx-konami";
 import { ColorPickerModule } from "ngx-color-picker";
-import {
-  MatFormFieldModule,
-  MatCheckboxModule,
-  MatExpansionModule,
-  MatOptionModule,
-  MatInputModule
-} from "@angular/material";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatOptionModule } from "@angular/material/core";
+import { MatExpansionModule } from "@angular/material/expansion";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatInputModule } from "@angular/material/input";
 import { FormsModule } from "@angular/forms";
 import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { MatProgressBarModule } from "@angular/material/progress-bar";
-import { MatSelectModule } from "@angular/material";
+import { MatSelectModule } from "@angular/material/select";
 import { NgxSpinnerModule } from "ngx-spinner";
 import { MatButtonModule } from "@angular/material/button";
 import { SettingsRoutingModule } from "./settings-routing.module";
@@ -61,11 +59,11 @@ import { SettingsRoutingModule } from "./settings-routing.module";
     DeveloperComponent,
     UpdateComponent,
     WorkspaceComponent,
-    SettingsComponent
+    SettingsComponent,
   ],
   imports: [
     CommonModule,
-    KonamiModule,
+    // KonamiModule,
     ColorPickerModule,
     FormsModule,
     MatFormFieldModule,
@@ -78,7 +76,7 @@ import { SettingsRoutingModule } from "./settings-routing.module";
     NgxSpinnerModule,
     MatButtonModule,
     MatInputModule,
-    SettingsRoutingModule
-  ]
+    SettingsRoutingModule,
+  ],
 })
 export class SettingsModule {}

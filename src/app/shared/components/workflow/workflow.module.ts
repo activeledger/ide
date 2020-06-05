@@ -27,15 +27,13 @@ import { CommonModule } from "@angular/common";
 import { WorkflowRoutingModule } from "./workflow-routing.module";
 import { WorkflowCreateComponent } from "./workflow-create/workflow-create.component";
 import { WorkflowContractsComponent } from "./workflow-contracts/workflow-contracts.component";
-import {
-  MatButtonModule,
-  MatInputModule,
-  MatSlideToggleModule,
-  MatDividerModule,
-  MatIconModule,
-  MatCardModule,
-  MatSelectModule
-} from "@angular/material";
+import { MatButtonModule } from "@angular/material/button";
+import { MatCardModule } from "@angular/material/card";
+import { MatDividerModule } from "@angular/material/divider";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MatSelectModule } from "@angular/material/select";
+import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { FormsModule } from "@angular/forms";
 import { ClickOutsideModule } from "ng-click-outside";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";

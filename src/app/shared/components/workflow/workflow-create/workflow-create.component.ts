@@ -26,7 +26,7 @@ import { Workflow } from "../../../structures/workflow.structures";
 import { IdentityService } from "../../../services/identity.service";
 import { IIdentityData } from "../../../interfaces/identity.interfaces";
 import { WorkflowService } from "../../../services/workflow.service";
-import { MatSnackBar } from "@angular/material";
+import { MatSnackBar } from "@angular/material/snack-bar";
 import { Router, ActivatedRoute } from "@angular/router";
 import { IWorkflow } from "../../../interfaces/workflow.interfaces";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";

@@ -22,7 +22,7 @@
  */
 
 import { Injectable } from "@angular/core";
-import { MatDialog } from "@angular/material";
+import { MatDialog } from "@angular/material/dialog";
 import { SaveContractDialogComponent } from "../dialogs/save-contract-dialog/save-contract-dialog.component";
 import { ContractService } from "./contract.service";
 import { DialogService } from "./dialog.service";

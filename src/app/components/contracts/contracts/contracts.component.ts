@@ -47,7 +47,7 @@ export class ContractsComponent implements OnInit, AfterViewInit, OnDestroy {
    * @type {EditContractsComponent}
    * @memberof ContractsComponent
    */
-  @ViewChild(EditContractsComponent)
+  @ViewChild(EditContractsComponent, { static: true })
   editContracts: EditContractsComponent;
 
   /**

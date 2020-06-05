@@ -27,16 +27,12 @@ import { CommonModule } from "@angular/common";
 import { RunRoutingModule } from "./run-routing.module";
 import { RunComponent } from "./run/run.component";
 import { NgJsonEditorModule } from "ang-jsoneditor";
-import {
-  MatInputModule,
-  MatSelectModule,
-  MatButtonModule,
-  MatSlideToggleModule
-} from "@angular/material";
+import { MatButtonModule } from "@angular/material/button";
+import { MatInputModule } from "@angular/material/input";
+import { MatSelectModule } from "@angular/material/select";
+import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { FormsModule } from "@angular/forms";
 import { SidemenuModule } from "../../shared/sidemenu/sidemenu.module";
-import { MonacoEditorModule } from "ngx-monaco-editor";
-import { AceEditorModule } from "ng2-ace-editor";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 @NgModule({
   declarations: [RunComponent],
@@ -49,10 +45,8 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
     FormsModule,
     MatButtonModule,
     SidemenuModule,
-    MonacoEditorModule,
-    AceEditorModule,
     FontAwesomeModule,
-    MatSlideToggleModule
-  ]
+    MatSlideToggleModule,
+  ],
 })
 export class RunModule {}

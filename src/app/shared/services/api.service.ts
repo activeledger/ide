@@ -21,10 +21,11 @@
  * SOFTWARE.
  */
 
-import { Injectable, Output, EventEmitter } from "@angular/core";
+import { Injectable, Output, EventEmitter, Directive } from "@angular/core";
 import { IUser, ILoginData } from "../interfaces/user.interfaces";
 import axios from "axios";
 
+@Directive()
 @Injectable({
   providedIn: "root"
 })

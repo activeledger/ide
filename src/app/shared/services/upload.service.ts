@@ -21,7 +21,7 @@
  * SOFTWARE.
  */
 
-import { Injectable, EventEmitter, Output } from "@angular/core";
+import { Injectable, EventEmitter, Output, Directive } from "@angular/core";
 import { LedgerService } from "./ledger.service";
 import { IBaseTransaction } from "@activeledger/sdk";
 import { DialogService } from "./dialog.service";
@@ -39,6 +39,7 @@ import {
 
 // TODO: Refactor now that upload page doesn't exist
 
+@Directive()
 @Injectable({
   providedIn: "root"
 })

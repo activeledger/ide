@@ -23,7 +23,7 @@
 
 import { Component, OnInit, Inject } from "@angular/core";
 import { faThumbsUp } from "@fortawesome/free-solid-svg-icons";
-import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material";
+import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 
 @Component({
   selector: "app-info-dialog",

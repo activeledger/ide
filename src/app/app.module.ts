@@ -38,25 +38,23 @@ import { TranslateModule, TranslateLoader } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 
 // Angular material
-import {
-  MatInputModule,
-  MatFormFieldModule,
-  MatSelectModule,
-  MatButtonModule,
-  MatTabsModule,
-  MatExpansionModule,
-  MatListModule,
-  MatTableModule,
-  MatDialogModule,
-  MatTooltipModule,
-  MatSlideToggleModule,
-  MatProgressBarModule,
-  MatCheckboxModule,
-  MatCardModule,
-  MatIconModule,
-  MatBadgeModule,
-  MatSnackBarModule
-} from "@angular/material";
+import { MatBadgeModule } from "@angular/material/badge";
+import { MatButtonModule } from "@angular/material/button";
+import { MatCardModule } from "@angular/material/card";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatDialogModule } from "@angular/material/dialog";
+import { MatExpansionModule } from "@angular/material/expansion";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MatListModule } from "@angular/material/list";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
+import { MatSelectModule } from "@angular/material/select";
+import { MatSlideToggleModule } from "@angular/material/slide-toggle";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { MatTableModule } from "@angular/material/table";
+import { MatTabsModule } from "@angular/material/tabs";
+import { MatTooltipModule } from "@angular/material/tooltip";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 
@@ -99,7 +97,7 @@ import { KeysModule } from "./components/keys/keys.module";
 import { NamespaceModule } from "./components/namespace/namespace.module";
 import { SwaggerModule } from "./components/swagger/swagger.module";
 import { SigningModule } from "./components/signing/signing.module";
-import { MonacoEditorModule } from "ngx-monaco-editor";
+import { MonacoEditorModule } from "@materia-ui/ngx-monaco-editor";
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -107,18 +105,6 @@ export function HttpLoaderFactory(http: HttpClient) {
 }
 
 @NgModule({
-  entryComponents: [
-    ErrorDialogComponent,
-    WarningDialogComponent,
-    InfoDialogComponent,
-    BlockedDialogComponent,
-    ConfirmDialogComponent,
-    AdvancedConfirmDialogComponent,
-    InputDialogComponent,
-    SaveContractDialogComponent,
-    ContractInfoDialogComponent,
-    LoginDialogComponent
-  ],
   declarations: [
     AppComponent,
     ErrorDialogComponent,
@@ -133,7 +119,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     NtobPipe,
     ContractInfoDialogComponent,
     LoginDialogComponent,
-    BlockedDialogComponent
+    BlockedDialogComponent,
   ],
   imports: [
     NgxSpinnerModule,
@@ -145,7 +131,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatFormFieldModule,
     MatSelectModule,
     MatButtonModule,
-    BrowserAnimationsModule,
+    // BrowserAnimationsModule,
     NoopAnimationsModule,
     PrettyJsonModule,
     MatTabsModule,
@@ -166,15 +152,15 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatBadgeModule,
     MatIconModule,
     MatSnackBarModule,
+    MonacoEditorModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
         useFactory: HttpLoaderFactory,
-        deps: [HttpClient]
-      }
+        deps: [HttpClient],
+      },
     }),
     NgJsonEditorModule,
-    MonacoEditorModule.forRoot(),
     // Internal modules
     HomeModule,
     IdentityModule,
@@ -183,7 +169,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     SigningModule,
     SwaggerModule,
     ContractsModule,
-    SettingsModule
+    SettingsModule,
   ],
   providers: [
     ElectronService,
@@ -196,8 +182,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     DataService,
     ConsoleService,
     SettingsService,
-    QuickBarComponent
+    QuickBarComponent,
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule {}

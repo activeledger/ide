@@ -36,7 +36,7 @@ import { DBTypes } from "../shared/enums/db.enum";
  * @class DatabaseService
  */
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class DatabaseService {
   /**
@@ -45,8 +45,7 @@ export class DatabaseService {
    * @private
    * @memberof DatabaseService
    */
-  private workspacePath =
-    this.electron.remote.app.getPath("userData") + "/workspaces.json";
+  private workspacePath: string;
 
   /**
    * Provides the pouchdb instance
@@ -54,7 +53,7 @@ export class DatabaseService {
    * @private
    * @memberof DatabaseService
    */
-  private db = new this.electron.pouchdb("default");
+  private db: PouchDB.Database;
 
   /**
    * Holds the available workspaces
@@ -69,7 +68,12 @@ export class DatabaseService {
    * @param {ElectronService} electron
    * @memberof DatabaseService
    */
-  constructor(private electron: ElectronService) {}
+  constructor(private electron: ElectronService) {
+    this.workspacePath =
+      this.electron.remote.app.getPath("userData") + "/workspaces.json";
+
+    this.db = new this.electron.pouchdb("default");
+  }
 
   // #region Internal DB Commands
 
@@ -93,7 +97,7 @@ export class DatabaseService {
         .info()
         .then(() => {
           return this.db.createIndex({
-            index: { fields: ["_id", "type"] }
+            index: { fields: ["_id", "type"] },
           });
         })
         .then(() => {
@@ -224,8 +228,8 @@ export class DatabaseService {
         .find({
           selector: {
             _id: { $gte: null },
-            type: { $eq: type }
-          }
+            type: { $eq: type },
+          },
         })
         .then((resp: any) => {
           resolve(resp.docs as Array<T>);
@@ -282,7 +286,7 @@ export class DatabaseService {
       // Assume no rev provided
       this.db
         .get(data._id)
-        .then(document => {
+        .then((document) => {
           data._rev = document._rev;
 
           this.db
@@ -313,7 +317,7 @@ export class DatabaseService {
         .then((document: any) => {
           this.db
             .remove(document)
-            .then(resp => {
+            .then((resp) => {
               resolve(resp);
             })
             .catch((err: any) => {
@@ -422,7 +426,7 @@ export class DatabaseService {
     return new Promise((resolve, reject) => {
       const workspaceData: WorkspaceHolder = {
         workspaces: ["default"],
-        last: "default"
+        last: "default",
       };
 
       try {
@@ -504,7 +508,7 @@ export class DatabaseService {
       this.electron.fs.writeFile(
         this.workspacePath,
         JSON.stringify(this.workspaces),
-        err => {
+        (err) => {
           if (err) {
             reject(err);
           }
@@ -559,7 +563,7 @@ export class DatabaseService {
     this.electron.fs.writeFile(
       this.workspacePath,
       JSON.stringify(this.workspaces),
-      err => {
+      (err) => {
         if (err) {
           console.log(err);
         }
@@ -607,7 +611,7 @@ export class DatabaseService {
             .on("complete", () => {
               resolve();
             })
-            .on("error", err => {
+            .on("error", (err) => {
               reject(err);
             });
         })

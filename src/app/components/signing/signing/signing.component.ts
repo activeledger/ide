@@ -133,7 +133,8 @@ export class SigningComponent implements OnInit {
       outFormat = "base64";
     }
 
-    const holder = Buffer.from(this.signature, inFormat);
+    // inFormat needs to be typed BufferEncoding
+    const holder = Buffer.from(this.signature, inFormat as any);
     this.signature = holder.toString(outFormat);
   }
   // #endregion

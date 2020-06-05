@@ -29,7 +29,7 @@ import {
   IKey,
   TransactionHandler,
   ILedgerResponse,
-  Connection
+  Connection,
 } from "@activeledger/sdk";
 import { IdentityService } from "../../../shared/services/identity.service";
 import { IIdentityData } from "../../../shared/interfaces/identity.interfaces";
@@ -47,13 +47,13 @@ import { TransactionService } from "../../../shared/services/transaction.service
 import {
   IHistoricalTransaction,
   ISavedTransaction,
-  ITransactionResponse
+  ITransactionResponse,
 } from "../../../shared/interfaces/transaction.interfaces";
 
 @Component({
   selector: "app-run",
   templateUrl: "./run.component.html",
-  styleUrls: ["./run.component.scss"]
+  styleUrls: ["./run.component.scss"],
 })
 export class RunComponent implements OnInit {
   // #region UI Data
@@ -66,7 +66,7 @@ export class RunComponent implements OnInit {
   public setup = {
     showSaved: true,
     runningTransaction: false,
-    gotResponse: false
+    gotResponse: false,
   };
 
   /**
@@ -135,7 +135,7 @@ export class RunComponent implements OnInit {
    */
   public response: IResponse = {
     time: "0",
-    size: "0"
+    size: "0",
   };
 
   // #endregion
@@ -199,9 +199,9 @@ export class RunComponent implements OnInit {
             $contract: "",
             $entry: "",
             $i: {},
-            $o: {}
+            $o: {},
           },
-          $sigs: {}
+          $sigs: {},
         },
         null,
         4
@@ -438,11 +438,11 @@ export class RunComponent implements OnInit {
     const key: IKey = {
       key: {
         prv: keyData.prv,
-        pub: keyData.pub
+        pub: keyData.pub,
       },
       identity: this.findIdenfromTx(transaction.$tx.$i),
       name: keyData.name,
-      type: keyData.encryption
+      type: keyData.encryption,
     };
 
     return txHandler.signTransaction(transaction, key);
@@ -506,7 +506,7 @@ export class RunComponent implements OnInit {
       transaction: JSON.stringify(JSON.parse(this.editor.getValue())),
       connectionId: this.customConnection,
       connectionCustom: true,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
 
     if (this.selectedConnection) {
@@ -516,7 +516,7 @@ export class RunComponent implements OnInit {
 
     this.txService
       .save(data)
-      .then(r => {
+      .then((r) => {
         console.log(r);
         this.getStoredTransactions();
       })
@@ -542,7 +542,7 @@ export class RunComponent implements OnInit {
     const responseData: ITransactionResponse = {
       data: JSON.stringify(response),
       time: this.response.time,
-      size: this.response.size
+      size: this.response.size,
     };
 
     const historicalData: IHistoricalTransaction = {
@@ -551,7 +551,7 @@ export class RunComponent implements OnInit {
       connectionCustom: true,
       connectionName: this.customConnection,
       response: responseData,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
 
     if (this.selectedConnection) {

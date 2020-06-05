@@ -21,7 +21,7 @@
  * SOFTWARE.
  */
 
-import { Injectable, EventEmitter, Output } from "@angular/core";
+import { Injectable, EventEmitter, Output, Directive } from "@angular/core";
 
 import { DatabaseService } from "../../providers/database.service";
 import { UploadService } from "./upload.service";
@@ -34,6 +34,7 @@ import { IIdentityData } from "../interfaces/identity.interfaces";
 import { DBTypes } from "../enums/db.enum";
 import { GeneralService } from "./general.service";
 
+@Directive()
 @Injectable({
   providedIn: "root"
 })

@@ -27,14 +27,14 @@ import {
   screen,
   Menu,
   MenuItemConstructorOptions,
-  MenuItem
+  MenuItem,
 } from "electron";
 import * as path from "path";
 import * as url from "url";
 
 let win, serve, splashScreen;
 const args = process.argv.slice(1);
-serve = args.some(val => val === "--serve");
+serve = args.some((val) => val === "--serve");
 
 try {
   require("dotenv").config();
@@ -47,7 +47,7 @@ function createWindow() {
   // const size = electronScreen.getPrimaryDisplay().workAreaSize;
   const size = {
     width: 1420,
-    height: 840
+    height: 840,
   };
 
   splashScreen = new BrowserWindow({
@@ -57,7 +57,7 @@ function createWindow() {
     height: 400,
     frame: false,
     // icon: __dirname + "/src/desktopIcon.png"
-    icon: __dirname + "/src/assets/al-icon.png"
+    icon: __dirname + "/src/assets/al-icon.png",
   });
 
   splashScreen.loadFile("splashscreen.html");
@@ -70,12 +70,15 @@ function createWindow() {
     height: size.height,
     webPreferences: {
       webSecurity: false,
-      nodeIntegrationInWorker: true
+      nodeIntegrationInWorker: true,
+      nodeIntegration: true,
+      allowRunningInsecureContent: serve ? true : false,
+      enableRemoteModule: true,
     },
     frame: false,
     // icon: __dirname + "/src/desktopIcon.png",
     icon: __dirname + "/src/assets/al-icon.png",
-    show: false
+    show: false,
   });
 
   // win.setMenu(null);
@@ -87,19 +90,19 @@ function createWindow() {
         label: app.getName(),
         submenu: [
           {
-            label: "About Active Harmony"
+            label: "About Active Harmony",
           },
           {
-            role: "separator"
+            type: "separator",
           },
           {
             label: "Quit",
             accelerator: "Command+Q",
-            click: function() {
+            click: function () {
               app.quit();
-            }
-          }
-        ]
+            },
+          },
+        ],
       },
       {
         label: "Edit",
@@ -110,11 +113,11 @@ function createWindow() {
           { role: "cut" },
           { role: "copy" },
           { role: "paste" },
-          { role: "pasteandmatchstyle" },
+          { role: "pasteAndMatchStyle" },
           { role: "delete" },
-          { role: "selectall" }
-        ]
-      }
+          { role: "selectAll" },
+        ],
+      },
     ];
     const menu = Menu.buildFromTemplate(template);
 
@@ -122,13 +125,17 @@ function createWindow() {
   }
 
   if (serve) {
+    require("electron-reload")(__dirname, {
+      electron: require(`${__dirname}/node_modules/electron`),
+    });
+
     win.loadURL("http://localhost:4201");
   } else {
     win.loadURL(
       url.format({
         pathname: path.join(__dirname, "dist/index.html"),
         protocol: "file:",
-        slashes: true
+        slashes: true,
       })
     );
   }
@@ -149,9 +156,13 @@ function createWindow() {
     // when you should delete the corresponding element.
     win = null;
   });
+
+  return win;
 }
 
 try {
+  app.allowRendererProcessReuse = true;
+
   // This method will be called when Electron has finished
   // initialization and is ready to create browser windows.
   // Some APIs can only be used after this event occurs.
