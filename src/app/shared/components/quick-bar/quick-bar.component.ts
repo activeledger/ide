@@ -34,7 +34,7 @@ import {
   faPlusSquare,
   faAngleDown,
   faCartArrowDown,
-  faBuilding
+  faBuilding,
 } from "@fortawesome/free-solid-svg-icons";
 import { DialogService } from "../../services/dialog.service";
 import { WorkspaceHolder } from "../../interfaces/workspace.interfaces";
@@ -43,7 +43,7 @@ import { UserService } from "../../services/user.service";
 @Component({
   selector: "app-quick-bar",
   templateUrl: "./quick-bar.component.html",
-  styleUrls: ["./quick-bar.component.scss"]
+  styleUrls: ["./quick-bar.component.scss"],
 })
 export class QuickBarComponent implements OnInit {
   public burgerIco = faBars;
@@ -63,7 +63,8 @@ export class QuickBarComponent implements OnInit {
   public page = "Home";
 
   public setup = {
-    workspaceMenuPosition: 85
+    workspaceMenuPosition: 85,
+    isTx: true,
   };
 
   @Output()
@@ -158,7 +159,7 @@ export class QuickBarComponent implements OnInit {
     this.showWorkspaceSelect = false;
   }
 
-  private createWorkspace(): void {
+  public createWorkspace(): void {
     this.dialogService
       .input("What would you like the new workspace to be called?")
       .then((name: string) => {

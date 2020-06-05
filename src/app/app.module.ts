@@ -98,6 +98,7 @@ import { NamespaceModule } from "./components/namespace/namespace.module";
 import { SwaggerModule } from "./components/swagger/swagger.module";
 import { SigningModule } from "./components/signing/signing.module";
 import { MonacoEditorModule } from "@materia-ui/ngx-monaco-editor";
+import { MatButtonToggleModule } from "@angular/material/button-toggle";
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -147,6 +148,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatCheckboxModule,
     MatInputModule,
     MatCardModule,
+    MatButtonToggleModule,
     ClipboardModule,
     ClickOutsideModule,
     MatBadgeModule,

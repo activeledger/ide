@@ -91,9 +91,6 @@
     div {
       display: inline-block;
 
-      border-radius: 50%;
-      border: 2px solid #fff;
-
       padding: 4px 7px;
 
       margin-right: 10px;
@@ -104,12 +101,51 @@
 
       font-size: 0.7em;
 
-      transition: all 0.2s linear;
-      cursor: pointer;
-
       // &:hover {
       //   background: #6e49ff;
       // }
+    }
+
+    .txBaasSwitch {
+      margin-top: -8px;
+      font-size: 1em;
+
+      .txBaasButton {
+        cursor: pointer;
+        border: 1px solid rgb(110, 73, 255);
+        color: #fff;
+
+        &:hover {
+          transition: all 0.2s linear;
+          background: rgb(125, 93, 255);
+          border: 1px solid rgb(125, 93, 255);
+        }
+
+        &:first-child {
+          margin-right: 0px;
+        }
+
+        &:last-child {
+          margin-left: 0px;
+        }
+      }
+
+      .selected {
+        background: rgb(110, 73, 255);
+
+        &:hover {
+          background: rgb(110, 73, 255);
+          border: 1px solid rgb(110, 73, 255);
+        }
+      }
+    }
+
+    .option-button {
+      transition: all 0.2s linear;
+      cursor: pointer;
+
+      border-radius: 50%;
+      border: 2px solid #fff;
     }
   }
 }
