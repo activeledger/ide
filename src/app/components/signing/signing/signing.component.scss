@@ -13,8 +13,12 @@
 
     margin: 8px;
 
-    #json-editor {
+    #json-editor-signing {
       flex: 1 100%;
+
+      .ace-internal {
+        flex: 1 auto;
+      }
     }
   }
 }
