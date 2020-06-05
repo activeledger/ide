@@ -33,6 +33,7 @@ import { ActiveCrypto } from "@activeledger/activecrypto";
 import PouchDB from "pouchdb-browser";
 import * as path from "path";
 import * as url from "url";
+import { faWindowRestore } from "@fortawesome/free-solid-svg-icons";
 
 @Injectable()
 export class ElectronService {
@@ -94,11 +95,7 @@ export class ElectronService {
    * @memberof ElectronService
    */
   get isDev() {
-    if (window.process.mainModule) {
-      return window.process.mainModule.filename.indexOf("app.asar") === -1;
-    } else {
-      return true;
-    }
+    return !this.remote.app.isPackaged;
   }
 
   /**

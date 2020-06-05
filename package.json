@@ -12,7 +12,7 @@
   "scripts": {
     "postinstall": "npx electron-builder install-app-deps && ngcc",
     "ng": "ng",
-    "start": "node hooks/definition/copy.js && node src/version.js && node hooks/environments/set_profile.js && npm-run-all --parallel ng:serve electron:serve",
+    "start": "APP_IS_DEV=true && node hooks/definition/copy.js && node src/version.js && node hooks/environments/set_profile.js && npm-run-all --parallel ng:serve electron:serve",
     "build": "node hooks/definition/copy.js && node src/version.js && node hooks/environments/set_profile.js && ng build && npm run electron:tsc",
     "build:prod": "node hooks/definition/copy.js && node src/version.js && node hooks/environments/set_profile.js && ng build --prod --aot && npm run electron:tsc",
     "ng:serve": "ng serve --poll 2000 --port 4201",
