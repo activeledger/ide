@@ -2,41 +2,27 @@
   <div class="sidemenu">
     <app-sidemenu class="sidemenu">
       <div class="top">
-        <div
-          class="saved"
-          [ngClass]="setup.showSaved ? 'active' : 'inactive'"
-          (click)="setup.showSaved = true"
-        >
+        <div class="saved" [ngClass]="setup.showSaved ? 'active' : 'inactive'" (click)="setup.showSaved = true">
           Saved
         </div>
 
-        <div
-          class="history"
-          [ngClass]="!setup.showSaved ? 'active' : 'inactive'"
-          (click)="setup.showSaved = false"
-        >
+        <div class="history" [ngClass]="!setup.showSaved ? 'active' : 'inactive'" (click)="setup.showSaved = false">
           History
         </div>
       </div>
 
       <div class="bottom">
         <div class="savedTransactions" *ngIf="setup.showSaved">
-          <div
-            class="savedTransaction"
-            *ngFor="let transaction of savedTransactions"
-            (click)="openTransaction(transaction)"
-          >
+          <div class="savedTransaction" *ngFor="let transaction of savedTransactions"
+            (click)="openTransaction(transaction)">
             {{ transaction.name }}
           </div>
         </div>
 
         <div class="transactionHistory" *ngIf="!setup.showSaved">
           <div class="transactions">
-            <div
-              class="historicalTransaction"
-              *ngFor="let transaction of historicalTransactions"
-              (click)="openTransaction(transaction)"
-            >
+            <div class="historicalTransaction" *ngFor="let transaction of historicalTransactions"
+              (click)="openTransaction(transaction)">
               {{ transaction.connectionName }} -
               {{ transaction.timestamp | date: "short" }}
             </div>
@@ -51,49 +37,35 @@
     <div class="control-bar">
       <mat-form-field class="connection-select">
         <mat-select placeholder="Connection" [(ngModel)]="selectedConnection">
-          <mat-option
-            *ngFor="let connection of connections"
-            [value]="connection"
-          >
+          <mat-option *ngFor="let connection of connections" [value]="connection">
             {{ connection.name }}
           </mat-option>
         </mat-select>
       </mat-form-field>
 
       <mat-form-field class="connection-input">
-        <input
-          matInput
-          placeholder="Custom connection"
-          [(ngModel)]="customConnection"
-        />
+        <input matInput placeholder="Custom connection" [(ngModel)]="customConnection" />
       </mat-form-field>
 
       <button class="button" (click)="runTransaction()">Run</button>
 
       <div class="encryptTransaction">
-        <mat-slide-toggle
-          [checked]="
+        <mat-slide-toggle [checked]="
             encryptedTransaction &&
             (customConnection && customConnection !== '')
-          "
-          [disabled]="!customConnection || customConnection === ''"
-        ></mat-slide-toggle>
+          " [disabled]="!customConnection || customConnection === ''"></mat-slide-toggle>
         Encrypt Transaction
       </div>
     </div>
 
     <div class="editor">
       <div class="topper">
-        <input
-          class="transactionName"
-          placeholder="Unsaved"
-          [(ngModel)]="transactionName"
-        />
+        <input class="transactionName" placeholder="Unsaved" [(ngModel)]="transactionName" />
         <div class="save">
           <fa-icon [icon]="saveIcon" (click)="saveTransaction()"></fa-icon>
         </div>
       </div>
-      <div id="json-editor" class="ace-internal"></div>
+      <div id="json-editor-run" class="ace-internal"></div>
     </div>
 
     <div class="viewer">
@@ -112,10 +84,7 @@
           </div>
         </div>
       </div>
-      <div
-        class="initial-message"
-        *ngIf="!setup.runningTransaction && !setup.gotResponse"
-      >
+      <div class="initial-message" *ngIf="!setup.runningTransaction && !setup.gotResponse">
         Run a transaction
       </div>
       <div class="loader" *ngIf="setup.runningTransaction">
@@ -127,11 +96,7 @@
 
         <div class="loader-text">Processing transaction...</div>
       </div>
-      <div
-        id="response-output"
-        class="ace-internal"
-        [hidden]="!setup.gotResponse"
-      ></div>
+      <div id="response-output" class="ace-internal" [hidden]="!setup.gotResponse"></div>
     </div>
   </div>
 </div>

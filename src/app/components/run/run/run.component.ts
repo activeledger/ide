@@ -21,7 +21,7 @@
  * SOFTWARE.
  */
 
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { IConnectionData } from "../../../shared/interfaces/connection.interfaces";
 import { LedgerService } from "../../../shared/services/ledger.service";
 import {
@@ -55,7 +55,7 @@ import {
   templateUrl: "./run.component.html",
   styleUrls: ["./run.component.scss"],
 })
-export class RunComponent implements OnInit {
+export class RunComponent implements OnInit, OnDestroy {
   // #region UI Data
 
   /**
@@ -179,7 +179,9 @@ export class RunComponent implements OnInit {
   // #region Angular control
   ngOnInit() {
     // Setup the editors
-    this.editor = ace.edit("json-editor");
+    console.log("Loading editor - run");
+    this.editor = ace.edit("json-editor-run");
+    console.log(this.editor);
     this.editor.getSession().setMode("ace/mode/json");
     this.editor.setTheme("ace/theme/merbivore_soft");
 
@@ -191,27 +193,38 @@ export class RunComponent implements OnInit {
     // TODO: Pull through templates from contracts
 
     // Insert a transaction template
-    this.editor.setValue(
-      JSON.stringify(
-        {
-          $tx: {
-            $namespace: "",
-            $contract: "",
-            $entry: "",
-            $i: {},
-            $o: {},
+    const cachedData = window.localStorage.getItem("run-cache");
+    if (cachedData) {
+      this.editor.setValue(cachedData);
+    } else {
+      this.editor.setValue(
+        JSON.stringify(
+          {
+            $tx: {
+              $namespace: "",
+              $contract: "",
+              $entry: "",
+              $i: {},
+              $o: {},
+            },
+            $sigs: {},
           },
-          $sigs: {},
-        },
-        null,
-        4
-      )
-    );
+          null,
+          4
+        )
+      );
+    }
 
     this.editor.clearSelection();
     this.editor.moveCursorTo(0, 0);
 
     this.getStoredTransactions();
+  }
+
+  ngOnDestroy(): void {
+    //Called once, before the instance is destroyed.
+    //Add 'implements OnDestroy' to the class.
+    window.localStorage.setItem("run-cache", this.editor.getValue());
   }
   // #endregion
 

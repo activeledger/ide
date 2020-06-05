@@ -2,14 +2,7 @@
   <mat-card class="container">
     <div class="row">
       <div class="col editor-container">
-        <!-- <mat-form-field class="transaction w-100">
-          <textarea
-            matInput
-            placeholder="Transaction"
-            [(ngModel)]="transaction"
-          ></textarea>
-        </mat-form-field> -->
-        <div id="json-editor"></div>
+        <div id="json-editor-signing" class="ace-internal"></div>
       </div>
     </div>
 
@@ -34,9 +27,7 @@
 
   <mat-card class="container">
     <button mat-raised-button (click)="sign()">Sign</button> &nbsp; &nbsp;
-    <mat-slide-toggle (click)="switchType()" [(ngModel)]="outputHex"
-      >Output HEX</mat-slide-toggle
-    >
+    <mat-slide-toggle (click)="switchType()" [(ngModel)]="outputHex">Output HEX</mat-slide-toggle>
   </mat-card>
 
   <br />
@@ -45,12 +36,7 @@
     <div class="row">
       <div class="col">
         <mat-form-field class="signature w-100">
-          <textarea
-            matInput
-            placeholder="Signature"
-            readonly
-            [value]="signature"
-          ></textarea>
+          <textarea matInput placeholder="Signature" readonly [value]="signature"></textarea>
         </mat-form-field>
       </div>
     </div>

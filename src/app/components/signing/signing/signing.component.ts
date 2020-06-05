@@ -21,7 +21,7 @@
  * SOFTWARE.
  */
 
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { KeyService } from "../../../shared/services/key.service";
 import { IKeyData } from "../../../shared/interfaces/key.interfaces";
 import { IKey, TransactionHandler } from "@activeledger/sdk";
@@ -34,9 +34,9 @@ import "brace/ext/beautify";
 @Component({
   selector: "app-signing",
   templateUrl: "./signing.component.html",
-  styleUrls: ["./signing.component.scss"]
+  styleUrls: ["./signing.component.scss"],
 })
-export class SigningComponent implements OnInit {
+export class SigningComponent implements OnInit, OnDestroy {
   // #region UI Data
 
   /**
@@ -99,27 +99,40 @@ export class SigningComponent implements OnInit {
   ngOnInit() {
     this.getKeys();
 
-    this.editor = ace.edit("json-editor");
+    this.editor = ace.edit("json-editor-signing");
     this.editor.getSession().setMode("ace/mode/json");
     this.editor.setTheme("ace/theme/merbivore_soft");
 
     // Insert a transaction template
-    this.editor.setValue(
-      JSON.stringify(
-        {
-          $namespace: "",
-          $contract: "",
-          $entry: "",
-          $i: {},
-          $o: {}
-        },
-        null,
-        4
-      )
-    );
+    const cachedData = window.localStorage.getItem("signing-cache");
+    if (cachedData) {
+      this.editor.setValue(cachedData);
+    } else {
+      this.editor.setValue(
+        JSON.stringify(
+          {
+            $namespace: "",
+            $contract: "",
+            $entry: "",
+            $i: {},
+            $o: {},
+          },
+          null,
+          4
+        )
+      );
+    }
 
     this.editor.clearSelection();
     this.editor.moveCursorTo(0, 0);
+  }
+
+  ngOnDestroy(): void {
+    //Called once, before the instance is destroyed.
+    //Add 'implements OnDestroy' to the class.
+    /* this.editor.destroy();
+    this.editor = null; */
+    window.localStorage.setItem("signing-cache", this.editor.getValue());
   }
   // #endregion
 
@@ -158,10 +171,10 @@ export class SigningComponent implements OnInit {
     const key: IKey = {
       key: {
         prv: this.key.prv,
-        pub: this.key.pub
+        pub: this.key.pub,
       },
       name: this.key.name,
-      type: this.key.encryption
+      type: this.key.encryption,
     };
 
     try {
