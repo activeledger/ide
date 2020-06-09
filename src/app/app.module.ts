@@ -99,6 +99,7 @@ import { SwaggerModule } from "./components/swagger/swagger.module";
 import { SigningModule } from "./components/signing/signing.module";
 import { MonacoEditorModule } from "@materia-ui/ngx-monaco-editor";
 import { MatButtonToggleModule } from "@angular/material/button-toggle";
+import { MainmenuComponent } from './shared/components/mainmenu/mainmenu.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -121,6 +122,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ContractInfoDialogComponent,
     LoginDialogComponent,
     BlockedDialogComponent,
+    MainmenuComponent,
   ],
   imports: [
     NgxSpinnerModule,

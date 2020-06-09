@@ -21,13 +21,23 @@
  * SOFTWARE.
  */
 
-import { NgModule } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { SidemenuComponent } from "./sidemenu.component";
+import { Component, OnInit } from "@angular/core";
 
-@NgModule({
-  declarations: [SidemenuComponent],
-  imports: [CommonModule],
-  exports: [SidemenuComponent]
+@Component({
+  selector: "app-run-sidemenu",
+  templateUrl: "./run-sidemenu.component.html",
+  styleUrls: ["./run-sidemenu.component.scss"],
 })
-export class SidemenuModule {}
+export class RunSidemenuComponent implements OnInit {
+  public width = 200;
+
+  constructor() {}
+
+  ngOnInit() {}
+
+  public resize(event): void {
+    if (event.pageX > 200 && event.pageX !== 0) {
+      this.width = event.pageX;
+    }
+  }
+}

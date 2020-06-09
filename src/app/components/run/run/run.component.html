@@ -1,6 +1,6 @@
 <div class="wrapper">
   <div class="sidemenu">
-    <app-sidemenu class="sidemenu">
+    <app-run-sidemenu class="sidemenu">
       <div class="top">
         <div class="saved" [ngClass]="setup.showSaved ? 'active' : 'inactive'" (click)="setup.showSaved = true">
           Saved
@@ -30,7 +30,7 @@
           <div class="clear" (click)="clearHistory()">Clear</div>
         </div>
       </div>
-    </app-sidemenu>
+    </app-run-sidemenu>
   </div>
 
   <div class="main-content">

@@ -32,7 +32,7 @@ import { MatInputModule } from "@angular/material/input";
 import { MatSelectModule } from "@angular/material/select";
 import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { FormsModule } from "@angular/forms";
-import { SidemenuModule } from "../../shared/sidemenu/sidemenu.module";
+import { RunSidemenuModule } from "../../shared/components/run-sidemenu/run-sidemenu.module";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 @NgModule({
   declarations: [RunComponent],
@@ -44,7 +44,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
     MatSelectModule,
     FormsModule,
     MatButtonModule,
-    SidemenuModule,
+    RunSidemenuModule,
     FontAwesomeModule,
     MatSlideToggleModule,
   ],
