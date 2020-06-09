@@ -89,17 +89,17 @@ import { ContractInfoDialogComponent } from "./shared/dialogs/contract-info-dial
 import { ClickOutsideModule } from "ng-click-outside";
 import { LoginDialogComponent } from "./shared/dialogs/login-dialog/login-dialog.component";
 import { BlockedDialogComponent } from "./shared/dialogs/blocked-dialog/blocked-dialog.component";
-import { ContractsModule } from "./components/contracts/contracts.module";
-import { SettingsModule } from "./components/settings/settings.module";
-import { HomeModule } from "./components/home/home.module";
-import { IdentityModule } from "./components/identity/identity.module";
-import { KeysModule } from "./components/keys/keys.module";
-import { NamespaceModule } from "./components/namespace/namespace.module";
-import { SwaggerModule } from "./components/swagger/swagger.module";
-import { SigningModule } from "./components/signing/signing.module";
+import { ContractsModule } from "./components/tx-components/contracts/contracts.module";
+import { SettingsModule } from "./components/tx-components/settings/settings.module";
+import { HomeModule } from "./components/tx-components/home/home.module";
+import { IdentityModule } from "./components/tx-components/identity/identity.module";
+import { KeysModule } from "./components/tx-components/keys/keys.module";
+import { NamespaceModule } from "./components/tx-components/namespace/namespace.module";
+import { SwaggerModule } from "./components/tx-components/swagger/swagger.module";
+import { SigningModule } from "./components/tx-components/signing/signing.module";
 import { MonacoEditorModule } from "@materia-ui/ngx-monaco-editor";
 import { MatButtonToggleModule } from "@angular/material/button-toggle";
-import { MainmenuComponent } from './shared/components/mainmenu/mainmenu.component';
+import { MainmenuComponent } from "./shared/components/mainmenu/mainmenu.component";
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {

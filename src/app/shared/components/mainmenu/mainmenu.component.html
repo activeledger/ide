@@ -1,5 +1,6 @@
 <div class="menu-wrapper">
-  <ul>
+  <!-- Tx Menu -->
+  <ul *ngIf="setup.isTx">
     <li (click)="goTo('/', 'Home')" matTooltip="Home" class="accentFont-hover">
       <fa-icon [icon]="homeIco"></fa-icon>
       <span [hidden]="setup.hideMenuNames" class="sideMenu-item">&nbsp;&nbsp;&nbsp;&nbsp;Home</span>
@@ -31,6 +32,22 @@
     <li (click)="goTo('/swagger', 'Core API')" matTooltip="Core API" class="accentFont-hover">
       <fa-icon [icon]="coreApiIco"></fa-icon>
       <span *ngIf="!setup.hideMenuNames" class="sideMenu-item">&nbsp;&nbsp;&nbsp;&nbsp;Core API</span>
+    </li>
+  </ul>
+
+  <!-- BaaS Menu -->
+  <ul *ngIf="!setup.isTx">
+    <li (click)="goTo('/nodes', 'Dashboard')" matTooltip="Dashboard" class="accentFont-hover">
+      <fa-icon [icon]="dashboardIco"></fa-icon>
+      <span [hidden]="setup.hideMenuNames" class="sideMenu-item">&nbsp;&nbsp;&nbsp;&nbsp;Dashboard</span>
+    </li>
+    <li (click)="goTo('/network', 'Network')" matTooltip="Network" class="accentFont-hover">
+      <fa-icon [icon]="networkIco"></fa-icon>
+      <span *ngIf="!setup.hideMenuNames" class="sideMenu-item">&nbsp;&nbsp;&nbsp;&nbsp;Network</span>
+    </li>
+    <li (click)="goTo('/nodes/management', 'Nodes')" matTooltip="Nodes" class="accentFont-hover">
+      <fa-icon [icon]="nodesIco"></fa-icon>
+      <span *ngIf="!setup.hideMenuNames" class="sideMenu-item">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nodes</span>
     </li>
   </ul>
 </div>

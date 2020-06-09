@@ -39,6 +39,7 @@ import {
 import { DialogService } from "../../services/dialog.service";
 import { WorkspaceHolder } from "../../interfaces/workspace.interfaces";
 import { UserService } from "../../services/user.service";
+import { MenuService } from "../../services/menu.service";
 
 @Component({
   selector: "app-quick-bar",
@@ -70,23 +71,27 @@ export class QuickBarComponent implements OnInit {
   @Output()
   changeMenuState = new EventEmitter();
 
+  public txBaasSwitchEmitter = new EventEmitter();
+
   constructor(
     private router: Router,
     public electronService: ElectronService,
     private generalService: GeneralService,
     private dialogService: DialogService,
     private dbService: DatabaseService,
-    private userService: UserService
+    private userService: UserService,
+    private menuService: MenuService
   ) {}
 
   ngOnInit() {
     this.getWorkspaces();
 
-    // if (this.electronService.isDev) {
-    //   this.setup.workspaceMenuPosition = 170;
-    // }
-
     this.setPageTitle();
+  }
+
+  public txBaasSwitch(): void {
+    this.setup.isTx = this.setup.isTx ? false : true;
+    this.menuService.txBaasSwitch(this.setup.isTx ? "tx" : "baas");
   }
 
   public getWorkspaces(): Promise<void> {
