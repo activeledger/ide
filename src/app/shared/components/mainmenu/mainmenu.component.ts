@@ -15,8 +15,8 @@ import {
   faPencilAlt,
   faTachometerAlt,
   faNetworkWired,
-  faProjectDiagram,
   faMicrochip,
+  faBox,
 } from "@fortawesome/free-solid-svg-icons";
 import { Router } from "@angular/router";
 import { EventEmitter } from "@angular/core";
@@ -45,6 +45,7 @@ export class MainmenuComponent implements OnInit, OnDestroy {
   public settingsIco = faWrench;
   public dashboardIco = faTachometerAlt;
   public networkIco = faNetworkWired;
+  public networkBuilderIco = faBox;
   public nodesIco = faMicrochip;
 
   public setup = {

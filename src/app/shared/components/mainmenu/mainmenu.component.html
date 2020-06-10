@@ -45,6 +45,10 @@
       <fa-icon [icon]="networkIco"></fa-icon>
       <span *ngIf="!setup.hideMenuNames" class="sideMenu-item">&nbsp;&nbsp;&nbsp;&nbsp;Network</span>
     </li>
+    <li (click)="goTo('/network/builder', 'Network Builder')" matTooltip="Network Builder" class="accentFont-hover">
+      <fa-icon [icon]="networkBuilderIco"></fa-icon>
+      <span *ngIf="!setup.hideMenuNames" class="sideMenu-item">&nbsp;&nbsp;&nbsp;&nbsp;Network Builder</span>
+    </li>
     <li (click)="goTo('/nodes/management', 'Nodes')" matTooltip="Nodes" class="accentFont-hover">
       <fa-icon [icon]="nodesIco"></fa-icon>
       <span *ngIf="!setup.hideMenuNames" class="sideMenu-item">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nodes</span>

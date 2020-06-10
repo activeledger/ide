@@ -46,7 +46,7 @@
     (setTitle)="setTitle($event)" [menuSize]="setup.mainMenuSize"></app-mainmenu>
 
   <div id="main-wrapper" [ngClass]="
-      setup.hideMenuNames ? 'smallSideMenuWrapper' : 'normalSideMenuWrapper'
+    setup.mainMenuSize === 'min' ? 'smallSideMenuWrapper' : 'normalSideMenuWrapper'
     ">
     <router-outlet></router-outlet>
   </div>
