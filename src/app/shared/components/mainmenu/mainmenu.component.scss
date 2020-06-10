@@ -1,0 +1,42 @@
+.menu-wrapper {
+  background: #333;
+  color: #fff;
+  height: 100%;
+
+  ul {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+
+    position: relative;
+
+    li {
+      margin: 0;
+      padding: 10px 16px;
+
+      width: 100%;
+
+      list-style: none;
+
+      font-weight: 100;
+
+      transition: all 0.2s linear;
+
+      cursor: pointer;
+
+      &:hover {
+        background: rgb(61, 62, 84);
+        // color: rgb(110, 73, 255);
+      }
+
+      &:first-child {
+        border-top: #3d3e51 1px solid;
+      }
+    }
+
+    /* .settings {
+      position: absolute;
+      bottom: 4px;
+    } */
+  }
+}

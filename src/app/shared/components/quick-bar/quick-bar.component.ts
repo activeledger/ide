@@ -34,16 +34,17 @@ import {
   faPlusSquare,
   faAngleDown,
   faCartArrowDown,
-  faBuilding
+  faBuilding,
 } from "@fortawesome/free-solid-svg-icons";
 import { DialogService } from "../../services/dialog.service";
 import { WorkspaceHolder } from "../../interfaces/workspace.interfaces";
 import { UserService } from "../../services/user.service";
+import { MenuService } from "../../services/menu.service";
 
 @Component({
   selector: "app-quick-bar",
   templateUrl: "./quick-bar.component.html",
-  styleUrls: ["./quick-bar.component.scss"]
+  styleUrls: ["./quick-bar.component.scss"],
 })
 export class QuickBarComponent implements OnInit {
   public burgerIco = faBars;
@@ -63,11 +64,14 @@ export class QuickBarComponent implements OnInit {
   public page = "Home";
 
   public setup = {
-    workspaceMenuPosition: 85
+    workspaceMenuPosition: 85,
+    isTx: true,
   };
 
   @Output()
   changeMenuState = new EventEmitter();
+
+  public txBaasSwitchEmitter = new EventEmitter();
 
   constructor(
     private router: Router,
@@ -75,17 +79,19 @@ export class QuickBarComponent implements OnInit {
     private generalService: GeneralService,
     private dialogService: DialogService,
     private dbService: DatabaseService,
-    private userService: UserService
+    private userService: UserService,
+    private menuService: MenuService
   ) {}
 
   ngOnInit() {
     this.getWorkspaces();
 
-    // if (this.electronService.isDev) {
-    //   this.setup.workspaceMenuPosition = 170;
-    // }
-
     this.setPageTitle();
+  }
+
+  public txBaasSwitch(): void {
+    this.setup.isTx = this.setup.isTx ? false : true;
+    this.menuService.txBaasSwitch(this.setup.isTx ? "tx" : "baas");
   }
 
   public getWorkspaces(): Promise<void> {
@@ -158,7 +164,7 @@ export class QuickBarComponent implements OnInit {
     this.showWorkspaceSelect = false;
   }
 
-  private createWorkspace(): void {
+  public createWorkspace(): void {
     this.dialogService
       .input("What would you like the new workspace to be called?")
       .then((name: string) => {

@@ -28,18 +28,22 @@ const routes: Routes = [
   {
     path: "",
     loadChildren: () =>
-      import("./components/home/home.module").then((m) => m.HomeModule),
+      import("./components/tx-components/home/home.module").then(
+        (m) => m.HomeModule
+      ),
   },
   {
     path: "keys",
     loadChildren: () =>
-      import("./components/keys/keys.module").then((m) => m.KeysModule),
+      import("./components/tx-components/keys/keys.module").then(
+        (m) => m.KeysModule
+      ),
     runGuardsAndResolvers: "paramsChange",
   },
   {
     path: "identity",
     loadChildren: () =>
-      import("./components/identity/identity.module").then(
+      import("./components/tx-components/identity/identity.module").then(
         (m) => m.IdentityModule
       ),
     runGuardsAndResolvers: "paramsChange",
@@ -47,7 +51,7 @@ const routes: Routes = [
   {
     path: "contracts",
     loadChildren: () =>
-      import("./components/contracts/contracts.module").then(
+      import("./components/tx-components/contracts/contracts.module").then(
         (m) => m.ContractsModule
       ),
     runGuardsAndResolvers: "paramsChange",
@@ -55,7 +59,7 @@ const routes: Routes = [
   {
     path: "settings",
     loadChildren: () =>
-      import("./components/settings/settings.module").then(
+      import("./components/tx-components/settings/settings.module").then(
         (m) => m.SettingsModule
       ),
     runGuardsAndResolvers: "paramsChange",
@@ -63,33 +67,35 @@ const routes: Routes = [
   {
     path: "namespaces",
     loadChildren: () =>
-      import("./components/namespace/namespace.module").then(
+      import("./components/tx-components/namespace/namespace.module").then(
         (m) => m.NamespaceModule
       ),
   },
   {
     path: "signing",
     loadChildren: () =>
-      import("./components/signing/signing.module").then(
+      import("./components/tx-components/signing/signing.module").then(
         (m) => m.SigningModule
       ),
   },
   {
     path: "run",
     loadChildren: () =>
-      import("./components/run/run.module").then((m) => m.RunModule),
+      import("./components/tx-components/run/run.module").then(
+        (m) => m.RunModule
+      ),
   },
   {
     path: "swagger",
     loadChildren: () =>
-      import("./components/swagger/swagger.module").then(
+      import("./components/tx-components/swagger/swagger.module").then(
         (m) => m.SwaggerModule
       ),
   },
   {
     path: "signing",
     loadChildren: () =>
-      import("./components/signing/signing.module").then(
+      import("./components/tx-components/signing/signing.module").then(
         (m) => m.SigningModule
       ),
   },
@@ -98,6 +104,20 @@ const routes: Routes = [
     loadChildren: () =>
       import("./shared/components/workflow/workflow.module").then(
         (m) => m.WorkflowModule
+      ),
+  },
+  {
+    path: "network",
+    loadChildren: () =>
+      import("./components/baas-components/network/network.module").then(
+        (m) => m.NetworkModule
+      ),
+  },
+  {
+    path: "nodes",
+    loadChildren: () =>
+      import("./components/baas-components/nodes/nodes.module").then(
+        (m) => m.NodesModule
       ),
   },
 ];

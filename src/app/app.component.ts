@@ -27,23 +27,10 @@ import { Component, ViewChild, ElementRef } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Router } from "@angular/router";
 import {
-  faHome,
-  faKey,
-  faWrench,
-  faBoxOpen,
   faInfoCircle,
   faTimesCircle,
   faGlobe,
-  faBars,
-  faServer,
-  faSearch,
-  faSitemap,
-  faPenNib,
-  faAddressBook,
-  faCubes,
-  faRunning,
-  faPencilAlt,
-  faExclamationTriangle
+  faExclamationTriangle,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { QuickBarComponent } from "./shared/components/quick-bar/quick-bar.component";
@@ -58,27 +45,12 @@ import { ElectronService } from "./shared/services/electron.service";
   selector: "app-root",
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.scss"],
-  providers: [GeneralService]
+  providers: [GeneralService],
 })
 export class AppComponent {
   // #region UI Data
 
   // #region Font awesome Icons
-
-  // Menu Icons
-  public burgerIco = faBars;
-  public homeIco = faHome;
-  public contractsIco = faPenNib;
-  public keysIco = faKey;
-  public identityIco = faAddressBook;
-  public namespacesIco = faBoxOpen;
-  public signingIco = faPencilAlt;
-  public runIco = faRunning;
-  public localNetIco = faServer;
-  public streamExploreIco = faSearch;
-  public coreApiIco = faCubes;
-  public netManageIco = faSitemap;
-  public settingsIco = faWrench;
 
   // Console control icons
   public allIco = faGlobe;
@@ -132,7 +104,8 @@ export class AppComponent {
   public setup = {
     console: false,
     hideMenuNames: false,
-    isMaximised: true
+    isMaximised: true,
+    mainMenuSize: "max",
   };
 
   public pageTitle = "Home";
@@ -148,7 +121,7 @@ export class AppComponent {
     all: 0,
     info: 0,
     warning: 0,
-    error: 0
+    error: 0,
   };
 
   /**
@@ -227,6 +200,11 @@ export class AppComponent {
     this.pageTitle = title;
   }
 
+  public setTitle(title: string): void {
+    this.quickBar.setPageTitle(title);
+    this.pageTitle = title;
+  }
+
   /**
    * Toggle the menu between expanded (with names) and compact (just icons)
    *
@@ -234,22 +212,18 @@ export class AppComponent {
    */
   public toggleMenu(state?: string): void {
     if (state) {
-      if (state === "small") {
-        this.setup.hideMenuNames = true;
-      } else {
-        this.setup.hideMenuNames = false;
-      }
+      this.setup.mainMenuSize = state;
     } else {
       // Toggle the item names
-      this.setup.hideMenuNames = !this.setup.hideMenuNames;
+      this.setup.mainMenuSize =
+        this.setup.mainMenuSize === "min" ? "max" : "min";
     }
 
     // Set the width of the menu/body based on whether or not the menu items are hidden
-    if (this.setup.hideMenuNames) {
-      this.settingsService.saveMenuStatus("small");
-    } else {
-      this.settingsService.saveMenuStatus("big");
-    }
+    this.settingsService.saveMenuStatus(this.setup.mainMenuSize);
+
+    console.log("this.setup.mainMenuSize");
+    console.log(this.setup.mainMenuSize);
   }
 
   // #endregion
