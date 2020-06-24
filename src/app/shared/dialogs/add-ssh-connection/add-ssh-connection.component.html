@@ -1,0 +1,36 @@
+<div>
+  <h1 mat-dialog-title>Add SSH Connection</h1>
+  <div>
+    <p>
+      Your username and password will not be stored.
+      An SSH Keypair will be generated and used to connect.
+    </p>
+    <form [formGroup]="sshConnectionForm">
+      <mat-form-field>
+        <input matInput placeholder="Name" type="text" formControlName="name" required>
+      </mat-form-field>
+      <br />
+      <mat-form-field>
+        <input matInput placeholder="Address" type="text" formControlName="address" required>
+      </mat-form-field>
+      &nbsp;:&nbsp;
+      <mat-form-field>
+        <input matInput placeholder="Port" type="number" formControlName="port" required>
+      </mat-form-field>
+      <br />
+      <mat-form-field>
+        <input matInput placeholder="Username" type="text" formControlName="username" required>
+      </mat-form-field>
+      &nbsp;:&nbsp;
+      <mat-form-field>
+        <input matInput placeholder="Password" type="password" formControlName="password" required>
+      </mat-form-field>
+    </form>
+
+    <div mat-dialog-actions>
+      <button mat-button (click)="cancel()">Cancel</button>
+      <button mat-button (click)="create()" cdkFocusInitial [disabled]="sshConnectionForm.invalid">Ok</button>
+    </div>
+
+  </div>
+</div>

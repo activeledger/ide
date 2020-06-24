@@ -26,7 +26,7 @@ import "reflect-metadata";
 import "../polyfills";
 import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 import { HttpClientModule, HttpClient } from "@angular/common/http";
 
@@ -100,6 +100,7 @@ import { SigningModule } from "./components/tx-components/signing/signing.module
 import { MonacoEditorModule } from "@materia-ui/ngx-monaco-editor";
 import { MatButtonToggleModule } from "@angular/material/button-toggle";
 import { MainmenuComponent } from "./shared/components/mainmenu/mainmenu.component";
+import { AddSshConnectionDialogComponent } from "./shared/dialogs/add-ssh-connection/add-ssh-connection.component";
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -123,6 +124,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     LoginDialogComponent,
     BlockedDialogComponent,
     MainmenuComponent,
+    AddSshConnectionDialogComponent,
   ],
   imports: [
     NgxSpinnerModule,
@@ -174,6 +176,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     SwaggerModule,
     ContractsModule,
     SettingsModule,
+    ReactiveFormsModule,
   ],
   providers: [
     ElectronService,

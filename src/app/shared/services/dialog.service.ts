@@ -22,7 +22,11 @@
  */
 
 import { Injectable } from "@angular/core";
-import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import {
+  MatDialog,
+  MatDialogRef,
+  MatDialogConfig,
+} from "@angular/material/dialog";
 import { ErrorDialogComponent } from "../dialogs/error-dialog/error-dialog.component";
 import { AdvancedConfirmDialogComponent } from "../dialogs/advanced-confirm-dialog/advanced-confirm-dialog.component";
 import { ConfirmDialogComponent } from "../dialogs/confirm-dialog/confirm-dialog.component";
@@ -34,6 +38,7 @@ import { LoginDialogComponent } from "../dialogs/login-dialog/login-dialog.compo
 import { ContractData } from "../structures/contract.structures";
 import { ILoginData } from "../interfaces/user.interfaces";
 import { BlockedDialogComponent } from "../dialogs/blocked-dialog/blocked-dialog.component";
+import { AddSshConnectionDialogComponent } from "../dialogs/add-ssh-connection/add-ssh-connection.component";
 
 /**
  * Provides dialogs
@@ -42,7 +47,7 @@ import { BlockedDialogComponent } from "../dialogs/blocked-dialog/blocked-dialog
  * @class DialogService
  */
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class DialogService {
   /**
@@ -72,7 +77,7 @@ export class DialogService {
 
     this.dialog.open(ErrorDialogComponent, {
       width: width,
-      data: { error: message, code: code }
+      data: { error: message, code: code },
     });
   }
 
@@ -101,8 +106,8 @@ export class DialogService {
         data: {
           message: message,
           allowCopy: allowCopy,
-          copy: stringToCopy
-        }
+          copy: stringToCopy,
+        },
       });
 
       dialogRef.afterClosed().subscribe(() => {
@@ -132,8 +137,8 @@ export class DialogService {
     return this.dialog.open(BlockedDialogComponent, {
       width: width,
       data: {
-        message: message
-      }
+        message: message,
+      },
     });
   }
 
@@ -160,8 +165,8 @@ export class DialogService {
       data: {
         contract: contract,
         allowCopy: allowCopy,
-        copy: stringToCopy
-      }
+        copy: stringToCopy,
+      },
     });
   }
 
@@ -180,7 +185,7 @@ export class DialogService {
 
     this.dialog.open(WarningDialogComponent, {
       width: width,
-      data: { message: message }
+      data: { message: message },
     });
   }
 
@@ -200,7 +205,7 @@ export class DialogService {
 
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: width,
-      data: { message: message }
+      data: { message: message },
     });
 
     return new Promise((resolve, reject) => {
@@ -226,7 +231,7 @@ export class DialogService {
 
     const data = {
       message: message,
-      type: undefined
+      type: undefined,
     };
 
     if (settings && settings.type) {
@@ -235,7 +240,7 @@ export class DialogService {
 
     const dialogRef = this.dialog.open(InputDialogComponent, {
       width: width,
-      data: data
+      data: data,
     });
 
     return new Promise((resolve, reject) => {
@@ -260,7 +265,30 @@ export class DialogService {
 
     this.dialog.open(AdvancedConfirmDialogComponent, {
       width: width,
-      data: { message: message }
+      data: { message: message },
+    });
+  }
+
+  public addSSHConnection(settings?: any): void {
+    let width = "450px";
+    let height = "auto";
+    if (settings) {
+      if (settings.width) {
+        width = settings.width;
+      }
+
+      if (settings.height) {
+        height = settings.height;
+      }
+    }
+
+    const config = new MatDialogConfig();
+    config.height = "auto";
+    config.width = width;
+
+    this.dialog.open(AddSshConnectionDialogComponent, {
+      width,
+      height,
     });
   }
 
@@ -273,12 +301,13 @@ export class DialogService {
    */
   public login(settings?: any): Promise<ILoginData> {
     let width = "250px";
+
     if (settings && settings.width) {
       width = settings.width;
     }
 
     const dialogRef = this.dialog.open(LoginDialogComponent, {
-      width: width
+      width: width,
     });
 
     return new Promise((resolve, reject) => {
