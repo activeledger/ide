@@ -84,33 +84,31 @@ export class DatabaseService {
    * @returns {Promise<void>}
    * @memberof DatabaseService
    */
-  public initialise(workspace?: string): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      if (workspace) {
-        this.db = new this.electron.pouchdb(workspace);
-      } else {
-        this.db = new this.electron.pouchdb("default");
-        this.checkForDefaultWorkspace();
+  public async initialise(workspace?: string): Promise<void> {
+    if (workspace) {
+      this.db = new this.electron.pouchdb(workspace);
+    } else {
+      this.db = new this.electron.pouchdb("default");
+      this.checkForDefaultWorkspace();
+    }
+
+    try {
+      await this.db.info();
+
+      // !FIXME: Figure out why this is happening
+      // !TODO: Test if it works in the built version
+      // Indexing fails when running dev build restarts
+      if (!this.electron.isDev) {
+        await this.db.createIndex({
+          index: { fields: ["_id", "type"] },
+        });
       }
 
-      this.db
-        .info()
-        .then(() => {
-          return this.db.createIndex({
-            index: { fields: ["_id", "type"] },
-          });
-        })
-        .then(() => {
-          // Initialise general data, ignore error if file exists
-          this.generalSettings();
-        })
-        .then(() => {
-          resolve();
-        })
-        .catch((err: any) => {
-          reject(err);
-        });
-    });
+      // Initialise general data, ignore error if file exists
+      await this.generalSettings();
+    } catch (error) {
+      throw error;
+    }
   }
 
   /**
@@ -222,25 +220,37 @@ export class DatabaseService {
    * @returns {Promise<Array<any>>}
    * @memberof DatabaseService
    */
-  public findByType<T>(type: DBTypes): Promise<Array<T>> {
-    return new Promise<Array<T>>((resolve, reject) => {
-      this.db
-        .find({
-          selector: {
-            _id: { $gte: null },
-            type: { $eq: type },
-          },
-        })
-        .then((resp: any) => {
-          resolve(resp.docs as Array<T>);
-        })
-        .catch((err: { status: number }) => {
-          if (err.status === 404) {
-            return resolve([]);
+  public async findByType<T>(type: DBTypes): Promise<Array<T>> {
+    try {
+      // * Temporary fix for database not indexing on hot reload
+      // ! indexing should be tested in a built version too
+      if (this.electron.isDev) {
+        const entries: any = await this.findAll();
+        let filteredEntries: Array<T> = [];
+
+        for (const entry of entries.rows) {
+          if (entry.doc.type === type) {
+            filteredEntries.push(entry.doc);
           }
-          reject(err);
-        });
-    });
+        }
+
+        return filteredEntries;
+      }
+
+      const response: any = await this.db.find({
+        selector: {
+          _id: { $gte: null },
+          type: { $eq: type },
+        },
+      });
+
+      return response.docs as Array<T>;
+    } catch (error) {
+      if (error.status === 404) {
+        return [];
+      }
+      throw error;
+    }
   }
 
   /**

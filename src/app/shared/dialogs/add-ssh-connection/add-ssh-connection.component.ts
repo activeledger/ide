@@ -1,6 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { FormGroup, FormControl } from "@angular/forms";
 import { MatDialogRef } from "@angular/material/dialog";
+import { SshService } from "../../services/ssh.service";
+import { ISSH, ISSHCreate } from "../../interfaces/ssh.interface";
 
 @Component({
   selector: "add-ssh-connection",
@@ -17,7 +19,8 @@ export class AddSshConnectionDialogComponent implements OnInit {
   });
 
   constructor(
-    public dialogRef: MatDialogRef<AddSshConnectionDialogComponent>
+    public dialogRef: MatDialogRef<AddSshConnectionDialogComponent>,
+    private readonly ssh: SshService
   ) {}
 
   ngOnInit(): void {}
@@ -26,5 +29,18 @@ export class AddSshConnectionDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  public create(): void {}
+  public async create(): Promise<void> {
+    const inputData = this.sshConnectionForm.value;
+
+    const sshData: ISSHCreate = {
+      name: inputData.name,
+      address: inputData.address,
+      port: inputData.port,
+      username: inputData.username,
+      password: inputData.password,
+    };
+
+    await this.ssh.saveConnection(sshData);
+    this.dialogRef.close();
+  }
 }

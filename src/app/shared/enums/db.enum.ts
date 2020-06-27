@@ -30,5 +30,7 @@ export enum DBTypes {
   CONTRACT = "contract",
   CONNECTION = "connection",
   MENUSTATE = "menuState",
-  WORKFLOW = "workflow"
+  WORKFLOW = "workflow",
+  SSH = "ssh",
+  SSHKEY = "sshkey",
 }

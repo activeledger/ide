@@ -221,9 +221,6 @@ export class AppComponent {
 
     // Set the width of the menu/body based on whether or not the menu items are hidden
     this.settingsService.saveMenuStatus(this.setup.mainMenuSize);
-
-    console.log("this.setup.mainMenuSize");
-    console.log(this.setup.mainMenuSize);
   }
 
   // #endregion

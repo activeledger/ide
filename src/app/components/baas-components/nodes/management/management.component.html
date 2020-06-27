@@ -1,1 +1,23 @@
-<p>management works!</p>
+<section *ngIf="!connections || connections.length === 0">
+  No nodes found
+</section>
+
+<div class="wrapper" *ngIf="connections && connections.length > 0">
+  <section class="node-list-wrapper">
+    <ul>
+      <li *ngFor="let connection of connections" (click)="node = connection">
+        {{connection.name}}
+      </li>
+    </ul>
+  </section>
+
+  <section class="main">
+    <div *ngIf="node">
+      <div>{{node.name}}</div>
+      <div>{{node.address}}</div>
+      <div>{{node.port}}</div>
+      <div>{{node.identity}}</div>
+      <button (click)="connect()">Connect</button>
+    </div>
+  </section>
+</div>

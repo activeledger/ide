@@ -61,12 +61,15 @@
     "ngx-color-picker": "9.1.0",
     "ngx-spinner": "9.0.2",
     "node-sass": "4.14.1",
+    "node-ssh": "^10.0.2",
     "pino": "6.3.2",
-    "pouchdb": "7.1.1",
-    "pouchdb-browser": "7.1.1",
-    "pouchdb-find": "7.1.1",
+    "pouchdb": "7.2.1",
+    "pouchdb-browser": "7.2.1",
+    "pouchdb-find": "7.2.1",
     "rxjs-compat": "^6.5.5",
     "semver": "7.3.2",
+    "ssh2": "^0.8.9",
+    "sshpk": "^1.16.1",
     "swagger-ui": "3.25.5"
   },
   "devDependencies": {

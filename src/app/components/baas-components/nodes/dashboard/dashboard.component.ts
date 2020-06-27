@@ -7,6 +7,8 @@ import { DialogService } from "../../../../shared/services/dialog.service";
   styleUrls: ["./dashboard.component.scss"],
 })
 export class DashboardComponent implements OnInit {
+  public noNodes = false;
+
   constructor(private readonly dialogService: DialogService) {}
 
   ngOnInit(): void {}
