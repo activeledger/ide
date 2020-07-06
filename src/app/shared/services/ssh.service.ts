@@ -59,36 +59,67 @@ export class SshService {
     password: string,
     port: number
   ): Promise<void> {
-    const ssh = new this.electron.NodeSSH();
+    const ssh = new this.electron.ssh();
 
-    try {
-      const key: ISSHKey = await this.dbService.findById(connectionData.keyID);
+    // try {
+    const key: ISSHKey = await this.dbService.findById(connectionData.keyID);
 
-      const config = {
-        host: connectionData.address,
-        username: key.identity,
-        password,
-        port,
-        debug: console.log,
-        readyTimeout: 99999,
-        tryKeyboard: true,
-        onKeyboardInteractive: (
-          name,
-          instructions,
-          instructionsLang,
-          prompts,
-          finish
-        ) => {
-          if (
-            prompts.length > 0 &&
-            prompts[0].prompt.toLowerCase().includes("password")
-          ) {
-            finish([password]);
+    const config = {
+      host: connectionData.address,
+      username: key.identity,
+      password,
+      port,
+      debug: console.log,
+      readyTimeout: 99999,
+      tryKeyboard: true,
+      onKeyboardInteractive: (
+        name,
+        instructions,
+        instructionsLang,
+        prompts,
+        finish
+      ) => {
+        if (
+          prompts.length > 0 &&
+          prompts[0].prompt.toLowerCase().includes("password")
+        ) {
+          finish([password]);
+        }
+      },
+    };
+
+    console.log("Initialising SSH Connection...");
+    ssh
+      .on("ready", () => {
+        console.log("SSH Client :: Ready");
+        console.log("SSH Client :: Attempting to onboard key");
+        const onboardCmd = `if [ ! -d ~/.ssh ]; then mkdir ~/.ssh; echo "${key.sshPub}" >> ~/.ssh/authorized_keys; else echo "${key.sshPub}" >> ~/.ssh/authorized_keys; fi`;
+        console.log("SSH Client :: Running the following command.");
+        console.log(onboardCmd);
+        ssh.exec(onboardCmd, (err, stream) => {
+          if (err) {
+            console.error("SSH Client :: Error onboarding key");
+            console.error(err);
           }
-        },
-      };
 
-      console.log("Attempting to connect via ssh");
+          stream
+            .on("close", (code, signal) => {
+              console.log(
+                "Stream :: close :: code: " + code + ", signal: " + signal
+              );
+              ssh.end();
+            })
+            .on("data", (data) => {
+              console.log("STDOUT: " + data);
+            })
+            .stderr.on("data", (data) => {
+              console.log("STDERR: " + data);
+            });
+        });
+      })
+      .connect(config);
+
+    /* console.log("Attempting to connect via ssh");
       console.log(config);
       await ssh.connect(config);
 
@@ -100,7 +131,7 @@ export class SshService {
     } catch (error) {
       console.error("Error onboarding ssh key");
       console.error(error);
-    }
+    } */
   }
 
   private async generateKey(identity: string): Promise<string> {
