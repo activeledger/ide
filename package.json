@@ -110,7 +110,7 @@
     "core-js": "2.6.5",
     "cross-env": "5.2.0",
     "dotenv": "7.0.0",
-    "electron": "4.1.0",
+    "electron": "9.1.0",
     "electron-builder": "20.39.0",
     "fs-extra": "7.0.1",
     "git-describe": "4.0.4",
