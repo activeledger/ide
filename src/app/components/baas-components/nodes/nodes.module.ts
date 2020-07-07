@@ -9,6 +9,8 @@ import { MatCardModule } from "@angular/material/card";
 import { MatTableModule } from "@angular/material/table";
 import { NgxEchartsModule } from "ngx-echarts";
 import * as echarts from "echarts";
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { MatPaginatorModule } from "@angular/material/paginator";
 
 @NgModule({
   declarations: [DashboardComponent, ManagementComponent],
@@ -21,6 +23,8 @@ import * as echarts from "echarts";
     NgxEchartsModule.forRoot({
       echarts,
     }),
+    FontAwesomeModule,
+    MatPaginatorModule,
   ],
 })
 export class NodesModule {}

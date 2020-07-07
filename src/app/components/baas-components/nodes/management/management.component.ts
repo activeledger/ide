@@ -1,6 +1,19 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { SshService } from "../../../../shared/services/ssh.service";
 import { ISSH } from "../../../../shared/interfaces/ssh.interface";
+import {
+  faSync,
+  faExternalLink,
+  faPlug,
+  faPen,
+  faTrash,
+  faPowerOff,
+  faRedo,
+  faWifi,
+  faWifiSlash,
+} from "@fortawesome/pro-light-svg-icons";
+import { MatPaginator } from "@angular/material/paginator";
+import { MatTableDataSource } from "@angular/material/table";
 
 @Component({
   selector: "management",
@@ -8,8 +21,36 @@ import { ISSH } from "../../../../shared/interfaces/ssh.interface";
   styleUrls: ["./management.component.scss"],
 })
 export class ManagementComponent implements OnInit {
-  public connections: ISSH[];
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+
+  public connectionData: ISSH[] = [];
+  public connections = new MatTableDataSource<ISSH>(this.connectionData);
   public node: ISSH;
+
+  public icons = {
+    refresh: faSync,
+    view: faExternalLink,
+    add: faPlug,
+    edit: faPen,
+    remove: faTrash,
+    restart: faRedo,
+    stop: faPowerOff,
+    connected: faWifi,
+    disconnected: faWifiSlash,
+  };
+
+  public displayColumns = [
+    "name",
+    "tags",
+    "status",
+    "uptime",
+    "autoRestarts",
+    "totalRestarts",
+    "refresh",
+    "view",
+  ];
+
+  public selectedNodeConnected = false;
 
   constructor(private readonly ssh: SshService) {}
 
@@ -22,13 +63,13 @@ export class ManagementComponent implements OnInit {
   public getNodeData(connection: ISSH): void {}
 
   private async getSshConnections(): Promise<void> {
-    console.log("Debug");
     try {
-      this.connections = await this.ssh.getConnections();
+      this.connectionData = await this.ssh.getConnections();
     } catch (error) {
       console.error(error);
     }
-    console.log("this.connections");
-    console.log(this.connections);
+    this.connections = new MatTableDataSource<ISSH>(this.connectionData);
+    this.paginator.pageSize = 20;
+    this.connections.paginator = this.paginator;
   }
 }
