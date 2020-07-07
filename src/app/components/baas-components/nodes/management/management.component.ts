@@ -41,6 +41,7 @@ export class ManagementComponent implements OnInit {
 
   public displayColumns = [
     "name",
+    "firstSeen",
     "tags",
     "status",
     "uptime",

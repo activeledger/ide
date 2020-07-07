@@ -109,11 +109,15 @@
           </ng-container>
           <ng-container matColumnDef="refresh">
             <mat-header-cell *matHeaderCellDef>Refresh</mat-header-cell>
-            <mat-cell *matCellDef="let node">R</mat-cell>
+            <mat-cell *matCellDef="let node">
+              <fa-icon [icon]="icons.refresh" class="list-control refresh"></fa-icon>
+            </mat-cell>
           </ng-container>
           <ng-container matColumnDef="view">
             <mat-header-cell *matHeaderCellDef>View</mat-header-cell>
-            <mat-cell *matCellDef="let node">V</mat-cell>
+            <mat-cell *matCellDef="let node">
+              <fa-icon [icon]="icons.view" class="list-control view"></fa-icon>
+            </mat-cell>
           </ng-container>
 
           <mat-header-row *matHeaderRowDef="displayColumns"></mat-header-row>

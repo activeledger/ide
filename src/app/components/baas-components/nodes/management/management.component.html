@@ -20,6 +20,10 @@
             <mat-header-cell *matHeaderCellDef>Tags</mat-header-cell>
             <mat-cell *matCellDef="let node">{{node.tags && node.tags[0] ? node.name : "Not connected"}}</mat-cell>
           </ng-container>
+          <ng-container matColumnDef="firstSeen">
+            <mat-header-cell *matHeaderCellDef>First Seen</mat-header-cell>
+            <mat-cell *matCellDef="let node">{{node.tags && node.tags[0] ? node.name : "Not connected"}}</mat-cell>
+          </ng-container>
           <ng-container matColumnDef="status">
             <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
             <mat-cell *matCellDef="let node">{{node.status ? node.name : "Not connected"}}</mat-cell>

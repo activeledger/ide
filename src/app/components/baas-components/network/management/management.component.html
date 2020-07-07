@@ -1,1 +1,118 @@
-<p>management works!</p>
+<div class="wrapper">
+  <!-- <section class="network-list-wrapper">
+    <ul>
+      <li *ngFor="let connection of connections" (click)="network = connection">
+        {{connection.name}}
+      </li>
+    </ul>
+  </section> -->
+
+  <section class="main">
+    <div class="networks-list-wrapper bottom-elem">
+      <div class="title">Networks</div>
+      <div class="content">
+        <mat-table [dataSource]="networks" class="network-list">
+          <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
+            <mat-cell *matCellDef="let network">{{network.name}}</mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="created">
+            <mat-header-cell *matHeaderCellDef>Created</mat-header-cell>
+            <mat-cell *matCellDef="let network">{{network.created | date: "dd/MM/yyyy - hh:mm:ss"}}
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="updated">
+            <mat-header-cell *matHeaderCellDef>Last Updated</mat-header-cell>
+            <mat-cell *matCellDef="let network">
+              {{network.updated | date: "dd/MM/yyyy - hh:mm:ss"}}
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="onboarded">
+            <mat-header-cell *matHeaderCellDef>Onboarded</mat-header-cell>
+            <mat-cell *matCellDef="let network">{{network.onboarded ? "Yes" : "No"}}</mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="view">
+            <mat-header-cell *matHeaderCellDef>View</mat-header-cell>
+            <mat-cell *matCellDef="let network">
+              <fa-icon [icon]="icons.view" class="list-control view"></fa-icon>
+            </mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="displayColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayColumns;"></mat-row>
+
+        </mat-table>
+        <mat-paginator [pageSizeOptions]="[5, 10, 15, 20]" showFirstLastButtons class="paginator"></mat-paginator>
+
+      </div>
+    </div>
+
+    <section class="left">
+
+      <div class="control-wrapper">
+
+
+        <div class="controls">
+          <div class="top">
+            <div class="control">
+              <fa-icon [icon]="icons.add"></fa-icon>&nbsp;&nbsp;&nbsp;New Config
+            </div>
+
+          </div>
+
+          <div class="top">
+
+            <div class="control">
+              <fa-icon [icon]="icons.duplicate"></fa-icon>&nbsp;&nbsp;&nbsp;Duplicate
+            </div>
+
+            <div class="control">
+              <fa-icon [icon]="icons.edit"></fa-icon>&nbsp;&nbsp;&nbsp;Edit
+            </div>
+
+            <div class="control">
+              <fa-icon [icon]="icons.remove"></fa-icon>&nbsp;&nbsp;&nbsp;Remove
+            </div>
+          </div>
+
+          <div class="bottom">
+            <div class="control">
+              <fa-icon [icon]="icons.import"></fa-icon>&nbsp;&nbsp;&nbsp;Import Config
+            </div>
+
+            <div class="control">
+              <fa-icon [icon]="icons.export"></fa-icon>&nbsp;&nbsp;&nbsp;Export Config
+            </div>
+          </div>
+
+
+
+        </div>
+
+      </div>
+
+      <div class="timeline-wrapper">
+
+        <div class="title">
+          Timeline
+        </div>
+
+
+        <div class="timeline">
+
+          <div class="entry" *ngFor="let entry of timelineEntries">
+            <div class="header">
+              <span>{{entry.timestamp | date: "dd/MM/yyyy - hh:mm:ss"}}</span>
+            </div>
+            <div class="body">
+              {{entry.message}}
+            </div>
+          </div>
+
+
+        </div>
+
+      </div>
+    </section>
+  </section>
+</div>

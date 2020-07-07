@@ -1,6 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { DialogService } from "../../../../shared/services/dialog.service";
 import { EChartOption } from "echarts";
+import { faExternalLink } from "@fortawesome/pro-light-svg-icons";
+import { faSync } from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: "dashboard",
@@ -21,7 +23,13 @@ export class DashboardComponent implements OnInit {
 
   public noNodes = false;
 
+  public icons = {
+    refresh: faSync,
+    view: faExternalLink,
+  };
+
   public cpuChartOptions: EChartOption = {
+    height: "100px",
     xAxis: [
       {
         type: "category",
