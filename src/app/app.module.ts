@@ -129,6 +129,7 @@ export function HttpLoaderFactory(http: HttpClient) {
   imports: [
     NgxSpinnerModule,
     BrowserModule,
+    BrowserAnimationsModule,
     FormsModule,
     HttpClientModule,
     AppRoutingModule,

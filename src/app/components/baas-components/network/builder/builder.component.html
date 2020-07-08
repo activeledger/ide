@@ -1,1 +1,186 @@
-<p>builder works!</p>
+<div class="wrapper">
+
+  <section class="main">
+    <div class="nodes-list-wrapper bottom-elem">
+      <div class="top-bar">
+        <div class="title">Network Builder</div>
+        <div class="controls">
+          <div class="control">
+            <fa-icon [icon]="icons.save"></fa-icon>
+            &nbsp;
+            Save
+          </div>
+          <div class="control">
+            <fa-icon [icon]="icons.export"></fa-icon>
+            &nbsp;
+            Export
+          </div>
+          <div class="control">
+            <fa-icon [icon]="icons.clear"></fa-icon>
+            &nbsp;
+            Clear
+          </div>
+        </div>
+      </div>
+
+      <div class="body-wrapper">
+        <mat-tab-group>
+          <mat-tab label="General">
+            <div class="content">
+              <form [formGroup]="configForm">
+                <mat-form-field>
+                  <input matInput placeholder="Config Name" formControlName="name" [class.dark-content-colour]="true">
+                </mat-form-field>
+                <br />
+                <h2>Activeledger</h2>
+                <div formGroupName="activeledger">
+                  <mat-form-field>
+                    <input matInput placeholder="Network Consensus" type="number" formControlName="consensus">
+                    <div matSuffix>%</div>
+                  </mat-form-field>
+
+
+                  <div formGroupName="autostart">
+                    <mat-checkbox formControlName="core">Autostart Core Service</mat-checkbox>
+                    <br />
+                    <mat-checkbox formControlName="restore">Autostart Restore Service</mat-checkbox>
+                    <br />
+                  </div>
+
+                </div>
+                <br />
+
+                <h2>Security</h2>
+
+                <div formGroupName="security">
+                  <mat-checkbox formControlName="signedConsensus">Signed Consensus</mat-checkbox>
+                  <br />
+                  <mat-checkbox formControlName="encryptedConsensus">Encrypted Consensus</mat-checkbox>
+                  <br />
+                  <mat-checkbox formControlName="hardenedKeys">Hardened Keys</mat-checkbox>
+                  <br />
+                </div>
+                <br />
+
+                <h2>Networking</h2>
+                <div formGroupName="networking">
+                  <mat-form-field>
+                    <input matInput placeholder="Binding Address" formControlName="bindingAddress">
+                  </mat-form-field>
+                  <br />
+                  <mat-checkbox formControlName="selfHosted">Self Hosted</mat-checkbox>
+                  <br />
+                  <mat-form-field>
+                    <input matInput disabled placeholder="Self Hosted IP" formControlName="selfHostIP">
+                  </mat-form-field>
+                  <br />
+                  <mat-form-field>
+                    <input matInput placeholder="Self Hosted Port" formControlName="selfHostPort">
+                  </mat-form-field>
+                  <br />
+                  <mat-form-field>
+                    <input matInput placeholder="Core Port" formControlName="corePort">
+                  </mat-form-field>
+                </div>
+                <br />
+
+
+                <h2>Ledger Databases</h2>
+                <div formGroupName="database">
+                  <mat-form-field>
+                    <input matInput placeholder="Ledger DB Name" formControlName="ledger">
+                  </mat-form-field>
+                  <br />
+                  <mat-form-field>
+                    <input matInput placeholder="Event DB Name" formControlName="event">
+                  </mat-form-field>
+                  <br />
+                  <mat-form-field>
+                    <input matInput placeholder="Error DB Name" formControlName="error">
+                  </mat-form-field>
+                  <br />
+                </div>
+                <mat-checkbox formControlName="debug">Debug Mode</mat-checkbox>
+              </form>
+
+              <section class="hints">
+                <div class="hint">How many nodes in this network are needed to commit a valid transaction</div>
+
+                <div class="hint">Enable the core API service on startup</div>
+
+                <div class="hint">Enable the ledger restore service on startup</div>
+
+                <div class="hint">Node to node signed messaging - Receiver verifies sender</div>
+
+                <div class="hint">Node to node encrypted messaging - Sender verifies receiver</div>
+
+                <div class="hint">Every transaction must supply a new public key for the identity</div>
+
+                <div class="hint">Activeledger listening connection details</div>
+
+                <div class="hint">Use the built in data engine</div>
+
+                <div class="hint">Data engine address</div>
+
+                <div class="hint">Data engine port</div>
+
+                <div class="hint">Core engine port</div>
+
+                <div class="hint">The name of the database used to store ledger data</div>
+
+                <div class="hint">The name of the database used to store event data</div>
+
+                <div class="hint">The name of the database used to store error data</div>
+
+                <div class="hint">Verbose logging and extended transaction responses</div>
+
+              </section>
+
+            </div>
+          </mat-tab>
+
+          <mat-tab label="Nodes">
+            <div class="content nodes">
+              <form [formGroup]="nodeForm">
+
+                <div formArrayName="nodes">
+                  <div *ngFor="let node of nodes.controls; let i=index" class="node-array-item">
+                    <div [formGroupName]="i">
+                      <mat-form-field>
+                        <input matInput placeholder="Host" formControlName="host">
+                      </mat-form-field>
+
+                      <br />
+
+                      <mat-form-field>
+                        <input matInput placeholder="Port" formControlName="port">
+                      </mat-form-field>
+
+                      <br />
+
+                      <mat-form-field class="key-input">
+                        <textarea matInput placeholder="Public Key" rows="10" formControlName="publicKey"></textarea>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </div>
+
+
+              </form>
+
+              <div class="button-wrapper">
+                <div class="button" (click)="addNode()">
+                  <fa-icon [icon]="icons.addNode"></fa-icon>
+                  &nbsp;
+                  Add Node
+                </div>
+              </div>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+
+
+    </div>
+  </section>
+</div>
