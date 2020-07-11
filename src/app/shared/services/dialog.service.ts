@@ -269,7 +269,7 @@ export class DialogService {
     });
   }
 
-  public addSSHConnection(settings?: any): void {
+  public addSSHConnection(settings?: any): Promise<boolean> {
     let width = "450px";
     let height = "auto";
     if (settings) {
@@ -286,9 +286,15 @@ export class DialogService {
     config.height = "auto";
     config.width = width;
 
-    this.dialog.open(AddSshConnectionDialogComponent, {
+    const ref = this.dialog.open(AddSshConnectionDialogComponent, {
       width,
       height,
+    });
+
+    return new Promise((resolve) => {
+      ref.afterClosed().subscribe((result: boolean) => {
+        resolve(result);
+      });
     });
   }
 

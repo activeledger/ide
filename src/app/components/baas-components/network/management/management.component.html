@@ -34,7 +34,7 @@
           <ng-container matColumnDef="view">
             <mat-header-cell *matHeaderCellDef>View</mat-header-cell>
             <mat-cell *matCellDef="let network">
-              <fa-icon [icon]="icons.view" class="list-control view"></fa-icon>
+              <fa-icon [icon]="icons.view" class="list-control view" (click)="viewNetwork(network)"></fa-icon>
             </mat-cell>
           </ng-container>
 

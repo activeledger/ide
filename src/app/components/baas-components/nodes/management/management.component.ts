@@ -14,6 +14,7 @@ import {
 } from "@fortawesome/pro-light-svg-icons";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
+import { DialogService } from "../../../../shared/services/dialog.service";
 
 @Component({
   selector: "management",
@@ -53,7 +54,10 @@ export class ManagementComponent implements OnInit {
 
   public selectedNodeConnected = false;
 
-  constructor(private readonly ssh: SshService) {}
+  constructor(
+    private readonly ssh: SshService,
+    private readonly dialogService: DialogService
+  ) {}
 
   ngOnInit(): void {
     this.getSshConnections();
@@ -61,7 +65,45 @@ export class ManagementComponent implements OnInit {
 
   public connect(): void {}
 
+  public async connectTo(row): Promise<void> {
+    try {
+      this.node = row;
+      await this.ssh.sshToNode(row._id);
+      const data = await this.ssh.getStats(row._id);
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   public getNodeData(connection: ISSH): void {}
+
+  public async addConnection(): Promise<void> {
+    const ref = await this.dialogService.addSSHConnection();
+    if (!ref) {
+    }
+  }
+
+  public async removeConnection(): Promise<void> {
+    console.log("Debug");
+    if (!this.node) {
+      this.dialogService.warning("No node selected!");
+      return;
+    }
+
+    try {
+      const confirm = await this.dialogService.confirm(
+        `Deleting this connection will remove ${this.node.name} with IP ${this.node.address}, all its details, and the key pair. Are you sure?`
+      );
+      if (confirm) {
+        await this.ssh.removeConnection(this.node._id);
+        this.dialogService.info("Connection removed.");
+      }
+    } catch (error) {
+      this.dialogService.error("There was an error removing the connection.");
+      console.error(error);
+    }
+  }
 
   private async getSshConnections(): Promise<void> {
     try {

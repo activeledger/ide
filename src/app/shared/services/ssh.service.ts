@@ -9,11 +9,15 @@ import { KeyService } from "./key.service";
 import { ElectronService } from "./electron.service";
 import { DatabaseService } from "../../providers/database.service";
 import { DBTypes } from "../enums/db.enum";
+import * as util from "util";
+import { threadId } from "worker_threads";
 
 @Injectable({
   providedIn: "root",
 })
 export class SshService {
+  public static connectionPool = {};
+
   constructor(
     private readonly keyService: KeyService,
     private readonly electron: ElectronService,
@@ -50,9 +54,124 @@ export class SshService {
     return;
   }
 
-  public async sshToNode(id: string): Promise<ISSH[]> {
-    return;
+  public async removeConnection(id: string): Promise<void> {
+    try {
+      const connection: ISSH = await this.dbService.findById(id);
+      const removeKey = this.dbService.remove(connection.keyID);
+      const removeConnection = this.dbService.remove(id);
+      await removeKey;
+      await removeConnection;
+    } catch (error) {
+      throw error;
+    }
   }
+
+  public async sshToNode(id: string): Promise<void> {
+    const sshConnectionData: ISSH = await this.dbService.findById(id);
+    const sshKey: ISSHKey = await this.dbService.findById(
+      sshConnectionData.keyID
+    );
+
+    const config = {
+      host: sshConnectionData.address,
+      port: sshConnectionData.port,
+      username: sshKey.identity,
+      privateKey: this.electron.sshpk.parseKey(sshKey.private, "pkcs8"),
+      debug: console.log,
+      readyTimeout: 99999,
+    };
+    // .replace("(unnamed)", sshKey.identity),
+
+    const connection = new this.electron.ssh.Client();
+    const command = "cd ~/testnet/instance-0 && activeledger --stats";
+    connection
+      .on("ready", () => {
+        console.log("Client :: ready");
+        connection.exec(command, function (err, stream) {
+          if (err) {
+            console.log("SSH Error");
+            console.error(err);
+          }
+          stream
+            .on("close", function (code, signal) {
+              console.log(
+                "Stream :: close :: code: " + code + ", signal: " + signal
+              );
+              connection.end();
+            })
+            .on("data", function (data) {
+              console.log("STDOUT: " + data);
+            })
+            .stderr.on("data", function (data) {
+              console.log("STDERR: " + data);
+            });
+        });
+      })
+      .connect(config);
+
+    /* const onReady = this.onReady(connection);
+    await this.openConnection(connection, config);
+    await onReady; */
+
+    SshService.connectionPool[id] = connection;
+  }
+
+  public async getStats(id: string): Promise<any> {
+    const connection = SshService.connectionPool[id];
+
+    // TODO: User set dir when creating connection
+    const command = "cd ~/testnet/instance-0 && activeledger --stats";
+    try {
+      return await this.execCommand(command, connection);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  private execCommand(command: string, connection): Promise<unknown> {
+    return new Promise((resolve, reject) => {
+      connection.exec(command, (err, stream) => {
+        if (err) {
+          return reject(err);
+        } else {
+          stream
+            .on("data", (data) => {
+              resolve(data);
+            })
+            .stderr.on("data", (errData) => {
+              reject(errData);
+            });
+        }
+      });
+    });
+  }
+
+  private onReady(connection): Promise<any> {
+    return new Promise((resolve, reject) => {
+      try {
+        connection.on("ready", () => {
+          resolve();
+        });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  }
+
+  private openConnection(connection, config): Promise<any> {
+    return new Promise((resolve, reject) => {
+      try {
+        console.log("Config");
+        console.log(config);
+        connection.connect(config);
+        resolve();
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
+  public closeConnection(id: string) {}
 
   private async onboardSshKeyToNode(
     connectionData: ISSHCreateData,
@@ -157,7 +276,7 @@ export class SshService {
   }
 
   private convertRSAtoSSH(keyPem: string): string {
-    const key = this.electron.sshpk.parseKey(keyPem, "pem");
+    const key = this.electron.sshpk.parseKey(keyPem, "pkcs8");
     return key.toString("ssh");
   }
 }

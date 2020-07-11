@@ -56,7 +56,7 @@
           </ng-container>
 
           <mat-header-row *matHeaderRowDef="displayColumns"></mat-header-row>
-          <mat-row *matRowDef="let row; columns: displayColumns;"></mat-row>
+          <mat-row *matRowDef="let row; columns: displayColumns;" (click)="connectTo(row)"></mat-row>
 
         </mat-table>
         <mat-paginator [pageSizeOptions]="[5, 10, 15, 20]" showFirstLastButtons class="paginator"></mat-paginator>
@@ -71,7 +71,7 @@
 
         <div class="controls">
           <div class="top">
-            <div class="control">
+            <div class="control" (click)="addConnection()">
               <fa-icon [icon]="icons.add"></fa-icon>&nbsp;&nbsp;&nbsp;Add
             </div>
 
@@ -79,7 +79,7 @@
               <fa-icon [icon]="icons.edit"></fa-icon>&nbsp;&nbsp;&nbsp;Edit
             </div>
 
-            <div class="control">
+            <div class="control" (click)="removeConnection()">
               <fa-icon [icon]="icons.remove"></fa-icon>&nbsp;&nbsp;&nbsp;Remove
             </div>
           </div>

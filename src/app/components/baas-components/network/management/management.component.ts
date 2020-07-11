@@ -10,6 +10,7 @@ import {
 } from "@fortawesome/pro-light-svg-icons";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "management",
@@ -104,10 +105,15 @@ export class ManagementComponent implements OnInit {
 
   public displayColumns = ["name", "created", "updated", "onboarded", "view"];
 
-  constructor() {}
+  constructor(private readonly router: Router) {}
 
   ngOnInit(): void {
     this.networks.paginator = this.paginator;
+  }
+
+  viewNetwork(network): void {
+    console.log(network);
+    this.router.navigateByUrl("/network/config");
   }
 
   private async getNetworks(): Promise<void> {
