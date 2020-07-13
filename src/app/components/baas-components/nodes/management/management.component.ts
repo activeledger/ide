@@ -69,8 +69,8 @@ export class ManagementComponent implements OnInit {
     try {
       this.node = row;
       await this.ssh.sshToNode(row._id);
-      const data = await this.ssh.getStats(row._id);
-      console.log(data);
+      // const data = await this.ssh.getStats(row._id);
+      // console.log(data);
     } catch (error) {
       console.error(error);
     }

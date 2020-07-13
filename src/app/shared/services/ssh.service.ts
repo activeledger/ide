@@ -18,6 +18,8 @@ import { threadId } from "worker_threads";
 export class SshService {
   public static connectionPool = {};
 
+  public tempPrivate: string;
+
   constructor(
     private readonly keyService: KeyService,
     private readonly electron: ElectronService,
@@ -67,53 +69,70 @@ export class SshService {
   }
 
   public async sshToNode(id: string): Promise<void> {
+    // try {
     const sshConnectionData: ISSH = await this.dbService.findById(id);
-    const sshKey: ISSHKey = await this.dbService.findById(
-      sshConnectionData.keyID
-    );
-
+    const key: ISSHKey = await this.dbService.findById(sshConnectionData.keyID);
     const config = {
-      host: sshConnectionData.address,
-      port: sshConnectionData.port,
-      username: sshKey.identity,
-      privateKey: this.electron.sshpk.parseKey(sshKey.private, "pkcs8"),
-      debug: console.log,
+      host: "127.0.0.1",
+      username: "chris",
+      privateKey: key.sshPrv,
+      // password: "1",
+      port: 24,
+      // debug: console.log,
       readyTimeout: 99999,
     };
-    // .replace("(unnamed)", sshKey.identity),
 
-    const connection = new this.electron.ssh.Client();
-    const command = "cd ~/testnet/instance-0 && activeledger --stats";
-    connection
+    console.log("config");
+    console.log(config);
+
+    const client = new this.electron.ssh();
+    console.log("Initialising SSH Connection...");
+    client
       .on("ready", () => {
-        console.log("Client :: ready");
-        connection.exec(command, function (err, stream) {
-          if (err) {
-            console.log("SSH Error");
-            console.error(err);
+        console.log("SSH Client :: Ready");
+        console.log("SSH Client :: Attempting to onboard key");
+        // const onboardCmd = `if [ ! -d ~/.ssh ]; then mkdir ~/.ssh; echo "${key.sshPub}" >> ~/.ssh/authorized_keys; else echo "${key.sshPub}" >> ~/.ssh/authorized_keys; fi`;
+        console.log("SSH Client :: Running the following command.");
+        // console.log(onboardCmd);
+
+        client.shell(
+          // "cd /home/chris/testnet/instance-0 && sh ./test.sh",
+          (err, stream) => {
+            if (err) {
+              console.error("SSH Client :: Error onboarding key");
+              console.error(err);
+            }
+
+            stream.write(
+              "cd /home/chris/testnet/instance-0 && activeledger --stats\r\n"
+            );
+            stream.write("exit\r\n");
+
+            stream
+              .on("close", (code, signal) => {
+                console.log(
+                  "Stream :: close :: code: " + code + ", signal: " + signal
+                );
+                client.end();
+              })
+              .on("data", (data) => {
+                if (data.includes('"cpu": {')) {
+                  const index = data.indexOf('"cpu":');
+                  const stripped = "{" + data.toString().substring(index);
+
+                  console.log("STDOUT: " + stripped);
+                  console.log("STDOUT: " + JSON.parse(stripped));
+                }
+              })
+              .stderr.on("data", (data) => {
+                console.log("STDERR: " + data);
+              });
           }
-          stream
-            .on("close", function (code, signal) {
-              console.log(
-                "Stream :: close :: code: " + code + ", signal: " + signal
-              );
-              connection.end();
-            })
-            .on("data", function (data) {
-              console.log("STDOUT: " + data);
-            })
-            .stderr.on("data", function (data) {
-              console.log("STDERR: " + data);
-            });
-        });
+        );
       })
       .connect(config);
 
-    /* const onReady = this.onReady(connection);
-    await this.openConnection(connection, config);
-    await onReady; */
-
-    SshService.connectionPool[id] = connection;
+    // SshService.connectionPool[id] = connection;
   }
 
   public async getStats(id: string): Promise<any> {
@@ -237,20 +256,6 @@ export class SshService {
         });
       })
       .connect(config);
-
-    /* console.log("Attempting to connect via ssh");
-      console.log(config);
-      await ssh.connect(config);
-
-      console.log("Attempting to onboard key");
-      const onboardCmd = `if [ ! -d ~/.ssh ]; then mkdir ~/.ssh; ${key.sshPub} >> ~/.ssh/authorized_keys; else ${key.sshPub} >> ~/.ssh/authorized_keys; fi`;
-      const onboardResp = await ssh.execCommand(onboardCmd);
-      console.log("onboardResp");
-      console.log(onboardResp);
-    } catch (error) {
-      console.error("Error onboarding ssh key");
-      console.error(error);
-    } */
   }
 
   private async generateKey(identity: string): Promise<string> {
@@ -258,13 +263,12 @@ export class SshService {
       const rsakey: { pub: any; prv: any } = await this.keyService.generate(
         "rsa"
       );
-      const sshKey = this.convertRSAtoSSH(rsakey.pub.pkcs8pem);
-
       const key: ISSHKey = {
         type: "sshkey",
         public: rsakey.pub.pkcs8pem,
         private: rsakey.prv.pkcs8pem,
-        sshPub: sshKey.replace("(unnamed)", identity),
+        sshPub: this.convertRSAtoSSH(rsakey.pub.pkcs8pem), //.replace("(unnamed)", identity),
+        sshPrv: this.convertRSAtoSSH(rsakey.prv.pkcs8pem, true), //.replace("(unnamed)", identity),
         identity,
       };
 
@@ -275,8 +279,15 @@ export class SshService {
     }
   }
 
-  private convertRSAtoSSH(keyPem: string): string {
-    const key = this.electron.sshpk.parseKey(keyPem, "pkcs8");
-    return key.toString("ssh");
+  private convertRSAtoSSH(keyPem: string, privateKey?: boolean): string {
+    let key;
+    if (privateKey) {
+      key = this.electron.sshpk
+        .parsePrivateKey(keyPem, "auto")
+        .toString("openssh");
+    } else {
+      key = this.electron.sshpk.parseKey(keyPem, "auto").toString("ssh");
+    }
+    return key;
   }
 }

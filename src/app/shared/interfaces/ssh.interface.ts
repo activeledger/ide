@@ -32,4 +32,5 @@ export interface ISSHKey {
   private: string;
   public: string;
   sshPub: string;
+  sshPrv: string;
 }
