@@ -16,7 +16,10 @@ import { threadId } from "worker_threads";
   providedIn: "root",
 })
 export class SshService {
-  public static connectionPool = {};
+  public static connectionPool: Map<
+    string,
+    { connection: any; stream: any; location: string }
+  > = new Map();
 
   public tempPrivate: string;
 
@@ -35,6 +38,7 @@ export class SshService {
         address: data.address,
         port: data.port,
         keyID: sshKeyId,
+        nodeLocation: data.nodeLocation,
       };
 
       await this.dbService.add(connection);
@@ -45,11 +49,11 @@ export class SshService {
   }
 
   public async getConnection(id: string): Promise<ISSH> {
-    return;
+    return await this.dbService.findById(id);
   }
 
   public async getConnections(): Promise<ISSH[]> {
-    return this.dbService.findByType<ISSH>(DBTypes.SSH);
+    return await this.dbService.findByType<ISSH>(DBTypes.SSH);
   }
 
   public async getKey(id: string): Promise<unknown> {
@@ -69,119 +73,80 @@ export class SshService {
   }
 
   public async sshToNode(id: string): Promise<void> {
-    // try {
-    const sshConnectionData: ISSH = await this.dbService.findById(id);
-    const key: ISSHKey = await this.dbService.findById(sshConnectionData.keyID);
-    const config = {
-      host: "127.0.0.1",
-      username: "chris",
-      privateKey: key.sshPrv,
-      // password: "1",
-      port: 24,
-      // debug: console.log,
-      readyTimeout: 99999,
-    };
-
-    console.log("config");
-    console.log(config);
-
-    const client = new this.electron.ssh();
-    console.log("Initialising SSH Connection...");
-    client
-      .on("ready", () => {
-        console.log("SSH Client :: Ready");
-        console.log("SSH Client :: Attempting to onboard key");
-        // const onboardCmd = `if [ ! -d ~/.ssh ]; then mkdir ~/.ssh; echo "${key.sshPub}" >> ~/.ssh/authorized_keys; else echo "${key.sshPub}" >> ~/.ssh/authorized_keys; fi`;
-        console.log("SSH Client :: Running the following command.");
-        // console.log(onboardCmd);
-
-        client.shell(
-          // "cd /home/chris/testnet/instance-0 && sh ./test.sh",
-          (err, stream) => {
-            if (err) {
-              console.error("SSH Client :: Error onboarding key");
-              console.error(err);
-            }
-
-            stream.write(
-              "cd /home/chris/testnet/instance-0 && activeledger --stats\r\n"
-            );
-            stream.write("exit\r\n");
-
-            stream
-              .on("close", (code, signal) => {
-                console.log(
-                  "Stream :: close :: code: " + code + ", signal: " + signal
-                );
-                client.end();
-              })
-              .on("data", (data) => {
-                if (data.includes('"cpu": {')) {
-                  const index = data.indexOf('"cpu":');
-                  const stripped = "{" + data.toString().substring(index);
-
-                  console.log("STDOUT: " + stripped);
-                  console.log("STDOUT: " + JSON.parse(stripped));
-                }
-              })
-              .stderr.on("data", (data) => {
-                console.log("STDERR: " + data);
-              });
-          }
-        );
-      })
-      .connect(config);
-
-    // SshService.connectionPool[id] = connection;
-  }
-
-  public async getStats(id: string): Promise<any> {
-    const connection = SshService.connectionPool[id];
-
-    // TODO: User set dir when creating connection
-    const command = "cd ~/testnet/instance-0 && activeledger --stats";
     try {
-      return await this.execCommand(command, connection);
+      console.log("Initialising SSH Connection...");
+      let connection, stream;
+
+      // Check if there is an open connection/stream for this node
+      if (!SshService.connectionPool.has(id)) {
+        const sshConnectionData: ISSH = await this.dbService.findById(id);
+        const key: ISSHKey = await this.dbService.findById(
+          sshConnectionData.keyID
+        );
+        const config = {
+          host: sshConnectionData.address,
+          username: key.identity,
+          privateKey: key.sshPrv,
+          port: sshConnectionData.port,
+          readyTimeout: 99999,
+        };
+
+        connection = new this.electron.ssh();
+
+        await this.openConnection(connection, config);
+        stream = await this.onReady(connection);
+
+        // TODO: Add last used
+        SshService.connectionPool.set(id, {
+          connection,
+          stream,
+          location: sshConnectionData.nodeLocation,
+        });
+
+        const pool = SshService.connectionPool;
+        const poolSize = pool.size;
+        if (poolSize > 5) {
+          // Remove oldest key
+          SshService.connectionPool.delete(pool.keys().next().value);
+        }
+      }
     } catch (error) {
       throw error;
     }
   }
 
-  private execCommand(command: string, connection): Promise<unknown> {
-    return new Promise((resolve, reject) => {
-      connection.exec(command, (err, stream) => {
-        if (err) {
-          return reject(err);
-        } else {
-          stream
-            .on("data", (data) => {
-              resolve(data);
-            })
-            .stderr.on("data", (errData) => {
-              reject(errData);
-            });
-        }
-      });
-    });
-  }
+  public getStats(id: string): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      const stream = SshService.connectionPool.get(id).stream;
+      const location = SshService.connectionPool.get(id).location;
 
-  private onReady(connection): Promise<any> {
-    return new Promise((resolve, reject) => {
-      try {
-        connection.on("ready", () => {
-          resolve();
+      stream
+        .on("data", (data: Buffer) => {
+          if (data.includes('"cpu": {')) {
+            const stripped =
+              "{" +
+              data
+                .toString()
+                .slice(data.indexOf('"cpu":'), data.lastIndexOf("}") + 1);
+
+            const obj = JSON.parse(stripped);
+            console.log(obj);
+            console.log(obj.cpu);
+            resolve(obj);
+          }
+        })
+        .stderr.on("data", (data) => {
+          reject(data);
         });
-      } catch (err) {
-        reject(err);
-      }
+
+      console.log("Getting stats");
+      await this.execCommand(id, `cd ${location} && activeledger --stats\r\n`);
     });
   }
 
   private openConnection(connection, config): Promise<any> {
     return new Promise((resolve, reject) => {
       try {
-        console.log("Config");
-        console.log(config);
         connection.connect(config);
         resolve();
       } catch (error) {
@@ -190,7 +155,47 @@ export class SshService {
     });
   }
 
-  public closeConnection(id: string) {}
+  private onReady(connection): Promise<any> {
+    return new Promise((resolve, reject) => {
+      try {
+        connection.on("ready", () => {
+          connection.shell((err, stream) => {
+            if (err) {
+              return reject(err);
+            }
+            resolve(stream);
+          });
+        });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  }
+
+  private execCommand<T>(id: string, command: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const stream = SshService.connectionPool.get(id).stream;
+      stream.write(command);
+      resolve();
+    });
+  }
+
+  public closeConnection(id: string) {
+    const stream = SshService.connectionPool.get(id).stream;
+    const connection = SshService.connectionPool.get(id).connection;
+
+    // Listen for stream close and end connection
+    stream.on("close", (code, signal) => {
+      console.log("Stream :: close :: code: " + code + ", signal: " + signal);
+      connection.end();
+    });
+
+    // Exit the shell
+    stream.write("exit\r\n");
+
+    // Remove from pool
+    SshService.connectionPool.delete(id);
+  }
 
   private async onboardSshKeyToNode(
     connectionData: ISSHCreateData,

@@ -4,6 +4,7 @@ export interface ISSHCreate {
   port: number;
   username: string;
   password: string;
+  nodeLocation: string;
 }
 
 export interface ISSHCreateData {
@@ -14,6 +15,7 @@ export interface ISSHCreateData {
   address: string;
   port: number;
   keyID: string;
+  nodeLocation: string;
 }
 
 export interface ISSH {
@@ -22,6 +24,7 @@ export interface ISSH {
   address: string;
   port: number;
   keyID: string;
+  nodeLocation: string;
 }
 
 export interface ISSHKey {
