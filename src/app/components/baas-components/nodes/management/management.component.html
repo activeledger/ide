@@ -26,20 +26,26 @@
           </ng-container>
           <ng-container matColumnDef="status">
             <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
-            <mat-cell *matCellDef="let node">{{node.status ? node.name : "Not connected"}}</mat-cell>
+            <mat-cell *matCellDef="let node">
+              {{nodeStats[node._id] && nodeStats[node._id].status ? nodeStats[node._id].status : "Not connected"}}
+            </mat-cell>
           </ng-container>
           <ng-container matColumnDef="uptime">
             <mat-header-cell *matHeaderCellDef>Uptime</mat-header-cell>
-            <mat-cell *matCellDef="let node">{{node.uptime ? node.name : "Not connected"}}</mat-cell>
+            <mat-cell *matCellDef="let node">
+              {{nodeStats[node._id] ? nodeStats[node._id].uptime : "Down"}}
+            </mat-cell>
           </ng-container>
           <ng-container matColumnDef="autoRestarts">
             <mat-header-cell *matHeaderCellDef>Auto Restarts</mat-header-cell>
-            <mat-cell *matCellDef="let node">{{node.restarts && node.restarts.auto ? node.name : "Not connected"}}
+            <mat-cell *matCellDef="let node">
+              {{nodeStats[node._id] && nodeStats[node._id].restarts ? nodeStats[node._id].restarts.auto : "Not connected"}}
             </mat-cell>
           </ng-container>
           <ng-container matColumnDef="totalRestarts">
             <mat-header-cell *matHeaderCellDef>Total Restarts</mat-header-cell>
-            <mat-cell *matCellDef="let node">{{node.restarts && node.restarts.total ? node.name : "Not connected"}}
+            <mat-cell *matCellDef="let node">
+              {{nodeStats[node._id] && nodeStats[node._id].restarts ? nodeStats[node._id].restarts.all : "Not connected"}}
             </mat-cell>
           </ng-container>
           <ng-container matColumnDef="refresh">
@@ -56,7 +62,8 @@
           </ng-container>
 
           <mat-header-row *matHeaderRowDef="displayColumns"></mat-header-row>
-          <mat-row *matRowDef="let row; columns: displayColumns;" (click)="connectTo(row)"></mat-row>
+          <mat-row *matRowDef="let row; columns: displayColumns;" (click)="connectTo(row)"
+            [ngClass]="node && row._id === node._id ? 'selected-node' : ''"></mat-row>
 
         </mat-table>
         <mat-paginator [pageSizeOptions]="[5, 10, 15, 20]" showFirstLastButtons class="paginator"></mat-paginator>
@@ -75,21 +82,25 @@
               <fa-icon [icon]="icons.add"></fa-icon>&nbsp;&nbsp;&nbsp;Add
             </div>
 
-            <div class="control">
+            <div class="control" *ngIf="node">
               <fa-icon [icon]="icons.edit"></fa-icon>&nbsp;&nbsp;&nbsp;Edit
             </div>
 
-            <div class="control" (click)="removeConnection()">
+            <div class="control" (click)="removeConnection()" *ngIf="node">
               <fa-icon [icon]="icons.remove"></fa-icon>&nbsp;&nbsp;&nbsp;Remove
             </div>
           </div>
 
           <div class="bottom">
-            <div class="control">
+            <div class="control" *ngIf="node">
+              <fa-icon [icon]="icons.disconnect"></fa-icon>&nbsp;&nbsp;&nbsp;Disconnect
+            </div>
+
+            <div class="control" *ngIf="node">
               <fa-icon [icon]="icons.restart"></fa-icon>&nbsp;&nbsp;&nbsp;Restart
             </div>
 
-            <div class="control">
+            <div class="control" *ngIf="node">
               <fa-icon [icon]="icons.stop"></fa-icon>&nbsp;&nbsp;&nbsp;Stop
             </div>
           </div>
@@ -104,9 +115,11 @@
 
         <div class="title">
           Status - <span class="node-status">
-            Offline&nbsp;
-            <fa-icon [icon]="icons.disconnected" class="offline" *ngIf="!selectedNodeConnected"></fa-icon>
-            <fa-icon [icon]="icons.connected" class="online" *ngIf="selectedNodeConnected"></fa-icon>
+            {{node && nodeStats[node._id]?.status === 'alive' ? "Online" : "Offline"}}&nbsp;
+            <fa-icon [icon]="icons.disconnected" class="offline"
+              *ngIf="node && nodeStats[node._id]?.status !== 'alive'"></fa-icon>
+            <fa-icon [icon]="icons.connected" class="online" *ngIf="node && nodeStats[node._id]?.status === 'alive'">
+            </fa-icon>
           </span>
         </div>
 
@@ -114,46 +127,51 @@
         <div class="status">
           <div class="stat">
             <div class="name">CPU: </div>
-            <div class="value">10%</div>
+            <div class="value">{{node && nodeStats[node._id] ? nodeStats[node._id].cpu.currentPercent : "-"}}%</div>
           </div>
           <div class="stat">
             <div class="name">RAM: </div>
-            <div class="value">Used 13GB of 32GB</div>
+            <div class="value">Used
+              {{node && nodeStats[node._id] ? nodeStats[node._id].ram.used : "-GB"}}
+              of
+              {{node && nodeStats[node._id] ? nodeStats[node._id].ram.total : "-GB"}}</div>
           </div>
           <div class="stat">
             <div class="name">HDD: </div>
-            <div class="value">Used 100GB of 1.2TB</div>
+            <div class="value">Used {{node && nodeStats[node._id] ? nodeStats[node._id].hdd.diskUsed : "-GB"}} of
+              {{node && nodeStats[node._id] ? nodeStats[node._id].hdd.diskSize : "-GB"}}</div>
           </div>
           <div class="stat">
             <div class="name">Activeledger Disk Usage: </div>
-            <div class="value">3GB</div>
+            <div class="value">{{node && nodeStats[node._id] ? nodeStats[node._id].hdd.activeledger : "-KB"}}
+            </div>
           </div>
 
           <br />
 
           <div class="version">
-            <div class="current-version">Version: 2.3.1</div>
-            <div class="latest-version">Latest: 2.3.5</div>
+            <div class="current-version">Version:
+              {{node && nodeStats[node._id] ? nodeStats[node._id].version : "Unknown"}}</div>
+            <!-- <div class="latest-version">Latest: 2.3.5</div> -->
           </div>
 
           <br />
 
           <div class="uptime">
-            Uptime: 2d 15h
-          </div>
-
-          <br />
-
-          <div class="alDiskUsage">
-            Activledger disk usage: 3GB
+            Uptime:
+            {{node && nodeStats[node._id] ? nodeStats[node._id].uptime : "Down"}}
           </div>
 
           <br />
 
           <div class="restarts">
-            <div class="auto-restarts">Auto restarts: 5</div>
-            <div class="manual-restarts">Manual restarts: 5</div>
-            <div class="total-restarts">Total restarts: 10</div>
+            <div class="auto-restarts">Auto restarts:
+              {{node && nodeStats[node._id] ? nodeStats[node._id].restarts.auto : "0"}}</div>
+            <div class="manual-restarts">Manual restarts:
+              {{node && nodeStats[node._id] ? nodeStats[node._id].restarts.all - nodeStats[node._id].restarts.auto : "0"}}
+            </div>
+            <div class="total-restarts">Total restarts:
+              {{node && nodeStats[node._id] ? nodeStats[node._id].restarts.all : "0"}}</div>
           </div>
 
           <div class="last-manual-restart">Last Manual Restart: 10:00 - 01/07/2020</div>

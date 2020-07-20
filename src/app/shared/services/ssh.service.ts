@@ -130,8 +130,6 @@ export class SshService {
                 .slice(data.indexOf('"cpu":'), data.lastIndexOf("}") + 1);
 
             const obj = JSON.parse(stripped);
-            console.log(obj);
-            console.log(obj.cpu);
             resolve(obj);
           }
         })
@@ -139,7 +137,6 @@ export class SshService {
           reject(data);
         });
 
-      console.log("Getting stats");
       await this.execCommand(id, `cd ${location} && activeledger --stats\r\n`);
     });
   }
