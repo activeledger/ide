@@ -141,6 +141,14 @@ export class SshService {
     });
   }
 
+  public restart(id: string): Promise<any> {
+    return new Promise(async (resolve, reject) => {});
+  }
+
+  public start(id: string): Promise<any> {
+    return new Promise(async (resolve, reject) => {});
+  }
+
   private openConnection(connection, config): Promise<any> {
     return new Promise((resolve, reject) => {
       try {

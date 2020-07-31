@@ -93,7 +93,10 @@ export class ManagementComponent implements OnInit {
     this.getSshConnections();
   }
 
-  public connect(): void {}
+  public refresh(event): void {
+    event.stopPropagation();
+    this.getNodeStats();
+  }
 
   public async connectTo(row): Promise<void> {
     try {

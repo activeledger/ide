@@ -50,7 +50,7 @@
           </ng-container>
           <ng-container matColumnDef="refresh">
             <mat-header-cell *matHeaderCellDef>Refresh</mat-header-cell>
-            <mat-cell *matCellDef="let node">
+            <mat-cell *matCellDef="let node" (click)="refresh($event)">
               <fa-icon [icon]="icons.refresh" class="list-control refresh"></fa-icon>
             </mat-cell>
           </ng-container>

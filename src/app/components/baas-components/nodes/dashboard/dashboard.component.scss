@@ -39,9 +39,6 @@
   }
 
   .cpu-graph-wrapper {
-    height: 140px;
-    padding-top: -100px;
-
     .cpu-chart {
       height: 200px !important;
     }
@@ -78,9 +75,11 @@
             top: 1px;
           }
 
-          /*  .current-value {
-            left: calc(3% + 10px);
-          } */
+          .current-value {
+            left: calc(50% - 14px);
+            transform: translateX(-50%);
+            text-align: center;
+          }
 
           .max-value {
             float: right;
@@ -119,32 +118,32 @@
 
       .cpu-wrapper {
         .current-value {
-          left: calc(3% + 10px);
+          left: calc(50% - 10px) !important;
         }
 
-        .pbar-fg {
+        /* .pbar-fg {
           width: 3%;
-        }
+        } */
       }
 
       .ram-wrapper {
         .current-value {
-          left: calc(41% + 10px);
+          // left: calc(41% + 10px);
         }
 
-        .pbar-fg {
+        /* .pbar-fg {
           width: 41%;
-        }
+        } */
       }
 
       .hdd-wrapper {
         .current-value {
-          left: calc(25% + 10px);
+          // left: calc(25% + 10px);
         }
 
-        .pbar-fg {
+        /* .pbar-fg {
           width: 25%;
-        }
+        } */
       }
     }
 
@@ -206,6 +205,40 @@
 
           .mat-row:nth-child(even) {
             background-color: #38374b;
+          }
+
+          .mat-row {
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+
+            &:hover {
+              background-color: rgba($color: #000, $alpha: 0.4);
+            }
+          }
+        }
+
+        .paginator {
+          background-color: #333;
+          color: #fff !important;
+        }
+        .mat-paginator {
+          ::ng-deep .mat-select-value,
+          ::ng-deep .mat-select-arrow {
+            color: #fff !important;
+          }
+
+          ::ng-deep .mat-icon-button {
+            color: #fff;
+
+            transition: color 0.3s ease-in-out;
+
+            &:hover {
+              color: #6e49ff;
+            }
+          }
+
+          ::ng-deep .mat-icon-button[disabled][disabled] {
+            color: rgb(160, 160, 160);
           }
         }
       }
