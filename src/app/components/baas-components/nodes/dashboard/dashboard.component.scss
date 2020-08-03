@@ -181,11 +181,12 @@
 
     .bottom-elem {
       &:first-child {
-        width: calc(70% - 25px);
+        // width: calc(70% - 25px);
+        width: 100%;
       }
-      &:last-child {
+      /* &:last-child {
         width: calc(30% + 25px);
-      }
+      } */
     }
 
     .nodes-list-wrapper {

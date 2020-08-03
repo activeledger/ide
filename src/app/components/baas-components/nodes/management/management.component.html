@@ -22,7 +22,10 @@
           </ng-container>
           <ng-container matColumnDef="firstSeen">
             <mat-header-cell *matHeaderCellDef>First Seen</mat-header-cell>
-            <mat-cell *matCellDef="let node">{{node.tags && node.tags[0] ? node.name : "Not connected"}}</mat-cell>
+            <mat-cell *matCellDef="let node">
+              <span *ngIf="node.firstSeen">{{ node.firstSeen | date: "dd/MM/yyyy - hh:mm:ss"}}</span>
+              <span *ngIf="!node.firstSeen">Not seen yet</span>
+            </mat-cell>
           </ng-container>
           <ng-container matColumnDef="status">
             <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
@@ -54,10 +57,10 @@
               <fa-icon [icon]="icons.refresh" class="list-control refresh"></fa-icon>
             </mat-cell>
           </ng-container>
-          <ng-container matColumnDef="view">
-            <mat-header-cell *matHeaderCellDef>View</mat-header-cell>
+          <ng-container matColumnDef="logs">
+            <mat-header-cell *matHeaderCellDef>Logs</mat-header-cell>
             <mat-cell *matCellDef="let node">
-              <fa-icon [icon]="icons.view" class="list-control view"></fa-icon>
+              <fa-icon [icon]="icons.logs" class="list-control logs"></fa-icon>
             </mat-cell>
           </ng-container>
 

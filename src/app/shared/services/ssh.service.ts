@@ -31,18 +31,41 @@ export class SshService {
 
   public async saveConnection(data: ISSHCreate): Promise<void> {
     try {
-      const sshKeyId = await this.generateKey(data.username);
+      let sshKeyId, authMethod;
+
+      switch (data.authMethod) {
+        case "generate":
+          sshKeyId = await this.generateKey(data.username);
+          authMethod = "key";
+          break;
+        case "onboard":
+          sshKeyId = await this.onboardKey(data.username, data.key);
+          authMethod = "key";
+          break;
+        case "password":
+          authMethod = "password";
+          break;
+      }
+
       const connection: ISSHCreateData = {
         type: "ssh",
         name: data.name,
         address: data.address,
         port: data.port,
-        keyID: sshKeyId,
         nodeLocation: data.nodeLocation,
+        authMethod,
       };
 
+      if (sshKeyId) {
+        connection["keyID"] = sshKeyId;
+      }
+
       await this.dbService.add(connection);
-      await this.onboardSshKeyToNode(connection, data.password, data.port);
+
+      // Onboard key if generated
+      if (data.authMethod === "generate") {
+        await this.onboardSshKeyToNode(connection, data.password, data.port);
+      }
     } catch (error) {
       console.error(error);
     }
@@ -80,21 +103,38 @@ export class SshService {
       // Check if there is an open connection/stream for this node
       if (!SshService.connectionPool.has(id)) {
         const sshConnectionData: ISSH = await this.dbService.findById(id);
-        const key: ISSHKey = await this.dbService.findById(
-          sshConnectionData.keyID
-        );
-        const config = {
+
+        let config = {
           host: sshConnectionData.address,
-          username: key.identity,
-          privateKey: key.sshPrv,
+
           port: sshConnectionData.port,
           readyTimeout: 99999,
         };
+        if (sshConnectionData.authMethod === "password") {
+          // ! TODO: Password dialog
+          let login: { username: string; password: string };
+
+          config["username"] = login.username;
+          config["password"] = login.password;
+        } else {
+          const key: ISSHKey = await this.dbService.findById(
+            sshConnectionData.keyID
+          );
+
+          config["username"] = key.identity;
+          config["privateKey"] = key.sshPrv;
+        }
 
         connection = new this.electron.ssh();
 
         await this.openConnection(connection, config);
         stream = await this.onReady(connection);
+
+        if (!sshConnectionData.firstSeen) {
+          sshConnectionData.firstSeen = new Date();
+
+          await this.dbService.update(sshConnectionData);
+        }
 
         // TODO: Add last used
         SshService.connectionPool.set(id, {
@@ -279,6 +319,24 @@ export class SshService {
         private: rsakey.prv.pkcs8pem,
         sshPub: this.convertRSAtoSSH(rsakey.pub.pkcs8pem), //.replace("(unnamed)", identity),
         sshPrv: this.convertRSAtoSSH(rsakey.prv.pkcs8pem, true), //.replace("(unnamed)", identity),
+        identity,
+      };
+
+      const sshKeyResp = await this.dbService.add(key);
+      return sshKeyResp._id;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  private async onboardKey(
+    identity: string,
+    onboardKey: string
+  ): Promise<string> {
+    try {
+      const key: ISSHKey = {
+        type: "sshkey",
+        sshPrv: onboardKey,
         identity,
       };
 

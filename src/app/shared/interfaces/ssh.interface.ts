@@ -1,3 +1,4 @@
+type TSSHAuth = "password" | "sshKey";
 export interface ISSHCreate {
   name: string;
   address: string;
@@ -5,6 +6,8 @@ export interface ISSHCreate {
   username: string;
   password: string;
   nodeLocation: string;
+  authMethod: string;
+  key?: string;
 }
 
 export interface ISSHCreateData {
@@ -14,17 +17,20 @@ export interface ISSHCreateData {
   name: string;
   address: string;
   port: number;
-  keyID: string;
+  keyID?: string;
   nodeLocation: string;
+  authMethod: TSSHAuth;
 }
 
 export interface ISSH {
-  _id?: string;
+  _id: string;
   name: string;
   address: string;
   port: number;
   keyID: string;
   nodeLocation: string;
+  firstSeen?: Date;
+  authMethod: TSSHAuth;
 }
 
 export interface ISSHKey {
@@ -32,8 +38,8 @@ export interface ISSHKey {
   _rev?: string;
   type: "sshkey";
   identity: string;
-  private: string;
-  public: string;
-  sshPub: string;
+  private?: string;
+  public?: string;
+  sshPub?: string;
   sshPrv: string;
 }

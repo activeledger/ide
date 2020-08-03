@@ -11,9 +11,10 @@ import { NgxEchartsModule } from "ngx-echarts";
 import * as echarts from "echarts";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { MatPaginatorModule } from "@angular/material/paginator";
+import { LogsComponent } from './logs/logs.component';
 
 @NgModule({
-  declarations: [DashboardComponent, ManagementComponent],
+  declarations: [DashboardComponent, ManagementComponent, LogsComponent],
   imports: [
     CommonModule,
     NodesRoutingModule,

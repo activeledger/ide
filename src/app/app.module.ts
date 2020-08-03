@@ -38,6 +38,7 @@ import { TranslateModule, TranslateLoader } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 
 // Angular material
+import { MatRadioModule } from "@angular/material/radio";
 import { MatBadgeModule } from "@angular/material/badge";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
@@ -160,6 +161,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatIconModule,
     MatSnackBarModule,
     MonacoEditorModule,
+    MatRadioModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

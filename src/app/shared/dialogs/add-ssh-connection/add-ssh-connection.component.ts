@@ -2,7 +2,6 @@ import { Component, OnInit } from "@angular/core";
 import { FormGroup, FormControl } from "@angular/forms";
 import { MatDialogRef } from "@angular/material/dialog";
 import { SshService } from "../../services/ssh.service";
-import { ISSH, ISSHCreate } from "../../interfaces/ssh.interface";
 
 @Component({
   selector: "add-ssh-connection",
@@ -17,6 +16,8 @@ export class AddSshConnectionDialogComponent implements OnInit {
     username: new FormControl(""),
     password: new FormControl(""),
     nodeLocation: new FormControl(""),
+    authMethod: new FormControl("generate"),
+    key: new FormControl(""),
   });
 
   constructor(
@@ -25,6 +26,10 @@ export class AddSshConnectionDialogComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {}
+
+  get authMethod(): string {
+    return this.sshConnectionForm.get("authMethod").value;
+  }
 
   public cancel(): void {
     this.dialogRef.close();

@@ -3,7 +3,6 @@ import { SshService } from "../../../../shared/services/ssh.service";
 import { ISSH } from "../../../../shared/interfaces/ssh.interface";
 import {
   faSync,
-  faExternalLink,
   faPlug,
   faPen,
   faTrash,
@@ -12,6 +11,7 @@ import {
   faWifi,
   faWifiSlash,
   faTimesCircle,
+  faFileAlt,
 } from "@fortawesome/pro-light-svg-icons";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
@@ -59,7 +59,7 @@ export class ManagementComponent implements OnInit {
 
   public icons = {
     refresh: faSync,
-    view: faExternalLink,
+    logs: faFileAlt,
     add: faPlug,
     edit: faPen,
     remove: faTrash,
@@ -79,7 +79,7 @@ export class ManagementComponent implements OnInit {
     "autoRestarts",
     "totalRestarts",
     "refresh",
-    "view",
+    "logs",
   ];
 
   public selectedNodeConnected = false;

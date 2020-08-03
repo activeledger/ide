@@ -2,8 +2,8 @@
   <h1 mat-dialog-title>Add SSH Connection</h1>
   <div>
     <p>
-      Your username and password will not be stored.
-      An SSH Keypair will be generated and used to connect.
+      Your password will not be stored.
+      An SSH Keypair can be generated and used to connect.
     </p>
     <form [formGroup]="sshConnectionForm">
       <mat-form-field>
@@ -19,6 +19,10 @@
       </mat-form-field>
       <br />
       <mat-form-field>
+        <input matInput placeholder="Node Location" type="text" formControlName="nodeLocation" required>
+      </mat-form-field>
+      <br />
+      <mat-form-field>
         <input matInput placeholder="Username" type="text" formControlName="username" required>
       </mat-form-field>
       &nbsp;:&nbsp;
@@ -26,9 +30,19 @@
         <input matInput placeholder="Password" type="password" formControlName="password" required>
       </mat-form-field>
       <br />
-      <mat-form-field>
-        <input matInput placeholder="Node Location" type="text" formControlName="nodeLocation" required>
+      <mat-radio-group ngDefaultControl aria-label="Authentication method" formControlName="authMethod">
+        <mat-radio-button value="generate" checked>Generate SSH Key</mat-radio-button>
+        <br />
+        <mat-radio-button value="password">Use Password (Not stored)</mat-radio-button>
+        <br />
+        <mat-radio-button value="onboard">Onboard SSH Key</mat-radio-button>
+      </mat-radio-group>
+      <br />
+
+      <mat-form-field class="keyInput" *ngIf="authMethod === 'onboard'">
+        <textarea rows="10" matInput placeholder="SSH Private Key" type="text" formControlName="key"></textarea>
       </mat-form-field>
+
     </form>
 
     <div mat-dialog-actions>
