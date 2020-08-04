@@ -22,11 +22,7 @@
  */
 
 import { Injectable } from "@angular/core";
-import {
-  MatDialog,
-  MatDialogRef,
-  MatDialogConfig,
-} from "@angular/material/dialog";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { ErrorDialogComponent } from "../dialogs/error-dialog/error-dialog.component";
 import { AdvancedConfirmDialogComponent } from "../dialogs/advanced-confirm-dialog/advanced-confirm-dialog.component";
 import { ConfirmDialogComponent } from "../dialogs/confirm-dialog/confirm-dialog.component";
@@ -39,6 +35,14 @@ import { ContractData } from "../structures/contract.structures";
 import { ILoginData } from "../interfaces/user.interfaces";
 import { BlockedDialogComponent } from "../dialogs/blocked-dialog/blocked-dialog.component";
 import { AddSshConnectionDialogComponent } from "../dialogs/add-ssh-connection/add-ssh-connection.component";
+import {
+  ISSHLogin,
+  ISSHCreate,
+  ISSH,
+  ISSHEdit,
+} from "../interfaces/ssh.interface";
+import { SshLoginDialogComponent } from "../dialogs/ssh-login-dialog/ssh-login-dialog.component";
+import { SshEditConnectionDialogComponent } from "../dialogs/ssh-edit-connection-dialog/ssh-edit-connection-dialog.component";
 
 /**
  * Provides dialogs
@@ -269,7 +273,7 @@ export class DialogService {
     });
   }
 
-  public addSSHConnection(settings?: any): Promise<boolean> {
+  public addSSHConnection(settings?: any): Promise<ISSHCreate> {
     let width = "450px";
     let height = "auto";
     if (settings) {
@@ -282,17 +286,61 @@ export class DialogService {
       }
     }
 
-    const config = new MatDialogConfig();
-    config.height = "auto";
-    config.width = width;
-
     const ref = this.dialog.open(AddSshConnectionDialogComponent, {
       width,
       height,
     });
 
     return new Promise((resolve) => {
-      ref.afterClosed().subscribe((result: boolean) => {
+      ref.afterClosed().subscribe((result: ISSHCreate) => {
+        resolve(result);
+      });
+    });
+  }
+
+  public sshLogin(settings?: any): Promise<ISSHLogin> {
+    let width = "450px";
+    let height = "auto";
+    if (settings) {
+      if (settings.width) {
+        width = settings.width;
+      }
+
+      if (settings.height) {
+        height = settings.height;
+      }
+    }
+
+    const ref = this.dialog.open(SshLoginDialogComponent, { width, height });
+
+    return new Promise((resolve) => {
+      ref.afterClosed().subscribe((result: ISSHLogin) => {
+        resolve(result);
+      });
+    });
+  }
+
+  public editSshConnection(sshData: ISSH, settings?: any): Promise<ISSHEdit> {
+    let width = "450px";
+    let height = "auto";
+    if (settings) {
+      if (settings.width) {
+        width = settings.width;
+      }
+
+      if (settings.height) {
+        height = settings.height;
+      }
+    }
+
+    const ref = this.dialog.open(SshEditConnectionDialogComponent, {
+      width,
+      height,
+      data: sshData,
+    });
+
+    return new Promise((resolve) => {
+      ref.afterClosed().subscribe((result: ISSHEdit) => {
         resolve(result);
       });
     });

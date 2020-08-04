@@ -4,6 +4,7 @@ import {
   ISSH,
   ISSHKey,
   ISSHCreateData,
+  ISSHLogin,
 } from "../interfaces/ssh.interface";
 import { KeyService } from "./key.service";
 import { ElectronService } from "./electron.service";
@@ -11,6 +12,7 @@ import { DatabaseService } from "../../providers/database.service";
 import { DBTypes } from "../enums/db.enum";
 import * as util from "util";
 import { threadId } from "worker_threads";
+import { DialogService } from "./dialog.service";
 
 @Injectable({
   providedIn: "root",
@@ -26,7 +28,8 @@ export class SshService {
   constructor(
     private readonly keyService: KeyService,
     private readonly electron: ElectronService,
-    private readonly dbService: DatabaseService
+    private readonly dbService: DatabaseService,
+    private readonly dialogService: DialogService
   ) {}
 
   public async saveConnection(data: ISSHCreate): Promise<void> {
@@ -83,19 +86,37 @@ export class SshService {
     return;
   }
 
+  public async editConnection(id: string): Promise<void> {
+    const sshData: ISSH = await this.dbService.findById(id);
+    const editedData: ISSH = await this.dialogService.editSshConnection(
+      sshData
+    );
+    if (editedData) {
+      await this.dbService.update(editedData);
+    }
+  }
+
   public async removeConnection(id: string): Promise<void> {
     try {
       const connection: ISSH = await this.dbService.findById(id);
-      const removeKey = this.dbService.remove(connection.keyID);
+      let removeKey;
+      if (connection.authMethod !== "password") {
+        removeKey = this.dbService.remove(connection.keyID);
+      }
+
       const removeConnection = this.dbService.remove(id);
-      await removeKey;
+
+      if (removeKey) {
+        await removeKey;
+      }
+
       await removeConnection;
     } catch (error) {
       throw error;
     }
   }
 
-  public async sshToNode(id: string): Promise<void> {
+  public async sshToNode(id: string): Promise<boolean> {
     try {
       console.log("Initialising SSH Connection...");
       let connection, stream;
@@ -106,13 +127,16 @@ export class SshService {
 
         let config = {
           host: sshConnectionData.address,
-
           port: sshConnectionData.port,
           readyTimeout: 99999,
         };
+
         if (sshConnectionData.authMethod === "password") {
-          // ! TODO: Password dialog
-          let login: { username: string; password: string };
+          const login: ISSHLogin = await this.dialogService.sshLogin();
+
+          if (login.cancelled || !login.username || !login.password) {
+            return false;
+          }
 
           config["username"] = login.username;
           config["password"] = login.password;
@@ -149,6 +173,8 @@ export class SshService {
           // Remove oldest key
           SshService.connectionPool.delete(pool.keys().next().value);
         }
+
+        return true;
       }
     } catch (error) {
       throw error;
@@ -189,6 +215,23 @@ export class SshService {
     return new Promise(async (resolve, reject) => {});
   }
 
+  public closeConnection(id: string) {
+    const stream = SshService.connectionPool.get(id).stream;
+    const connection = SshService.connectionPool.get(id).connection;
+
+    // Listen for stream close and end connection
+    stream.on("close", (code, signal) => {
+      console.log("Stream :: close :: code: " + code + ", signal: " + signal);
+      connection.end();
+    });
+
+    // Exit the shell
+    stream.write("exit\r\n");
+
+    // Remove from pool
+    SshService.connectionPool.delete(id);
+  }
+
   private openConnection(connection, config): Promise<any> {
     return new Promise((resolve, reject) => {
       try {
@@ -223,23 +266,6 @@ export class SshService {
       stream.write(command);
       resolve();
     });
-  }
-
-  public closeConnection(id: string) {
-    const stream = SshService.connectionPool.get(id).stream;
-    const connection = SshService.connectionPool.get(id).connection;
-
-    // Listen for stream close and end connection
-    stream.on("close", (code, signal) => {
-      console.log("Stream :: close :: code: " + code + ", signal: " + signal);
-      connection.end();
-    });
-
-    // Exit the shell
-    stream.write("exit\r\n");
-
-    // Remove from pool
-    SshService.connectionPool.delete(id);
   }
 
   private async onboardSshKeyToNode(

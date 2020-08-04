@@ -3,7 +3,7 @@ export interface ISSHCreate {
   name: string;
   address: string;
   port: number;
-  username: string;
+  username?: string;
   password: string;
   nodeLocation: string;
   authMethod: string;
@@ -27,10 +27,14 @@ export interface ISSH {
   name: string;
   address: string;
   port: number;
-  keyID: string;
+  keyID?: string;
   nodeLocation: string;
   firstSeen?: Date;
   authMethod: TSSHAuth;
+}
+
+export interface ISSHEdit extends ISSH {
+  newKey: string;
 }
 
 export interface ISSHKey {
@@ -42,4 +46,10 @@ export interface ISSHKey {
   public?: string;
   sshPub?: string;
   sshPrv: string;
+}
+
+export interface ISSHLogin {
+  username: string;
+  password: string;
+  cancelled: boolean;
 }

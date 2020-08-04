@@ -22,13 +22,16 @@
         <input matInput placeholder="Node Location" type="text" formControlName="nodeLocation" required>
       </mat-form-field>
       <br />
-      <mat-form-field>
-        <input matInput placeholder="Username" type="text" formControlName="username" required>
-      </mat-form-field>
-      &nbsp;:&nbsp;
-      <mat-form-field>
-        <input matInput placeholder="Password" type="password" formControlName="password" required>
-      </mat-form-field>
+
+      <div *ngIf="authMethod !== 'password'">
+        <mat-form-field>
+          <input matInput placeholder="Username" type="text" formControlName="username" required>
+        </mat-form-field>
+        &nbsp;:&nbsp;
+        <mat-form-field>
+          <input matInput placeholder="Password" type="password" formControlName="password" required>
+        </mat-form-field>
+      </div>
       <br />
       <mat-radio-group ngDefaultControl aria-label="Authentication method" formControlName="authMethod">
         <mat-radio-button value="generate" checked>Generate SSH Key</mat-radio-button>

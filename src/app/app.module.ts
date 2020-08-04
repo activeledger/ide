@@ -102,6 +102,8 @@ import { MonacoEditorModule } from "@materia-ui/ngx-monaco-editor";
 import { MatButtonToggleModule } from "@angular/material/button-toggle";
 import { MainmenuComponent } from "./shared/components/mainmenu/mainmenu.component";
 import { AddSshConnectionDialogComponent } from "./shared/dialogs/add-ssh-connection/add-ssh-connection.component";
+import { SshLoginDialogComponent } from './shared/dialogs/ssh-login-dialog/ssh-login-dialog.component';
+import { SshEditConnectionDialogComponent } from './shared/dialogs/ssh-edit-connection-dialog/ssh-edit-connection-dialog.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -126,6 +128,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     BlockedDialogComponent,
     MainmenuComponent,
     AddSshConnectionDialogComponent,
+    SshLoginDialogComponent,
+    SshEditConnectionDialogComponent,
   ],
   imports: [
     NgxSpinnerModule,

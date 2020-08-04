@@ -85,7 +85,7 @@
               <fa-icon [icon]="icons.add"></fa-icon>&nbsp;&nbsp;&nbsp;Add
             </div>
 
-            <div class="control" *ngIf="node">
+            <div class="control" (click)="editConnection()" *ngIf="node">
               <fa-icon [icon]="icons.edit"></fa-icon>&nbsp;&nbsp;&nbsp;Edit
             </div>
 

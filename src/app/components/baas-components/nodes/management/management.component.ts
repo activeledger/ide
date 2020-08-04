@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { SshService } from "../../../../shared/services/ssh.service";
-import { ISSH } from "../../../../shared/interfaces/ssh.interface";
+import { ISSH, ISSHCreate } from "../../../../shared/interfaces/ssh.interface";
 import {
   faSync,
   faPlug,
@@ -101,8 +101,9 @@ export class ManagementComponent implements OnInit {
   public async connectTo(row): Promise<void> {
     try {
       this.node = row;
-      // await this.ssh.sshToNode(row._id);
-      await this.getNodeStats(row._id);
+      if (await this.ssh.sshToNode(row._id)) {
+        await this.getNodeStats(row._id);
+      }
     } catch (error) {
       console.error(error);
     }
@@ -113,8 +114,13 @@ export class ManagementComponent implements OnInit {
       id = this.node._id;
     }
 
-    // let stats = await this.ssh.getStats(id);
-    let stats: INodeStats = this.nodeStats[id];
+    let stats = await this.ssh.getStats(id);
+    // let stats: INodeStats = this.nodeStats[id];
+
+    if (!stats) {
+      return;
+    }
+
     console.log(JSON.stringify(stats, null, 2));
 
     stats = this.ramToString(stats);
@@ -228,8 +234,19 @@ export class ManagementComponent implements OnInit {
   public getNodeData(connection: ISSH): void {}
 
   public async addConnection(): Promise<void> {
-    const ref = await this.dialogService.addSSHConnection();
-    if (!ref) {
+    try {
+      const sshCreateData: ISSHCreate = await this.dialogService.addSSHConnection();
+
+      // Cancelled
+      if (!sshCreateData) {
+        return;
+      }
+
+      await this.ssh.saveConnection(sshCreateData);
+
+      this.getSshConnections();
+    } catch (error) {
+      console.error(error);
     }
   }
 
@@ -241,7 +258,8 @@ export class ManagementComponent implements OnInit {
 
     try {
       const confirm = await this.dialogService.confirm(
-        `Deleting this connection will remove ${this.node.name} with IP ${this.node.address}, all its details, and the key pair. Are you sure?`
+        `Deleting this connection will remove "${this.node.name}" with IP "${this.node.address}", all its details, and the key pair if it exists. Are you sure?`,
+        { width: "500px" }
       );
       if (confirm) {
         await this.ssh.removeConnection(this.node._id);
@@ -249,6 +267,15 @@ export class ManagementComponent implements OnInit {
       }
     } catch (error) {
       this.dialogService.error("There was an error removing the connection.");
+      console.error(error);
+    }
+  }
+
+  public async editConnection(): Promise<void> {
+    try {
+      await this.ssh.editConnection(this.node._id);
+      this.getSshConnections();
+    } catch (error) {
       console.error(error);
     }
   }

@@ -21,8 +21,7 @@ export class AddSshConnectionDialogComponent implements OnInit {
   });
 
   constructor(
-    public dialogRef: MatDialogRef<AddSshConnectionDialogComponent>,
-    private readonly ssh: SshService
+    public dialogRef: MatDialogRef<AddSshConnectionDialogComponent>
   ) {}
 
   ngOnInit(): void {}
@@ -35,15 +34,7 @@ export class AddSshConnectionDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  public async create(): Promise<void> {
-    try {
-      const inputData = this.sshConnectionForm.value;
-
-      await this.ssh.saveConnection(inputData);
-      this.dialogRef.close(true);
-    } catch (error) {
-      console.log(error);
-      this.dialogRef.close(false);
-    }
+  public create(): void {
+    this.dialogRef.close(this.sshConnectionForm.value);
   }
 }

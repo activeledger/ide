@@ -1,0 +1,33 @@
+<div>
+  <h1 mat-dialog-title>Edit SSH Connection</h1>
+  <div>
+    <mat-form-field>
+      <input matInput placeholder="Name" type="text" [(ngModel)]="data.name" required>
+    </mat-form-field>
+    <br />
+    <mat-form-field>
+      <input matInput placeholder="Address" type="text" [(ngModel)]="data.address" required>
+    </mat-form-field>
+    &nbsp;:&nbsp;
+    <mat-form-field>
+      <input matInput placeholder="Port" type="number" [(ngModel)]="data.port" required>
+    </mat-form-field>
+    <br />
+    <mat-form-field>
+      <input matInput placeholder="Node Location" type="string" [(ngModel)]="data.nodeLocation" required>
+    </mat-form-field>
+    <br />
+
+    <mat-checkbox *ngIf="data.authMethod !== 'password'" [(ngModel)]="updateKey">Change Private Key</mat-checkbox>
+
+    <br />
+    <mat-form-field *ngIf="updateKey" style="width: 100%;">
+      <textarea rows="5" matInput placeholder="Private key" type="number" [(ngModel)]="privateKey"></textarea>
+    </mat-form-field>
+    <br />
+
+    <div mat-dialog-actions>
+      <button mat-button (click)="cancel()">Cancel</button>
+      <button mat-button (click)="save()">Save</button>
+    </div>
+  </div>
