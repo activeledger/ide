@@ -1,15 +1,22 @@
 <div class="wrapper">
-  <!-- <section class="node-list-wrapper">
-    <ul>
-      <li *ngFor="let connection of connections" (click)="node = connection">
-        {{connection.name}}
-      </li>
-    </ul>
-  </section> -->
+
 
   <section class="main">
     <div class="nodes-list-wrapper">
-      <div class="title">Nodes</div>
+      <div class="list-topper">
+        <div class="title">Nodes</div>
+        <div class="tags-filter">
+          <mat-form-field>
+            <mat-label>Filter by Tag</mat-label>
+            <mat-select (selectionChange)="filterByTag($event)">
+              <mat-option>None</mat-option>
+              <mat-option *ngFor="let tag of tags" [value]="tag">
+                {{tag}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
       <div class="content">
         <mat-table [dataSource]="connections" class="node-list">
           <ng-container matColumnDef="name">
@@ -18,7 +25,14 @@
           </ng-container>
           <ng-container matColumnDef="tags">
             <mat-header-cell *matHeaderCellDef>Tags</mat-header-cell>
-            <mat-cell *matCellDef="let node">{{node.tags && node.tags[0] ? node.name : "Not connected"}}</mat-cell>
+            <mat-cell *matCellDef="let node">
+              <span *ngIf="node.tags && node.tags[0]">
+                <span *ngFor="let tag of node.tags" class="node-tag">
+                  {{tag}}
+                </span>
+              </span>
+              <span *ngIf="!node.tags || !node.tags[0]">No Tags</span>
+            </mat-cell>
           </ng-container>
           <ng-container matColumnDef="firstSeen">
             <mat-header-cell *matHeaderCellDef>First Seen</mat-header-cell>
@@ -94,21 +108,30 @@
             </div>
           </div>
 
-          <div class="bottom">
-            <div class="control" *ngIf="node">
+          <div class="middle" *ngIf="node">
+            <div class="control">
               <fa-icon [icon]="icons.disconnect"></fa-icon>&nbsp;&nbsp;&nbsp;Disconnect
             </div>
 
-            <div class="control" *ngIf="node">
+            <div class="control">
               <fa-icon [icon]="icons.restart"></fa-icon>&nbsp;&nbsp;&nbsp;Restart
             </div>
 
-            <div class="control" *ngIf="node">
+            <div class="control">
               <fa-icon [icon]="icons.stop"></fa-icon>&nbsp;&nbsp;&nbsp;Stop
             </div>
           </div>
 
+          <div class="bottom">
+            <div class="control" (click)="manageTags()">
+              <fa-icon [icon]="icons.manageTagsAll"></fa-icon>&nbsp;&nbsp;&nbsp;Manage all Tags
+            </div>
 
+            <div class="control" *ngIf="node" (click)="manageConnectionTags()">
+              <fa-icon [icon]="icons.manageTags"></fa-icon>&nbsp;&nbsp;&nbsp;Manage Node Tags
+            </div>
+
+          </div>
 
         </div>
 

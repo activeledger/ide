@@ -85,7 +85,20 @@
 
   <section class="bottom">
     <div class="nodes-list-wrapper bottom-elem">
-      <div class="title">Nodes</div>
+      <div class="list-topper">
+        <div class="title">Nodes</div>
+        <div class="tags-filter">
+          <mat-form-field>
+            <mat-label>Filter by Tag</mat-label>
+            <mat-select (selectionChange)="filterByTag($event)">
+              <mat-option>None</mat-option>
+              <mat-option *ngFor="let tag of tags" [value]="tag">
+                {{tag}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
       <div class="content">
         <mat-table [dataSource]="connections" class="node-list">
           <ng-container matColumnDef="name">
@@ -94,7 +107,14 @@
           </ng-container>
           <ng-container matColumnDef="tags">
             <mat-header-cell *matHeaderCellDef>Tags</mat-header-cell>
-            <mat-cell *matCellDef="let node">{{node.tags && node.tags[0] ? node.name : "Not connected"}}</mat-cell>
+            <mat-cell *matCellDef="let node">
+              <span *ngIf="node.tags && node.tags[0]">
+                <span *ngFor="let tag of node.tags" class="node-tag">
+                  {{tag}}
+                </span>
+              </span>
+              <span *ngIf="!node.tags || !node.tags[0]">No Tags</span>
+            </mat-cell>
           </ng-container>
           <ng-container matColumnDef="firstSeen">
             <mat-header-cell *matHeaderCellDef>First Seen</mat-header-cell>

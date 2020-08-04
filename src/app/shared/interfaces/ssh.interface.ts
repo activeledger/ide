@@ -1,6 +1,7 @@
 type TSSHAuth = "password" | "sshKey";
 export interface ISSHCreate {
   name: string;
+  tags: string[];
   address: string;
   port: number;
   username?: string;
@@ -13,6 +14,7 @@ export interface ISSHCreate {
 export interface ISSHCreateData {
   _id?: string;
   _rev?: string;
+  tags: string[];
   type: "ssh";
   name: string;
   address: string;
@@ -24,6 +26,7 @@ export interface ISSHCreateData {
 
 export interface ISSH {
   _id: string;
+  tags: string[];
   name: string;
   address: string;
   port: number;
@@ -52,4 +55,22 @@ export interface ISSHLogin {
   username: string;
   password: string;
   cancelled: boolean;
+}
+
+export interface ISSHTags {
+  _id: string;
+  _rev?: string;
+  type: "sshtags";
+  tags: string[];
+}
+
+export interface ISSHTagsCreate {
+  _id: string;
+  type: "sshtags";
+  tags: string[];
+}
+
+export interface ISSHTagsManage {
+  removeTags: string[];
+  addTags: string[];
 }

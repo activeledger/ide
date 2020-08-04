@@ -33,4 +33,5 @@ export enum DBTypes {
   WORKFLOW = "workflow",
   SSH = "ssh",
   SSHKEY = "sshkey",
+  SSHTAGS = "sshtags",
 }

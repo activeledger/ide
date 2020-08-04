@@ -5,6 +5,8 @@ import {
   ISSHKey,
   ISSHCreateData,
   ISSHLogin,
+  ISSHTags,
+  ISSHTagsCreate,
 } from "../interfaces/ssh.interface";
 import { KeyService } from "./key.service";
 import { ElectronService } from "./electron.service";
@@ -51,6 +53,7 @@ export class SshService {
       }
 
       const connection: ISSHCreateData = {
+        tags: data.tags,
         type: "ssh",
         name: data.name,
         address: data.address,
@@ -84,6 +87,117 @@ export class SshService {
 
   public async getKey(id: string): Promise<unknown> {
     return;
+  }
+
+  public async addTags(newTags: string[]): Promise<void> {
+    try {
+      const tags: ISSHTags = await this.dbService.findById<ISSHTags>(
+        DBTypes.SSHTAGS
+      );
+
+      if (!tags) {
+        const tags: ISSHTagsCreate = {
+          _id: DBTypes.SSHTAGS,
+          tags: newTags,
+          type: DBTypes.SSHTAGS,
+        };
+
+        await this.dbService.add(tags);
+      } else {
+        tags.tags = [...tags.tags, ...newTags];
+        await this.dbService.update(tags);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  public async deleteTags(deleteTags: string[]): Promise<void> {
+    try {
+      const promisePool = [];
+
+      // Get stored tags list
+      const tags: ISSHTags = await this.dbService.findById<ISSHTags>(
+        DBTypes.SSHTAGS
+      );
+
+      // Remove deleted tags
+      for (const tag of deleteTags) {
+        tags.tags.splice(tags.tags.indexOf(tag), 1);
+      }
+      await this.dbService.update(tags);
+
+      // Remove deleted tags from connections
+      const connections = await this.getConnections();
+      for (const connection of connections) {
+        if (connection.tags && connection.tags.length > 0) {
+          for (const tag of connection.tags) {
+            if (deleteTags.includes(tag)) {
+              connection.tags.splice(connection.tags.indexOf(tag));
+            }
+          }
+        }
+
+        promisePool.push(this.dbService.update(connection));
+      }
+
+      // Process database updates
+      await Promise.all(promisePool);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  public async getTags(): Promise<string[]> {
+    const tags: ISSHTags = await this.dbService.findById<ISSHTags>(
+      DBTypes.SSHTAGS
+    );
+
+    return tags ? tags.tags : [];
+  }
+
+  public async filterByTag(tag: string): Promise<ISSH[]> {
+    const connections = await this.getConnections();
+    const filteredConnections: ISSH[] = [];
+
+    for (const conn of connections) {
+      console.log("conn.tags");
+      console.log(conn);
+      console.log(conn.tags);
+      if (conn.tags && conn.tags.length > 0 && conn.tags.includes(tag)) {
+        filteredConnections.push(conn);
+      }
+    }
+
+    console.log("filteredConnections");
+    console.log(filteredConnections);
+
+    return filteredConnections;
+  }
+
+  public async addTagsToConnection(id: string, tags: string[]): Promise<void> {
+    const connection = await this.getConnection(id);
+
+    if (connection.tags) {
+      connection.tags = [...connection.tags, ...tags];
+    } else {
+      connection.tags = tags;
+    }
+
+    await this.dbService.update(connection);
+  }
+
+  public async removeTagsFromConnection(
+    id: string,
+    tags: string[]
+  ): Promise<void> {
+    const connection = await this.getConnection(id);
+
+    for (const tag of tags) {
+      connection.tags.splice(connection.tags.indexOf(tag), 1);
+    }
+
+    await this.dbService.update(connection);
   }
 
   public async editConnection(id: string): Promise<void> {

@@ -40,9 +40,12 @@ import {
   ISSHCreate,
   ISSH,
   ISSHEdit,
+  ISSHTagsManage,
 } from "../interfaces/ssh.interface";
 import { SshLoginDialogComponent } from "../dialogs/ssh-login-dialog/ssh-login-dialog.component";
 import { SshEditConnectionDialogComponent } from "../dialogs/ssh-edit-connection-dialog/ssh-edit-connection-dialog.component";
+import { SshManageTagsDialogComponent } from "../dialogs/ssh-manage-tags-dialog/ssh-manage-tags-dialog.component";
+import { SshManageTagsConnectionDialogComponent } from "../dialogs/ssh-manage-tags-connection-dialog/ssh-manage-tags-connection-dialog.component";
 
 /**
  * Provides dialogs
@@ -341,6 +344,63 @@ export class DialogService {
 
     return new Promise((resolve) => {
       ref.afterClosed().subscribe((result: ISSHEdit) => {
+        resolve(result);
+      });
+    });
+  }
+
+  public manageTags(tags: string[], settings?: any): Promise<ISSHTagsManage> {
+    let width = "450px";
+    let height = "auto";
+    if (settings) {
+      if (settings.width) {
+        width = settings.width;
+      }
+
+      if (settings.height) {
+        height = settings.height;
+      }
+    }
+
+    const ref = this.dialog.open(SshManageTagsDialogComponent, {
+      width,
+      height,
+      data: tags,
+    });
+
+    return new Promise((resolve) => {
+      ref.afterClosed().subscribe((result: ISSHTagsManage) => {
+        resolve(result);
+      });
+    });
+  }
+
+  public manageTagsConnection(
+    tags: string[],
+    nodeTags: string[],
+    name: string,
+    settings?: any
+  ): Promise<ISSHTagsManage> {
+    let width = "450px";
+    let height = "auto";
+    if (settings) {
+      if (settings.width) {
+        width = settings.width;
+      }
+
+      if (settings.height) {
+        height = settings.height;
+      }
+    }
+
+    const ref = this.dialog.open(SshManageTagsConnectionDialogComponent, {
+      width,
+      height,
+      data: { tags, nodeTags, name },
+    });
+
+    return new Promise((resolve) => {
+      ref.afterClosed().subscribe((result: ISSHTagsManage) => {
         resolve(result);
       });
     });

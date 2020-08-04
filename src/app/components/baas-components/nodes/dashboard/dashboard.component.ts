@@ -17,6 +17,8 @@ import { MatPaginator } from "@angular/material/paginator";
 export class DashboardComponent implements OnInit {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
+  public tags: string[] = [];
+
   public displayColumns = [
     "name",
     "firstSeen",
@@ -229,6 +231,17 @@ export class DashboardComponent implements OnInit {
     }
   }
 
+  public async filterByTag(event): Promise<void> {
+    if (!event.value) {
+      await this.getSshConnections();
+    } else {
+      this.connectionData = await this.ssh.filterByTag(event.value);
+      this.connections = new MatTableDataSource<ISSH>(this.connectionData);
+      this.paginator.pageSize = 20;
+      this.connections.paginator = this.paginator;
+    }
+  }
+
   public async getNodeStats(id?: string): Promise<void> {
     if (!id) {
       id = this.node._id;
@@ -370,6 +383,7 @@ export class DashboardComponent implements OnInit {
 
   private async getSshConnections(): Promise<void> {
     try {
+      this.tags = await this.ssh.getTags();
       this.connectionData = await this.ssh.getConnections();
     } catch (error) {
       console.error(error);

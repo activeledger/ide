@@ -9,14 +9,24 @@
     width: calc(75% - 20px);
     margin-right: 20px;
 
-    .title {
+    .list-topper {
+      display: flex;
+      justify-content: space-between;
+      flex-direction: row;
       background-color: #333;
-      font-size: 18pt;
-      font-weight: 100;
       border-bottom: solid 1px #6e49ff;
       color: #fff;
 
-      padding: 10px;
+      .title {
+        padding: 10px;
+        font-size: 18pt;
+        font-weight: 100;
+      }
+
+      .tags-filter {
+        background: rgb(235, 235, 235);
+        padding: 4px 6px;
+      }
     }
 
     .content {
@@ -115,6 +125,7 @@
 
       .controls {
         .top,
+        .middle,
         .bottom {
           display: flex;
           flex-direction: row;
@@ -139,7 +150,8 @@
           }
         }
 
-        .top {
+        .top,
+        .middle {
           margin-bottom: 10px;
           padding-bottom: 10px;
           border-bottom: 1px solid #6e49ff;

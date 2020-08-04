@@ -12,6 +12,10 @@ import {
   faWifiSlash,
   faTimesCircle,
   faFileAlt,
+  faLink,
+  faUnlink,
+  faTag,
+  faTags,
 } from "@fortawesome/pro-light-svg-icons";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
@@ -26,11 +30,14 @@ import { INodeStats } from "../../../../shared/interfaces/baas.interfaces";
 export class ManagementComponent implements OnInit {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
+  public filter: string;
+  public tags: string[];
+
   public connectionData: ISSH[] = [];
   public connections = new MatTableDataSource<ISSH>(this.connectionData);
   public node: ISSH;
   public nodeStats: { [id: string]: INodeStats } = {
-    "2ab4bffb-5d7c-4737-be90-67122d340cff": {
+    /* "2ab4bffb-5d7c-4737-be90-67122d340cff": {
       cpu: {
         cores: 15,
         one: 0.01123046875,
@@ -54,7 +61,7 @@ export class ManagementComponent implements OnInit {
       },
       uptime: 224788,
       version: "2.3.1",
-    },
+    }, */
   };
 
   public icons = {
@@ -68,6 +75,8 @@ export class ManagementComponent implements OnInit {
     stop: faPowerOff,
     connected: faWifi,
     disconnected: faWifiSlash,
+    manageTags: faTag,
+    manageTagsAll: faTags,
   };
 
   public displayColumns = [
@@ -121,8 +130,6 @@ export class ManagementComponent implements OnInit {
       return;
     }
 
-    console.log(JSON.stringify(stats, null, 2));
-
     stats = this.ramToString(stats);
     stats = this.hddToString(stats);
 
@@ -141,6 +148,55 @@ export class ManagementComponent implements OnInit {
     }
   }
 
+  public async manageTags(): Promise<void> {
+    const tags = await this.dialogService.manageTags(this.tags);
+
+    if (!tags) {
+      return;
+    }
+
+    if (tags.removeTags.length > 0) {
+      await this.ssh.deleteTags(tags.removeTags);
+    }
+    if (tags.addTags.length > 0) {
+      await this.ssh.addTags(tags.addTags);
+    }
+
+    this.tags = await this.ssh.getTags();
+  }
+
+  public async manageConnectionTags(): Promise<void> {
+    const tags = await this.dialogService.manageTagsConnection(
+      JSON.parse(JSON.stringify(this.tags)),
+      JSON.parse(JSON.stringify(this.node.tags)),
+      this.node.name
+    );
+
+    if (!tags) {
+      return;
+    }
+
+    if (tags.removeTags.length > 0) {
+      await this.ssh.removeTagsFromConnection(this.node._id, tags.removeTags);
+    }
+    if (tags.addTags.length > 0) {
+      await this.ssh.addTagsToConnection(this.node._id, tags.addTags);
+    }
+
+    await this.getSshConnections();
+  }
+
+  public async filterByTag(event): Promise<void> {
+    if (!event.value) {
+      await this.getSshConnections();
+    } else {
+      this.connectionData = await this.ssh.filterByTag(event.value);
+      this.connections = new MatTableDataSource<ISSH>(this.connectionData);
+      this.paginator.pageSize = 20;
+      this.connections.paginator = this.paginator;
+    }
+  }
+
   private formatUptime(uptime: number): string {
     let uptimeString = uptime + "ms";
 
@@ -148,11 +204,6 @@ export class ManagementComponent implements OnInit {
     let minutes = seconds / 60;
     let hours = minutes / 60;
     let days = hours / 24;
-
-    console.log("Days: " + days);
-    console.log("Hours: " + hours);
-    console.log("Minutes: " + minutes);
-    console.log("Seconds: " + seconds);
 
     if (days > 1) {
       days = Math.floor(days);
@@ -282,6 +333,7 @@ export class ManagementComponent implements OnInit {
 
   private async getSshConnections(): Promise<void> {
     try {
+      this.tags = await this.ssh.getTags();
       this.connectionData = await this.ssh.getConnections();
     } catch (error) {
       console.error(error);

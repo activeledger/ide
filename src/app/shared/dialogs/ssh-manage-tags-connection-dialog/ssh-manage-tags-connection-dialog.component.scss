@@ -1,0 +1,19 @@
+ul {
+  list-style: none;
+  padding-left: 0;
+
+  .listItem {
+    width: 100%;
+    cursor: pointer;
+    transition: color ease-in-out 0.2s;
+
+    &:hover {
+      color: rgb(246, 76, 76);
+    }
+
+    .removeIco {
+      float: right;
+      color: rgb(246, 76, 76);
+    }
+  }
+}
