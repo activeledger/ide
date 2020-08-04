@@ -49,28 +49,32 @@
       <div class="title">Activeledger</div>
       <div class="content">
         <div class="version">
-          <div class="current-version">Version: {{node ? nodeStats[node._id].version : 0.0.0}}</div>
+          <div class="current-version">Version: {{node && nodeStats[node._id] ? nodeStats[node._id].version : 0.0.0}}
+          </div>
         </div>
 
         <br />
 
         <div class="uptime">
-          Uptime: {{node ? nodeStats[node._id].uptime : 0}}
+          Uptime: {{node && nodeStats[node._id] ? nodeStats[node._id].uptime : 0}}
         </div>
 
         <br />
 
         <div class="alDiskUsage">
-          Activledger disk usage: {{node ? nodeStats[node._id].hdd.activeledger : 0}}
+          Activledger disk usage: {{node && nodeStats[node._id] ? nodeStats[node._id].hdd.activeledger : 0}}
         </div>
 
         <br />
 
         <div class="restarts">
-          <div class="auto-restarts">Auto restarts: {{node ? nodeStats[node._id].restarts.auto : 0}}</div>
+          <div class="auto-restarts">Auto restarts:
+            {{node && nodeStats[node._id] ? nodeStats[node._id].restarts.auto : 0}}</div>
           <div class="manual-restarts">Manual restarts:
-            {{node ? nodeStats[node._id].restarts.all - nodeStats[node._id].restarts.auto : 0}}</div>
-          <div class="total-restarts">Total restarts: {{node ? nodeStats[node._id].restarts.all : 0}}</div>
+            {{node && nodeStats[node._id] ? nodeStats[node._id].restarts.all - nodeStats[node._id].restarts.auto : 0}}
+          </div>
+          <div class="total-restarts">Total restarts:
+            {{node && nodeStats[node._id] ? nodeStats[node._id].restarts.all : 0}}</div>
         </div>
 
         <div class="last-manual-restart">Last Manual Restart: 10:00 - 01/07/2020</div>

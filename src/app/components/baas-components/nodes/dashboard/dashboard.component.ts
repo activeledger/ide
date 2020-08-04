@@ -55,7 +55,7 @@ export class DashboardComponent implements OnInit {
   public node: ISSH;
 
   public nodeStats: { [id: string]: INodeStats } = {
-    "2ab4bffb-5d7c-4737-be90-67122d340cff": {
+    /* "2ab4bffb-5d7c-4737-be90-67122d340cff": {
       cpu: {
         cores: 15,
         one: 0.01123046875,
@@ -79,7 +79,7 @@ export class DashboardComponent implements OnInit {
       },
       uptime: 224788,
       version: "2.3.1",
-    },
+    }, */
   };
 
   public noNodes = false;
@@ -221,8 +221,9 @@ export class DashboardComponent implements OnInit {
   public async connectTo(row): Promise<void> {
     try {
       this.node = row;
-      // await this.ssh.sshToNode(row._id);
-      await this.getNodeStats(row._id);
+      if (await this.ssh.sshToNode(row._id)) {
+        await this.getNodeStats(row._id);
+      }
     } catch (error) {
       console.error(error);
     }
@@ -233,8 +234,7 @@ export class DashboardComponent implements OnInit {
       id = this.node._id;
     }
 
-    // let stats = await this.ssh.getStats(id);
-    let stats: INodeStats = this.nodeStats[id];
+    let stats = await this.ssh.getStats(id);
 
     stats = this.ramToString(stats);
     stats = this.hddToString(stats);
