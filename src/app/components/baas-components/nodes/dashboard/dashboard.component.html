@@ -49,28 +49,32 @@
       <div class="title">Activeledger</div>
       <div class="content">
         <div class="version">
-          <div class="current-version">Version: {{node ? nodeStats[node._id].version : 0.0.0}}</div>
+          <div class="current-version">Version: {{node && nodeStats[node._id] ? nodeStats[node._id].version : 0.0.0}}
+          </div>
         </div>
 
         <br />
 
         <div class="uptime">
-          Uptime: {{node ? nodeStats[node._id].uptime : 0}}
+          Uptime: {{node && nodeStats[node._id] ? nodeStats[node._id].uptime : 0}}
         </div>
 
         <br />
 
         <div class="alDiskUsage">
-          Activledger disk usage: {{node ? nodeStats[node._id].hdd.activeledger : 0}}
+          Activledger disk usage: {{node && nodeStats[node._id] ? nodeStats[node._id].hdd.activeledger : 0}}
         </div>
 
         <br />
 
         <div class="restarts">
-          <div class="auto-restarts">Auto restarts: {{node ? nodeStats[node._id].restarts.auto : 0}}</div>
+          <div class="auto-restarts">Auto restarts:
+            {{node && nodeStats[node._id] ? nodeStats[node._id].restarts.auto : 0}}</div>
           <div class="manual-restarts">Manual restarts:
-            {{node ? nodeStats[node._id].restarts.all - nodeStats[node._id].restarts.auto : 0}}</div>
-          <div class="total-restarts">Total restarts: {{node ? nodeStats[node._id].restarts.all : 0}}</div>
+            {{node && nodeStats[node._id] ? nodeStats[node._id].restarts.all - nodeStats[node._id].restarts.auto : 0}}
+          </div>
+          <div class="total-restarts">Total restarts:
+            {{node && nodeStats[node._id] ? nodeStats[node._id].restarts.all : 0}}</div>
         </div>
 
         <div class="last-manual-restart">Last Manual Restart: 10:00 - 01/07/2020</div>
@@ -81,7 +85,20 @@
 
   <section class="bottom">
     <div class="nodes-list-wrapper bottom-elem">
-      <div class="title">Nodes</div>
+      <div class="list-topper">
+        <div class="title">Nodes</div>
+        <div class="tags-filter">
+          <mat-form-field>
+            <mat-label>Filter by Tag</mat-label>
+            <mat-select (selectionChange)="filterByTag($event)">
+              <mat-option>None</mat-option>
+              <mat-option *ngFor="let tag of tags" [value]="tag">
+                {{tag}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
       <div class="content">
         <mat-table [dataSource]="connections" class="node-list">
           <ng-container matColumnDef="name">
@@ -90,7 +107,14 @@
           </ng-container>
           <ng-container matColumnDef="tags">
             <mat-header-cell *matHeaderCellDef>Tags</mat-header-cell>
-            <mat-cell *matCellDef="let node">{{node.tags && node.tags[0] ? node.name : "Not connected"}}</mat-cell>
+            <mat-cell *matCellDef="let node">
+              <span *ngIf="node.tags && node.tags[0]">
+                <span *ngFor="let tag of node.tags" class="node-tag">
+                  {{tag}}
+                </span>
+              </span>
+              <span *ngIf="!node.tags || !node.tags[0]">No Tags</span>
+            </mat-cell>
           </ng-container>
           <ng-container matColumnDef="firstSeen">
             <mat-header-cell *matHeaderCellDef>First Seen</mat-header-cell>

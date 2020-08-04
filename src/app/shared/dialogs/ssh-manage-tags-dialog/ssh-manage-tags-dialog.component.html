@@ -1,0 +1,27 @@
+<div>
+  <h1 mat-dialog-title>Manage All Tags</h1>
+
+  <p>Click tags to mark for removal, click again to unmark.</p>
+
+  <ul>
+    <li *ngFor="let tag of tags" class="listItem" (click)="removeTag(tag)">
+      {{tag}}
+      <fa-icon [icon]="icons.remove" class="removeIco" *ngIf="removeTags.includes(tag)">
+      </fa-icon>
+    </li>
+  </ul>
+
+  <mat-form-field>
+    <input matInput placeholder="New tag" type="text" [(ngModel)]="newTag">
+  </mat-form-field>
+  &nbsp;
+  &nbsp;
+  &nbsp;
+  <button mat-button (click)="addTag()">Add</button>
+
+
+  <div mat-dialog-actions>
+    <button mat-button (click)="cancel()">Cancel</button>
+    <button mat-button (click)="save()">Save</button>
+  </div>
+</div>

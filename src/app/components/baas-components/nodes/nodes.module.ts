@@ -11,7 +11,8 @@ import { NgxEchartsModule } from "ngx-echarts";
 import * as echarts from "echarts";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { MatPaginatorModule } from "@angular/material/paginator";
-import { LogsComponent } from './logs/logs.component';
+import { LogsComponent } from "./logs/logs.component";
+import { MatSelectModule } from "@angular/material/select";
 
 @NgModule({
   declarations: [DashboardComponent, ManagementComponent, LogsComponent],
@@ -21,6 +22,7 @@ import { LogsComponent } from './logs/logs.component';
     MatButtonModule,
     MatCardModule,
     MatTableModule,
+    MatSelectModule,
     NgxEchartsModule.forRoot({
       echarts,
     }),

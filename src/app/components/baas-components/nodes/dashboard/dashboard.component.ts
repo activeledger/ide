@@ -17,6 +17,8 @@ import { MatPaginator } from "@angular/material/paginator";
 export class DashboardComponent implements OnInit {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
+  public tags: string[] = [];
+
   public displayColumns = [
     "name",
     "firstSeen",
@@ -55,7 +57,7 @@ export class DashboardComponent implements OnInit {
   public node: ISSH;
 
   public nodeStats: { [id: string]: INodeStats } = {
-    "2ab4bffb-5d7c-4737-be90-67122d340cff": {
+    /* "2ab4bffb-5d7c-4737-be90-67122d340cff": {
       cpu: {
         cores: 15,
         one: 0.01123046875,
@@ -79,7 +81,7 @@ export class DashboardComponent implements OnInit {
       },
       uptime: 224788,
       version: "2.3.1",
-    },
+    }, */
   };
 
   public noNodes = false;
@@ -221,10 +223,22 @@ export class DashboardComponent implements OnInit {
   public async connectTo(row): Promise<void> {
     try {
       this.node = row;
-      // await this.ssh.sshToNode(row._id);
-      await this.getNodeStats(row._id);
+      if (await this.ssh.sshToNode(row._id)) {
+        await this.getNodeStats(row._id);
+      }
     } catch (error) {
       console.error(error);
+    }
+  }
+
+  public async filterByTag(event): Promise<void> {
+    if (!event.value) {
+      await this.getSshConnections();
+    } else {
+      this.connectionData = await this.ssh.filterByTag(event.value);
+      this.connections = new MatTableDataSource<ISSH>(this.connectionData);
+      this.paginator.pageSize = 20;
+      this.connections.paginator = this.paginator;
     }
   }
 
@@ -233,8 +247,7 @@ export class DashboardComponent implements OnInit {
       id = this.node._id;
     }
 
-    // let stats = await this.ssh.getStats(id);
-    let stats: INodeStats = this.nodeStats[id];
+    let stats = await this.ssh.getStats(id);
 
     stats = this.ramToString(stats);
     stats = this.hddToString(stats);
@@ -370,6 +383,7 @@ export class DashboardComponent implements OnInit {
 
   private async getSshConnections(): Promise<void> {
     try {
+      this.tags = await this.ssh.getTags();
       this.connectionData = await this.ssh.getConnections();
     } catch (error) {
       console.error(error);
