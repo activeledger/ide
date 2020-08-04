@@ -18,7 +18,7 @@ export class SshLoginDialogComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  public respond(): void {
+  public login(): void {
     this.dialogRef.close(this.loginDetails);
   }
 

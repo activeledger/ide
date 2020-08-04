@@ -161,16 +161,10 @@ export class SshService {
     const filteredConnections: ISSH[] = [];
 
     for (const conn of connections) {
-      console.log("conn.tags");
-      console.log(conn);
-      console.log(conn.tags);
       if (conn.tags && conn.tags.length > 0 && conn.tags.includes(tag)) {
         filteredConnections.push(conn);
       }
     }
-
-    console.log("filteredConnections");
-    console.log(filteredConnections);
 
     return filteredConnections;
   }
@@ -288,6 +282,9 @@ export class SshService {
           SshService.connectionPool.delete(pool.keys().next().value);
         }
 
+        console.log("Connection made");
+        return true;
+      } else {
         return true;
       }
     } catch (error) {
