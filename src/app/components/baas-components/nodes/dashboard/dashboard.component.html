@@ -1,1 +1,166 @@
-<p>dashboard works!</p>
+<div class="wrapper">
+  <section class="top">
+    <div class="cpu-graph-wrapper top-elem">
+      <div class="title">CPU Time graph</div>
+      <div class="content">
+        <div echarts [options]="cpuChartOptions" [merge]="mergeOption" [initOpts]="{height: '200px', width: 'auto'}"
+          class="cpu-chart" (chartInit)="onChartInit($event)"></div>
+      </div>
+    </div>
+
+    <div class="host-info-wrapper top-elem">
+      <div class="title">Host Info</div>
+
+      <div class="content">
+        <div class="cpu-wrapper">
+          <div class="pbar-title">CPU</div>
+          <div class="pbar">
+            <div class="current-value">{{hostInfo.cpu.value}}{{hostInfo.cpu.unit}}</div>
+            <div class="max-value">{{hostInfo.cpu.max}}{{hostInfo.cpu.unit}}</div>
+            <div class="pbar-fg" [ngStyle]="{'width': hostInfo.cpu.percent}"></div>
+            <div class="pbar-bg"></div>
+          </div>
+        </div>
+
+        <div class="ram-wrapper">
+          <div class="pbar-title">RAM</div>
+          <div class="pbar">
+            <div class="current-value">{{hostInfo.ram.value}}{{hostInfo.ram.unit}}</div>
+            <div class="max-value">{{hostInfo.ram.max}}{{hostInfo.ram.unit}}</div>
+            <div class="pbar-fg" [ngStyle]="{'width': hostInfo.ram.percent}"></div>
+            <div class="pbar-bg"></div>
+          </div>
+        </div>
+
+        <div class="hdd-wrapper">
+          <div class="pbar-title">HDD</div>
+          <div class="pbar">
+            <div class="current-value">{{hostInfo.hdd.value}}{{hostInfo.hdd.unit}}</div>
+            <div class="max-value">{{hostInfo.hdd.max}}{{hostInfo.hdd.unit}}</div>
+            <div class="pbar-fg" [ngStyle]="{'width': hostInfo.hdd.percent}"></div>
+            <div class="pbar-bg"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="activeledger-wrapper top-elem">
+      <div class="title">Activeledger</div>
+      <div class="content">
+        <div class="version">
+          <div class="current-version">Version: {{node ? nodeStats[node._id].version : 0.0.0}}</div>
+        </div>
+
+        <br />
+
+        <div class="uptime">
+          Uptime: {{node ? nodeStats[node._id].uptime : 0}}
+        </div>
+
+        <br />
+
+        <div class="alDiskUsage">
+          Activledger disk usage: {{node ? nodeStats[node._id].hdd.activeledger : 0}}
+        </div>
+
+        <br />
+
+        <div class="restarts">
+          <div class="auto-restarts">Auto restarts: {{node ? nodeStats[node._id].restarts.auto : 0}}</div>
+          <div class="manual-restarts">Manual restarts:
+            {{node ? nodeStats[node._id].restarts.all - nodeStats[node._id].restarts.auto : 0}}</div>
+          <div class="total-restarts">Total restarts: {{node ? nodeStats[node._id].restarts.all : 0}}</div>
+        </div>
+
+        <div class="last-manual-restart">Last Manual Restart: 10:00 - 01/07/2020</div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="bottom">
+    <div class="nodes-list-wrapper bottom-elem">
+      <div class="title">Nodes</div>
+      <div class="content">
+        <mat-table [dataSource]="connections" class="node-list">
+          <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
+            <mat-cell *matCellDef="let node">{{node.name}}</mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="tags">
+            <mat-header-cell *matHeaderCellDef>Tags</mat-header-cell>
+            <mat-cell *matCellDef="let node">{{node.tags && node.tags[0] ? node.name : "Not connected"}}</mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="firstSeen">
+            <mat-header-cell *matHeaderCellDef>First Seen</mat-header-cell>
+            <mat-cell *matCellDef="let node">
+              <span *ngIf="node.firstSeen">{{ node.firstSeen | date: "dd/MM/yyyy - hh:mm:ss"}}</span>
+              <span *ngIf="!node.firstSeen">Not seen yet</span>
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="status">
+            <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+            <mat-cell *matCellDef="let node">
+              {{nodeStats[node._id] && nodeStats[node._id].status ? nodeStats[node._id].status : "Not connected"}}
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="uptime">
+            <mat-header-cell *matHeaderCellDef>Uptime</mat-header-cell>
+            <mat-cell *matCellDef="let node">
+              {{nodeStats[node._id] ? nodeStats[node._id].uptime : "Down"}}
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="autoRestarts">
+            <mat-header-cell *matHeaderCellDef>Auto Restarts</mat-header-cell>
+            <mat-cell *matCellDef="let node">
+              {{nodeStats[node._id] && nodeStats[node._id].restarts ? nodeStats[node._id].restarts.auto : "Not connected"}}
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="totalRestarts">
+            <mat-header-cell *matHeaderCellDef>Total Restarts</mat-header-cell>
+            <mat-cell *matCellDef="let node">
+              {{nodeStats[node._id] && nodeStats[node._id].restarts ? nodeStats[node._id].restarts.all : "Not connected"}}
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="refresh">
+            <mat-header-cell *matHeaderCellDef>Refresh</mat-header-cell>
+            <mat-cell *matCellDef="let node" (click)="refresh($event)">
+              <fa-icon [icon]="icons.refresh" class="list-control refresh"></fa-icon>
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="view">
+            <mat-header-cell *matHeaderCellDef>View</mat-header-cell>
+            <mat-cell *matCellDef="let node">
+              <fa-icon [icon]="icons.view" class="list-control view"></fa-icon>
+            </mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="displayColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayColumns;" (click)="connectTo(row)"
+            [ngClass]="node && row._id === node._id ? 'selected-node' : ''"></mat-row>
+
+        </mat-table>
+        <mat-paginator [pageSizeOptions]="[5, 10, 15, 20]" showFirstLastButtons class="paginator"></mat-paginator>
+
+      </div>
+    </div>
+
+    <!-- FUTURE ENHANCEMENT -->
+    <!-- <div class="problems-list-wrapper bottom-elem">
+      <div class="title">Problems</div>
+      <div class="content">
+
+        <div class="problem-list">
+          <div class="problem" *ngFor="let problem of problems">
+            <div class="date">{{problem.date | date: "dd/MM/yy - hh:mm"}}</div>
+            <div class="body">
+              <p>{{problem.body}}</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div> -->
+  </section>
+</div>

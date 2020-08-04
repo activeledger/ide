@@ -13,6 +13,10 @@ const routes: Routes = [
     component: ManagementComponent,
   },
   {
+    path: "config",
+    component: BuilderComponent,
+  },
+  {
     path: "builder",
     component: BuilderComponent,
   },

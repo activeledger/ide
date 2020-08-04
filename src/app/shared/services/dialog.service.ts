@@ -34,6 +34,15 @@ import { LoginDialogComponent } from "../dialogs/login-dialog/login-dialog.compo
 import { ContractData } from "../structures/contract.structures";
 import { ILoginData } from "../interfaces/user.interfaces";
 import { BlockedDialogComponent } from "../dialogs/blocked-dialog/blocked-dialog.component";
+import { AddSshConnectionDialogComponent } from "../dialogs/add-ssh-connection/add-ssh-connection.component";
+import {
+  ISSHLogin,
+  ISSHCreate,
+  ISSH,
+  ISSHEdit,
+} from "../interfaces/ssh.interface";
+import { SshLoginDialogComponent } from "../dialogs/ssh-login-dialog/ssh-login-dialog.component";
+import { SshEditConnectionDialogComponent } from "../dialogs/ssh-edit-connection-dialog/ssh-edit-connection-dialog.component";
 
 /**
  * Provides dialogs
@@ -42,7 +51,7 @@ import { BlockedDialogComponent } from "../dialogs/blocked-dialog/blocked-dialog
  * @class DialogService
  */
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class DialogService {
   /**
@@ -72,7 +81,7 @@ export class DialogService {
 
     this.dialog.open(ErrorDialogComponent, {
       width: width,
-      data: { error: message, code: code }
+      data: { error: message, code: code },
     });
   }
 
@@ -101,8 +110,8 @@ export class DialogService {
         data: {
           message: message,
           allowCopy: allowCopy,
-          copy: stringToCopy
-        }
+          copy: stringToCopy,
+        },
       });
 
       dialogRef.afterClosed().subscribe(() => {
@@ -132,8 +141,8 @@ export class DialogService {
     return this.dialog.open(BlockedDialogComponent, {
       width: width,
       data: {
-        message: message
-      }
+        message: message,
+      },
     });
   }
 
@@ -160,8 +169,8 @@ export class DialogService {
       data: {
         contract: contract,
         allowCopy: allowCopy,
-        copy: stringToCopy
-      }
+        copy: stringToCopy,
+      },
     });
   }
 
@@ -180,7 +189,7 @@ export class DialogService {
 
     this.dialog.open(WarningDialogComponent, {
       width: width,
-      data: { message: message }
+      data: { message: message },
     });
   }
 
@@ -200,7 +209,7 @@ export class DialogService {
 
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: width,
-      data: { message: message }
+      data: { message: message },
     });
 
     return new Promise((resolve, reject) => {
@@ -226,7 +235,7 @@ export class DialogService {
 
     const data = {
       message: message,
-      type: undefined
+      type: undefined,
     };
 
     if (settings && settings.type) {
@@ -235,7 +244,7 @@ export class DialogService {
 
     const dialogRef = this.dialog.open(InputDialogComponent, {
       width: width,
-      data: data
+      data: data,
     });
 
     return new Promise((resolve, reject) => {
@@ -260,7 +269,80 @@ export class DialogService {
 
     this.dialog.open(AdvancedConfirmDialogComponent, {
       width: width,
-      data: { message: message }
+      data: { message: message },
+    });
+  }
+
+  public addSSHConnection(settings?: any): Promise<ISSHCreate> {
+    let width = "450px";
+    let height = "auto";
+    if (settings) {
+      if (settings.width) {
+        width = settings.width;
+      }
+
+      if (settings.height) {
+        height = settings.height;
+      }
+    }
+
+    const ref = this.dialog.open(AddSshConnectionDialogComponent, {
+      width,
+      height,
+    });
+
+    return new Promise((resolve) => {
+      ref.afterClosed().subscribe((result: ISSHCreate) => {
+        resolve(result);
+      });
+    });
+  }
+
+  public sshLogin(settings?: any): Promise<ISSHLogin> {
+    let width = "450px";
+    let height = "auto";
+    if (settings) {
+      if (settings.width) {
+        width = settings.width;
+      }
+
+      if (settings.height) {
+        height = settings.height;
+      }
+    }
+
+    const ref = this.dialog.open(SshLoginDialogComponent, { width, height });
+
+    return new Promise((resolve) => {
+      ref.afterClosed().subscribe((result: ISSHLogin) => {
+        resolve(result);
+      });
+    });
+  }
+
+  public editSshConnection(sshData: ISSH, settings?: any): Promise<ISSHEdit> {
+    let width = "450px";
+    let height = "auto";
+    if (settings) {
+      if (settings.width) {
+        width = settings.width;
+      }
+
+      if (settings.height) {
+        height = settings.height;
+      }
+    }
+
+    const ref = this.dialog.open(SshEditConnectionDialogComponent, {
+      width,
+      height,
+      data: sshData,
+    });
+
+    return new Promise((resolve) => {
+      ref.afterClosed().subscribe((result: ISSHEdit) => {
+        resolve(result);
+      });
     });
   }
 
@@ -273,12 +355,13 @@ export class DialogService {
    */
   public login(settings?: any): Promise<ILoginData> {
     let width = "250px";
+
     if (settings && settings.width) {
       width = settings.width;
     }
 
     const dialogRef = this.dialog.open(LoginDialogComponent, {
-      width: width
+      width: width,
     });
 
     return new Promise((resolve, reject) => {

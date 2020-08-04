@@ -34,6 +34,9 @@ import PouchDB from "pouchdb-browser";
 import * as path from "path";
 import * as url from "url";
 import { faWindowRestore } from "@fortawesome/free-solid-svg-icons";
+import * as sshpk from "sshpk";
+// import NodeSSH from "node-ssh";
+import { Client } from "ssh2";
 
 @Injectable()
 export class ElectronService {
@@ -48,6 +51,8 @@ export class ElectronService {
   eventEmitter: typeof eventEmitter;
   path: typeof path;
   url: typeof url;
+  sshpk: typeof sshpk;
+  ssh: typeof Client;
 
   /**
    * Creates an instance of ElectronService.
@@ -56,6 +61,7 @@ export class ElectronService {
   constructor() {
     // Conditional imports
     if (this.isElectron) {
+      console.log("Running requires");
       this.ipcRenderer = window.require("electron").ipcRenderer;
       this.webFrame = window.require("electron").webFrame;
       this.remote = window.require("electron").remote;
@@ -74,6 +80,8 @@ export class ElectronService {
 
       this.path = window.require("path");
       this.url = window.require("url");
+      this.sshpk = window.require("sshpk");
+      this.ssh = window.require("ssh2").Client;
     }
   }
 

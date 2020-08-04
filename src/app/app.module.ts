@@ -26,7 +26,7 @@ import "reflect-metadata";
 import "../polyfills";
 import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 import { HttpClientModule, HttpClient } from "@angular/common/http";
 
@@ -38,6 +38,7 @@ import { TranslateModule, TranslateLoader } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 
 // Angular material
+import { MatRadioModule } from "@angular/material/radio";
 import { MatBadgeModule } from "@angular/material/badge";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
@@ -100,6 +101,9 @@ import { SigningModule } from "./components/tx-components/signing/signing.module
 import { MonacoEditorModule } from "@materia-ui/ngx-monaco-editor";
 import { MatButtonToggleModule } from "@angular/material/button-toggle";
 import { MainmenuComponent } from "./shared/components/mainmenu/mainmenu.component";
+import { AddSshConnectionDialogComponent } from "./shared/dialogs/add-ssh-connection/add-ssh-connection.component";
+import { SshLoginDialogComponent } from './shared/dialogs/ssh-login-dialog/ssh-login-dialog.component';
+import { SshEditConnectionDialogComponent } from './shared/dialogs/ssh-edit-connection-dialog/ssh-edit-connection-dialog.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -123,10 +127,14 @@ export function HttpLoaderFactory(http: HttpClient) {
     LoginDialogComponent,
     BlockedDialogComponent,
     MainmenuComponent,
+    AddSshConnectionDialogComponent,
+    SshLoginDialogComponent,
+    SshEditConnectionDialogComponent,
   ],
   imports: [
     NgxSpinnerModule,
     BrowserModule,
+    BrowserAnimationsModule,
     FormsModule,
     HttpClientModule,
     AppRoutingModule,
@@ -157,6 +165,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatIconModule,
     MatSnackBarModule,
     MonacoEditorModule,
+    MatRadioModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -174,6 +183,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     SwaggerModule,
     ContractsModule,
     SettingsModule,
+    ReactiveFormsModule,
   ],
   providers: [
     ElectronService,

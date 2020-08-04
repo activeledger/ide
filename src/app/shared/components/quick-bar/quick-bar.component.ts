@@ -92,6 +92,7 @@ export class QuickBarComponent implements OnInit {
   public txBaasSwitch(): void {
     this.setup.isTx = this.setup.isTx ? false : true;
     this.menuService.txBaasSwitch(this.setup.isTx ? "tx" : "baas");
+    this.goTo("/nodes/dashboard", "Dashboard");
   }
 
   public getWorkspaces(): Promise<void> {

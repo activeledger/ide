@@ -1,0 +1,191 @@
+.main {
+  display: flex;
+  flex-direction: row;
+
+  width: 100%;
+  padding: 40px;
+
+  .networks-list-wrapper {
+    width: calc(75% - 20px);
+    margin-right: 20px;
+
+    .title {
+      background-color: #333;
+      font-size: 18pt;
+      font-weight: 100;
+      border-bottom: solid 1px #6e49ff;
+      color: #fff;
+
+      padding: 10px;
+    }
+
+    .content {
+      padding: 0;
+
+      .network-list {
+        width: 100%;
+        margin: 0;
+
+        background-color: #333;
+
+        overflow-y: auto;
+
+        .mat-header-cell,
+        .mat-cell {
+          color: #fff;
+          border-color: rgba($color: #000000, $alpha: 0);
+        }
+
+        .mat-header-cell {
+          font-weight: 100;
+          font-size: 1em;
+        }
+
+        .mat-row:nth-child(even) {
+          background-color: #38374b;
+        }
+
+        .mat-row {
+          cursor: pointer;
+          transition: background-color 0.3s ease-in-out;
+
+          &:hover {
+            background-color: rgba($color: #000, $alpha: 0.4);
+          }
+        }
+
+        .list-control {
+          cursor: pointer;
+          font-size: 1.1em;
+
+          transition: color 0.3s ease-in-out;
+
+          &:hover {
+            color: #6e49ff;
+          }
+        }
+
+        .refresh {
+          padding-left: 20px;
+        }
+
+        .view {
+          padding-left: 6px;
+        }
+      }
+    }
+    .paginator {
+      background-color: #333;
+      color: #fff !important;
+    }
+    .mat-paginator {
+      ::ng-deep .mat-select-value,
+      ::ng-deep .mat-select-arrow {
+        color: #fff !important;
+      }
+
+      ::ng-deep .mat-icon-button {
+        color: #fff;
+
+        transition: color 0.3s ease-in-out;
+
+        &:hover {
+          color: #6e49ff;
+        }
+      }
+
+      ::ng-deep .mat-icon-button[disabled][disabled] {
+        color: rgb(160, 160, 160);
+      }
+    }
+  }
+
+  .left {
+    width: 25%;
+    min-width: 375px;
+    color: #fff;
+    display: flex;
+    flex-flow: column;
+    flex-direction: column;
+
+    .control-wrapper {
+      background-color: #333;
+      padding: 20px;
+      margin-bottom: 20px;
+
+      .controls {
+        .top,
+        .bottom {
+          display: flex;
+          flex-direction: row;
+
+          .control {
+            background-color: #38374b;
+            padding: 4px 8px;
+            border-radius: 4px;
+
+            margin-right: 12px;
+
+            transition: background-color 0.3s ease-in-out;
+
+            &:last-child {
+              margin-right: 0;
+            }
+
+            &:hover {
+              cursor: pointer;
+              background-color: #6e49ff;
+            }
+          }
+        }
+
+        .top {
+          margin-bottom: 10px;
+          padding-bottom: 10px;
+          border-bottom: 1px solid #6e49ff;
+        }
+      }
+    }
+
+    .timeline-wrapper {
+      flex-grow: 1;
+
+      background-color: #333;
+
+      .title {
+        background-color: #333;
+        font-size: 18pt;
+        font-weight: 100;
+        border-bottom: solid 1px #6e49ff;
+        color: #fff;
+
+        padding: 10px;
+      }
+
+      .timeline {
+        overflow-y: auto;
+
+        .entry {
+          background-color: #38374b;
+          margin-bottom: 20px;
+
+          &:first-child {
+            margin-top: 20px;
+          }
+
+          .header {
+            font-size: 0.8em;
+            color: rgb(200, 200, 200);
+            padding: 6px 20px;
+            text-align: right;
+            border-bottom: solid 1px #6e49ff;
+          }
+
+          .body {
+            padding: 6px 20px;
+          }
+        }
+      }
+    }
+  }
+}
