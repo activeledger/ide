@@ -1,13 +1,13 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { DialogService } from "../../../../shared/services/dialog.service";
 import { EChartOption } from "echarts";
-import { faExternalLink } from "@fortawesome/pro-light-svg-icons";
-import { faSync } from "@fortawesome/free-solid-svg-icons";
+import { faExternalLink, faSync } from "@fortawesome/pro-light-svg-icons";
 import { INodeStats } from "../../../../shared/interfaces/baas.interfaces";
 import { ISSH } from "../../../../shared/interfaces/ssh.interface";
 import { MatTableDataSource } from "@angular/material/table";
 import { SshService } from "../../../../shared/services/ssh.service";
 import { MatPaginator } from "@angular/material/paginator";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "dashboard",
@@ -56,33 +56,7 @@ export class DashboardComponent implements OnInit {
   public connections = new MatTableDataSource<ISSH>(this.connectionData);
   public node: ISSH;
 
-  public nodeStats: { [id: string]: INodeStats } = {
-    /* "2ab4bffb-5d7c-4737-be90-67122d340cff": {
-      cpu: {
-        cores: 15,
-        one: 0.01123046875,
-        five: 0.05859375,
-        fifteen: 0.0224609375,
-      },
-      ram: {
-        total: 31562493952,
-        free: 29329895424,
-      },
-      hdd: {
-        activeledger: 124,
-        diskSize: 263174212,
-        diskFree: 92779300,
-        diskUsed: 156956756,
-      },
-      status: "alive",
-      restarts: {
-        all: 0,
-        auto: 0,
-      },
-      uptime: 224788,
-      version: "2.3.1",
-    }, */
-  };
+  public nodeStats: { [id: string]: INodeStats } = {};
 
   public noNodes = false;
 
@@ -125,29 +99,6 @@ export class DashboardComponent implements OnInit {
       },
     ],
   };
-
-  public nodes = [
-    {
-      name: "testnet-uk",
-      tags: ["tag x"],
-      status: "Online",
-      uptime: "2d 15h",
-      restarts: {
-        auto: 5,
-        total: 10,
-      },
-    },
-    {
-      name: "testnet-uk",
-      tags: ["tag x"],
-      status: "Online",
-      uptime: "2d 15h",
-      restarts: {
-        auto: 5,
-        total: 10,
-      },
-    },
-  ];
 
   public chartInstance;
 
@@ -194,7 +145,7 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private readonly ssh: SshService,
-    private readonly dialogService: DialogService
+    private readonly router: Router
   ) {}
 
   ngOnInit(): void {
@@ -211,20 +162,30 @@ export class DashboardComponent implements OnInit {
     this.mergeOption = { series: [{ data: [fifteen, five, one] }] };
   }
 
+  public viewNode(id: string): void {
+    this.router.navigateByUrl("/nodes/nodes/" + id);
+  }
+
   public onChartInit(echart): void {
     this.chartInstance = echart;
   }
 
-  public refresh(event): void {
-    event.stopPropagation();
-    this.getNodeStats();
+  public async refresh(event): Promise<void> {
+    if (this.node) {
+      event.stopPropagation();
+      if (this.ssh.hasOpenConnection(this.node._id)) {
+        this.getNodeStats();
+      } else {
+        this.connectTo(this.node);
+      }
+    }
   }
 
-  public async connectTo(row): Promise<void> {
+  public async connectTo(node: ISSH): Promise<void> {
+    this.node = node;
     try {
-      this.node = row;
-      if (await this.ssh.sshToNode(row._id)) {
-        await this.getNodeStats(row._id);
+      if (await this.ssh.sshToNode(node._id)) {
+        await this.getNodeStats(node._id);
       }
     } catch (error) {
       console.error(error);
@@ -255,8 +216,6 @@ export class DashboardComponent implements OnInit {
     stats.cpu.currentPercent = Math.ceil(
       (stats.cpu.one / stats.cpu.cores) * 100
     );
-
-    console.log(stats);
 
     this.hostInfo.cpu.value = stats.cpu.currentPercent;
     // RAM

@@ -21,6 +21,7 @@ import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
 import { DialogService } from "../../../../shared/services/dialog.service";
 import { INodeStats } from "../../../../shared/interfaces/baas.interfaces";
+import { ActivatedRoute } from "@angular/router";
 
 @Component({
   selector: "management",
@@ -36,33 +37,7 @@ export class ManagementComponent implements OnInit {
   public connectionData: ISSH[] = [];
   public connections = new MatTableDataSource<ISSH>(this.connectionData);
   public node: ISSH;
-  public nodeStats: { [id: string]: INodeStats } = {
-    /* "2ab4bffb-5d7c-4737-be90-67122d340cff": {
-      cpu: {
-        cores: 15,
-        one: 0.01123046875,
-        five: 0.05859375,
-        fifteen: 0.0224609375,
-      },
-      ram: {
-        total: 31562493952,
-        free: 29329895424,
-      },
-      hdd: {
-        activeledger: 124,
-        diskSize: 263174212,
-        diskFree: 92779300,
-        diskUsed: 156956756,
-      },
-      status: "alive",
-      restarts: {
-        all: 0,
-        auto: 0,
-      },
-      uptime: 224788,
-      version: "2.3.1",
-    }, */
-  };
+  public nodeStats: { [id: string]: INodeStats } = {};
 
   public icons = {
     refresh: faSync,
@@ -95,16 +70,42 @@ export class ManagementComponent implements OnInit {
 
   constructor(
     private readonly ssh: SshService,
-    private readonly dialogService: DialogService
+    private readonly dialogService: DialogService,
+    private readonly route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    this.getSshConnections();
+    this.load();
+  }
+
+  private async load(): Promise<void> {
+    await this.getSshConnections();
+    this.checkForIdParam();
+  }
+
+  private checkForIdParam(): void {
+    this.route.params.subscribe((params) => {
+      if (params["id"]) {
+        for (const connection of this.connectionData) {
+          if (connection._id === params["id"]) {
+            this.node = connection;
+            break;
+          }
+        }
+        this.connectTo(this.node);
+      }
+    });
   }
 
   public refresh(event): void {
-    event.stopPropagation();
-    this.getNodeStats();
+    if (this.node) {
+      event.stopPropagation();
+      if (this.ssh.hasOpenConnection(this.node._id)) {
+        this.getNodeStats();
+      } else {
+        this.connectTo(this.node);
+      }
+    }
   }
 
   public async connectTo(row): Promise<void> {

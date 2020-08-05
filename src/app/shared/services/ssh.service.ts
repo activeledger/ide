@@ -12,8 +12,6 @@ import { KeyService } from "./key.service";
 import { ElectronService } from "./electron.service";
 import { DatabaseService } from "../../providers/database.service";
 import { DBTypes } from "../enums/db.enum";
-import * as util from "util";
-import { threadId } from "worker_threads";
 import { DialogService } from "./dialog.service";
 
 @Injectable({
@@ -33,6 +31,10 @@ export class SshService {
     private readonly dbService: DatabaseService,
     private readonly dialogService: DialogService
   ) {}
+
+  public hasOpenConnection(id: string): boolean {
+    return SshService.connectionPool.has(id);
+  }
 
   public async saveConnection(data: ISSHCreate): Promise<void> {
     try {
@@ -83,10 +85,6 @@ export class SshService {
 
   public async getConnections(): Promise<ISSH[]> {
     return await this.dbService.findByType<ISSH>(DBTypes.SSH);
-  }
-
-  public async getKey(id: string): Promise<unknown> {
-    return;
   }
 
   public async addTags(newTags: string[]): Promise<void> {
@@ -236,13 +234,14 @@ export class SshService {
         let config = {
           host: sshConnectionData.address,
           port: sshConnectionData.port,
-          readyTimeout: 99999,
+          readyTimeout: 5000,
         };
 
         if (sshConnectionData.authMethod === "password") {
           const login: ISSHLogin = await this.dialogService.sshLogin();
 
           if (login.cancelled || !login.username || !login.password) {
+            console.log("Not connecting");
             return false;
           }
 
@@ -395,7 +394,7 @@ export class SshService {
       password,
       port,
       debug: console.log,
-      readyTimeout: 99999,
+      readyTimeout: 5000,
       tryKeyboard: true,
       onKeyboardInteractive: (
         name,

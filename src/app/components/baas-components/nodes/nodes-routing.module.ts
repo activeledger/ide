@@ -13,6 +13,10 @@ const routes: Routes = [
     component: DashboardComponent,
   },
   {
+    path: "nodes/:id",
+    component: ManagementComponent,
+  },
+  {
     path: "nodes",
     component: ManagementComponent,
   },

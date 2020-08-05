@@ -193,6 +193,16 @@
           background-color: #333;
           color: #fff !important;
 
+          .list-control {
+            cursor: pointer;
+
+            transition: color 0.3s ease-in-out;
+
+            &:hover {
+              color: #6e49ff;
+            }
+          }
+
           .node-tag {
             background: #6e49ff;
             border-radius: 20px;
@@ -203,6 +213,10 @@
           .mat-header-cell,
           .mat-cell {
             color: #fff;
+          }
+
+          .selected-node {
+            background-color: #6e49ff !important;
           }
 
           .mat-row:nth-child(even) {
