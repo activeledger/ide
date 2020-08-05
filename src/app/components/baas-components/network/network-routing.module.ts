@@ -17,6 +17,10 @@ const routes: Routes = [
     component: BuilderComponent,
   },
   {
+    path: "builder/:id",
+    component: BuilderComponent,
+  },
+  {
     path: "builder",
     component: BuilderComponent,
   },

@@ -5,17 +5,17 @@
       <div class="top-bar">
         <div class="title">Network Builder</div>
         <div class="controls">
-          <div class="control">
+          <div class="control" (click)="saveConfig()">
             <fa-icon [icon]="icons.save"></fa-icon>
             &nbsp;
             Save
           </div>
-          <div class="control">
+          <div class="control" (click)="exportConfig()">
             <fa-icon [icon]="icons.export"></fa-icon>
             &nbsp;
             Export
           </div>
-          <div class="control">
+          <div class="control" (click)="clearConfig()">
             <fa-icon [icon]="icons.clear"></fa-icon>
             &nbsp;
             Clear
@@ -70,12 +70,16 @@
                   <br />
                   <mat-checkbox formControlName="selfHosted">Self Hosted</mat-checkbox>
                   <br />
-                  <mat-form-field>
+                  <mat-form-field *ngIf="selfHosted">
                     <input matInput disabled placeholder="Self Hosted IP" formControlName="selfHostIP">
                   </mat-form-field>
-                  <br />
-                  <mat-form-field>
+                  <br *ngIf="selfHosted" />
+                  <mat-form-field *ngIf="selfHosted">
                     <input matInput placeholder="Self Hosted Port" formControlName="selfHostPort">
+                  </mat-form-field>
+                  <br *ngIf="selfHosted" />
+                  <mat-form-field *ngIf="!selfHosted">
+                    <input matInput placeholder="Database URL" formControlName="url">
                   </mat-form-field>
                   <br />
                   <mat-form-field>
@@ -120,9 +124,11 @@
 
                 <div class="hint">Use the built in data engine</div>
 
-                <div class="hint">Data engine address</div>
+                <div class="hint" *ngIf="selfHosted">Data engine address</div>
 
-                <div class="hint">Data engine port</div>
+                <div class="hint" *ngIf="selfHosted">Data engine port</div>
+
+                <div class="hint" *ngIf="!selfHosted">Remote Database URL (http://[user]:[pass]@[host]:[port])</div>
 
                 <div class="hint">Core engine port</div>
 

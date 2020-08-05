@@ -30,6 +30,10 @@
 
         overflow-y: auto;
 
+        .selected-network {
+          background-color: #6e49ff !important;
+        }
+
         .mat-header-cell,
         .mat-cell {
           color: #fff;
