@@ -34,4 +34,6 @@ export enum DBTypes {
   SSH = "ssh",
   SSHKEY = "sshkey",
   SSHTAGS = "sshtags",
+  NETWORKCONFIG = "networkconfig",
+  NETWORKTIMELINE = "networktimeline",
 }
