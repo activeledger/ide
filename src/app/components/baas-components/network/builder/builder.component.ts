@@ -7,16 +7,9 @@ import {
   faLayerPlus,
 } from "@fortawesome/pro-light-svg-icons";
 import { DialogService } from "../../../../shared/services/dialog.service";
-import { ElectronService } from "../../../../shared/services/electron.service";
-import {
-  INetworkBuilderConfigExport,
-  IGeneralConfig,
-  INodeConfig,
-  INetworkBuilderConfig,
-} from "../../../../shared/interfaces/baas.interfaces";
-import { Subscription } from "rxjs";
+import { INetworkBuilderConfig } from "../../../../shared/interfaces/baas.interfaces";
 import { NetworkBuilderService } from "../../../../shared/services/network-builder.service";
-import { config } from "process";
+import { ActivatedRoute } from "@angular/router";
 
 @Component({
   selector: "builder",
@@ -77,7 +70,8 @@ export class BuilderComponent implements OnInit {
 
   constructor(
     private readonly dialog: DialogService,
-    private readonly networkBuilderService: NetworkBuilderService
+    private readonly networkBuilderService: NetworkBuilderService,
+    private readonly route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -87,6 +81,7 @@ export class BuilderComponent implements OnInit {
       .valueChanges.subscribe((value: boolean) => {
         this.selfHosted = value;
       });
+    this.checkForConfig();
   }
 
   get nodes() {
@@ -101,6 +96,14 @@ export class BuilderComponent implements OnInit {
         publicKey: new FormControl(""),
       })
     );
+  }
+
+  public async checkForConfig(): Promise<void> {
+    this.route.params.subscribe((params) => {
+      if (params["id"]) {
+        this.getConfig(params["id"]);
+      }
+    });
   }
 
   public async getConfig(id: string): Promise<void> {

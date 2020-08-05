@@ -116,6 +116,10 @@ export class ElectronService {
     return window.process.platform === "darwin";
   }
 
+  get isWindows() {
+    return window.process.platform === "win32";
+  }
+
   /**
    * Attempts to restart the application
    * Not yet working on mac

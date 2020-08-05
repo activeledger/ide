@@ -7,10 +7,13 @@ import {
   faFileImport,
   faFileExport,
   faCopy,
+  faShip,
 } from "@fortawesome/pro-light-svg-icons";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
 import { Router } from "@angular/router";
+import { INetworkBuilderConfig } from "../../../../shared/interfaces/baas.interfaces";
+import { NetworkBuilderService } from "../../../../shared/services/network-builder.service";
 
 @Component({
   selector: "management",
@@ -20,77 +23,23 @@ import { Router } from "@angular/router";
 export class ManagementComponent implements OnInit {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
-  public timelineEntries = [
-    {
-      timestamp: Date.now(),
-      message: "Onboarded network xyz",
-    },
-    {
-      timestamp: Date.now(),
-      message: "Exported network xyz",
-    },
-    {
-      timestamp: Date.now(),
-      message: "Created network template xyz",
-    },
-    {
-      timestamp: Date.now(),
-      message: "Imported network xyz",
-    },
-    {
-      timestamp: Date.now(),
-      message: "Onboarded network xyz",
-    },
-    {
-      timestamp: Date.now(),
-      message: "Onboarded network xyz",
-    },
-    {
-      timestamp: Date.now(),
-      message: "Exported network xyz",
-    },
-    {
-      timestamp: Date.now(),
-      message: "Created network template xyz",
-    },
-    {
-      timestamp: Date.now(),
-      message: "Imported network xyz",
-    },
-    {
-      timestamp: Date.now(),
-      message: "Onboarded network xyz",
-    },
-    {
-      timestamp: Date.now(),
-      message: "Onboarded network xyz",
-    },
-    {
-      timestamp: Date.now(),
-      message: "Exported network xyz",
-    },
-    {
-      timestamp: Date.now(),
-      message: "Created network template xyz",
-    },
-    {
-      timestamp: Date.now(),
-      message: "Imported network xyz",
-    },
-    {
-      timestamp: Date.now(),
-      message: "Onboarded network xyz",
-    },
-  ];
+  public timelineEntries: [{ data: string; date: Date }];
 
-  public networkData = [
-    {
-      name: "XYZ",
-      created: Date.now(),
-      updated: Date.now(),
-      onboarded: true,
-    },
-  ];
+  public network: {
+    id: string;
+    name: string;
+    created: Date;
+    updated: Date;
+    onboarded: boolean;
+  };
+
+  public networkData: {
+    id: string;
+    name: string;
+    created: Date;
+    updated: Date;
+    onboarded: boolean;
+  }[] = [];
   public networks = new MatTableDataSource<any>(this.networkData);
 
   public icons = {
@@ -101,29 +50,133 @@ export class ManagementComponent implements OnInit {
     remove: faTrash,
     import: faFileImport,
     export: faFileExport,
+    onboarded: faShip,
   };
 
   public displayColumns = ["name", "created", "updated", "onboarded", "view"];
 
-  constructor(private readonly router: Router) {}
+  constructor(
+    private readonly router: Router,
+    private readonly networkBuilderService: NetworkBuilderService
+  ) {}
 
   ngOnInit(): void {
-    this.networks.paginator = this.paginator;
+    this.getNetworks();
+    this.getTimeline();
   }
 
   viewNetwork(network): void {
-    console.log(network);
-    this.router.navigateByUrl("/network/config");
+    this.router.navigateByUrl("/network/builder/" + network.id);
   }
 
-  private async getNetworks(): Promise<void> {
-    /* try {
-      this.connectionData = await this.ssh.getConnections();
+  public async getTimeline(): Promise<void> {
+    try {
+      this.timelineEntries = await this.networkBuilderService.getTimeline();
+      console.log(this.timelineEntries);
     } catch (error) {
       console.error(error);
     }
-    this.connections = new MatTableDataSource<ISSH>(this.connectionData);
-    this.paginator.pageSize = 20;
-    this.connections.paginator = this.paginator; */
+  }
+
+  public selectNetwork(network): void {
+    this.network = network;
+  }
+
+  public newConfig(): void {
+    this.router.navigateByUrl("/network/builder");
+  }
+
+  public async duplicate(): Promise<void> {
+    try {
+      await this.networkBuilderService.duplicateConfig(this.network.id);
+      this.getNetworks();
+      this.getTimeline();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  public async edit(): Promise<void> {
+    this.router.navigateByUrl("/network/builder/" + this.network.id);
+  }
+
+  public async remove(): Promise<void> {
+    try {
+      await this.networkBuilderService.removeConfig(this.network.id);
+      this.getNetworks();
+      this.getTimeline();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  public async onboard(): Promise<void> {
+    try {
+      const config = await this.networkBuilderService.getConfig(
+        this.network.id
+      );
+      config.onboarded = !config.onboarded;
+      await this.networkBuilderService.updateConfig(config, true);
+      this.network.onboarded = true;
+      this.getTimeline();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  public async import(): Promise<void> {
+    try {
+      await this.networkBuilderService.importConfig();
+      this.getNetworks();
+      this.getTimeline();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  public async export(): Promise<void> {
+    try {
+      const config = await this.networkBuilderService.getConfig(
+        this.network.id
+      );
+      await this.networkBuilderService.exportConfig(
+        config.config,
+        config.nodes
+      );
+      this.getTimeline();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  private async getNetworks(): Promise<void> {
+    try {
+      const configs: INetworkBuilderConfig[] = await this.networkBuilderService.getConfigs();
+
+      this.networkData = [];
+
+      for (const config of configs) {
+        this.networkData.push({
+          id: config._id,
+          name: config.config.name,
+          created: config.created,
+          updated: config.updated,
+          onboarded: config.onboarded,
+        });
+      }
+
+      this.networks = new MatTableDataSource<{
+        id: string;
+        name: string;
+        created: Date;
+        updated: Date;
+        onboarded: boolean;
+      }>(this.networkData);
+
+      this.paginator.pageSize = 20;
+      this.networks.paginator = this.paginator;
+    } catch (error) {
+      console.error(error);
+    }
   }
 }

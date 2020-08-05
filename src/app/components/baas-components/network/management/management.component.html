@@ -39,7 +39,8 @@
           </ng-container>
 
           <mat-header-row *matHeaderRowDef="displayColumns"></mat-header-row>
-          <mat-row *matRowDef="let row; columns: displayColumns;"></mat-row>
+          <mat-row *matRowDef="let row; columns: displayColumns;" (click)="selectNetwork(row)"
+            [ngClass]="network && row.id === network.id ? 'selected-network' : ''"></mat-row>
 
         </mat-table>
         <mat-paginator [pageSizeOptions]="[5, 10, 15, 20]" showFirstLastButtons class="paginator"></mat-paginator>
@@ -54,33 +55,37 @@
 
         <div class="controls">
           <div class="top">
-            <div class="control">
+            <div class="control" (click)="newConfig()">
               <fa-icon [icon]="icons.add"></fa-icon>&nbsp;&nbsp;&nbsp;New Config
             </div>
 
           </div>
 
-          <div class="top">
+          <div class="top" *ngIf="network">
 
-            <div class="control">
+            <div class="control" (click)="duplicate()">
               <fa-icon [icon]="icons.duplicate"></fa-icon>&nbsp;&nbsp;&nbsp;Duplicate
             </div>
 
-            <div class="control">
+            <div class="control" (click)="edit()">
               <fa-icon [icon]="icons.edit"></fa-icon>&nbsp;&nbsp;&nbsp;Edit
             </div>
 
-            <div class="control">
+            <div class="control" (click)="remove()">
               <fa-icon [icon]="icons.remove"></fa-icon>&nbsp;&nbsp;&nbsp;Remove
+            </div>
+
+            <div class="control" (click)="onboard()">
+              <fa-icon [icon]="icons.onboarded"></fa-icon>&nbsp;&nbsp;&nbsp;Onboard
             </div>
           </div>
 
           <div class="bottom">
-            <div class="control">
+            <div class="control" (click)="import()">
               <fa-icon [icon]="icons.import"></fa-icon>&nbsp;&nbsp;&nbsp;Import Config
             </div>
 
-            <div class="control">
+            <div class="control" *ngIf="network" (click)="export()">
               <fa-icon [icon]="icons.export"></fa-icon>&nbsp;&nbsp;&nbsp;Export Config
             </div>
           </div>
@@ -102,10 +107,10 @@
 
           <div class="entry" *ngFor="let entry of timelineEntries">
             <div class="header">
-              <span>{{entry.timestamp | date: "dd/MM/yyyy - hh:mm:ss"}}</span>
+              <span>{{entry.date | date: "dd/MM/yyyy - hh:mm:ss"}}</span>
             </div>
             <div class="body">
-              {{entry.message}}
+              {{entry.data}}
             </div>
           </div>
 

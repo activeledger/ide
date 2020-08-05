@@ -62,12 +62,22 @@ export interface INetworkConfigTimeline {
   _id: "network-config-timeline";
   _rev?: string;
   type: DBTypes.NETWORKTIMELINE;
-  created: [{ name: string; date: Date }];
-  updated: [{ name: string; date: Date }];
-  removed: [{ name: string; date: Date }];
-  onboarded: [{ name: string; date: Date }];
-  imported: [{ name: string; date: Date }];
-  exported: [{ name: string; date: Date }];
+  created: [{ data: string; date: Date }];
+  updated: [{ data: string; date: Date }];
+  removed: [{ data: string; date: Date }];
+  onboarded: [{ data: string; date: Date }];
+  imported: [{ data: string; date: Date }];
+  exported: [{ data: string; date: Date }];
+  latestTen: [{ data: string; date: Date }];
+}
+
+export enum TimelineEvents {
+  CREATED = "created",
+  UPDATED = "updated",
+  REMOVED = "removed",
+  ONBOARDED = "onboarded",
+  IMPORTED = "imported",
+  EXPORTED = "exported",
 }
 
 export interface INetworkBuilderConfigCreate {
