@@ -73,7 +73,7 @@
           </ng-container>
           <ng-container matColumnDef="logs">
             <mat-header-cell *matHeaderCellDef>Logs</mat-header-cell>
-            <mat-cell *matCellDef="let node">
+            <mat-cell *matCellDef="let node" (click)="openLogs(node._id)">
               <fa-icon [icon]="icons.logs" class="list-control logs"></fa-icon>
             </mat-cell>
           </ng-container>

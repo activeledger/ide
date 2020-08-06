@@ -1,1 +1,32 @@
-<p>logs works!</p>
+<div class="wrapper">
+
+  <section class="left">
+    <div class="log-display"></div>
+  </section>
+
+  <section class="right">
+    <div class="controls-wrapper">
+      <div class="control auto-refresh-toggle" [ngClass]="autoRefresh ? 'refresh-enabled' : 'refresh-disabled'"
+        (click)="toggleAutoRefresh()">
+        <fa-icon [icon]="icons.autoRefresh"></fa-icon>
+        &nbsp;&nbsp;
+        Auto Refresh
+        <span *ngIf="autoRefresh"> Enabled</span>
+        <span *ngIf="!autoRefresh"> Disabled</span>
+      </div>
+
+      <div class="control refresh-logs" (click)="getLogs()">
+        <fa-icon [icon]="icons.refresh"></fa-icon>
+        &nbsp;&nbsp;
+        Refresh
+      </div>
+
+      <div class="control clear-logs" (click)="clearLogs()">
+        <fa-icon [icon]="icons.clear"></fa-icon>
+        &nbsp;&nbsp;
+        Clear
+      </div>
+    </div>
+  </section>
+
+</div>

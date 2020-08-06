@@ -1,0 +1,52 @@
+.wrapper {
+  display: flex;
+  justify-content: space-around;
+  margin: 40px 30px;
+  color: #fff;
+
+  .left {
+    width: calc(80% - 40px);
+    background-color: #333;
+    padding: 20px;
+
+    .log-display {
+    }
+  }
+
+  .right {
+    padding: 20px;
+    width: 20%;
+    background-color: #333;
+
+    .controls-wrapper {
+      display: flex;
+      justify-content: space-around;
+
+      .control {
+        background-color: #38374b;
+        padding: 4px 8px;
+        border-radius: 4px;
+
+        margin-right: 12px;
+
+        transition: background-color 0.3s ease-in-out;
+
+        &:last-child {
+          margin-right: 0;
+        }
+
+        &:hover {
+          cursor: pointer;
+          background-color: #6e49ff;
+        }
+      }
+      .refresh-enabled {
+        color: rgb(139, 198, 253);
+      }
+
+      .refresh-disabled {
+        color: rgb(255, 150, 102);
+      }
+    }
+  }
+}
