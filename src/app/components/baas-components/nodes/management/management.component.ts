@@ -14,10 +14,10 @@ import {
   faFileAlt,
   faTag,
   faTags,
-  faComputerClassic,
   faDownload,
   faUndoAlt,
   faFileSignature,
+  faUpload,
 } from "@fortawesome/pro-light-svg-icons";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
@@ -57,8 +57,8 @@ export class ManagementComponent implements OnInit {
     disconnected: faWifiSlash,
     manageTags: faTag,
     manageTagsAll: faTags,
-    install: faComputerClassic,
-    update: faDownload,
+    install: faDownload,
+    update: faUpload,
     rollback: faUndoAlt,
     joinNetwork: faFileSignature,
   };
@@ -87,7 +87,9 @@ export class ManagementComponent implements OnInit {
     this.load();
   }
 
-  public async install(): Promise<void> {}
+  public async install(): Promise<void> {
+    await this.ssh.install(this.node._id);
+  }
   public async update(): Promise<void> {}
   public async rollback(): Promise<void> {}
   public async joinNetwork(): Promise<void> {}

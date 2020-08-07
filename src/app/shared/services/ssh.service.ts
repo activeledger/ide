@@ -36,6 +36,95 @@ export class SshService {
     return SshService.connectionPool.has(id);
   }
 
+  private getLatestVersion(id: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const stream = SshService.connectionPool.get(id).stream;
+
+      stream
+        .on("data", (data) => {
+          const regexVersion = new RegExp("\\d+\\.\\d+\\.\\d+");
+          const regexChars = new RegExp("[A-z]+");
+
+          if (!regexChars.test(data) && regexVersion.test(data)) {
+            resolve(data);
+          }
+        })
+        .stderr.on("data", (data) => {
+          reject(data);
+        });
+
+      stream.write("npm show @activeledger/activeledger version\r");
+    });
+  }
+
+  public async install(id: string, autostart: boolean = false): Promise<void> {
+    try {
+      const stream = SshService.connectionPool.get(id).stream;
+      const sshData = await this.getConnection(id);
+
+      stream.stderr.on("data", (data) => {
+        console.log("STDERR: " + data);
+        throw new Error("An error occured during installation.");
+      });
+
+      await this.execCommand(
+        id,
+        `npm i -g @activeledger/activeledger @activeledger/activerestore @activeledger/activecore && cd ${sshData.nodeLocation} && activeledger\r`
+      );
+
+      if (autostart) {
+      }
+
+      const node = await this.getConnection(id);
+      node.installed = true;
+      node.autostartEnabled = autostart;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async update(id: string): Promise<void> {
+    try {
+      const stream = SshService.connectionPool.get(id).stream;
+      const sshData = await this.getConnection(id);
+
+      stream.stderr.on("data", (data) => {
+        console.log("STDERR: " + data);
+        throw new Error("An error occured during update.");
+      });
+
+      await this.execCommand(
+        id,
+        `npm i -g @activeledger/activeledger @activeledger/activerestore @activeledger/activecore && cd ${sshData.nodeLocation} && activeledger --restart --auto\r`
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async autostart(id: string): Promise<void> {}
+
+  public async rollback(id: string, version: string): Promise<void> {
+    try {
+      const stream = SshService.connectionPool.get(id).stream;
+      const sshData = await this.getConnection(id);
+
+      stream.stderr.on("data", (data) => {
+        console.log("STDERR: " + data);
+        throw new Error("An error occured during rollback.");
+      });
+
+      await this.execCommand(
+        id,
+        `npm i -g @activeledger/activeledger@${version} @activeledger/activerestore@${version} @activeledger/activecore@${version} && cd ${sshData.nodeLocation} && activeledger --restart --auto\r`
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async joinNetwork(id: string): Promise<void> {}
+
   public async saveConnection(data: ISSHCreate): Promise<void> {
     try {
       let sshKeyId, authMethod;
@@ -64,6 +153,8 @@ export class SshService {
         authMethod,
         installed: false,
         joined: false,
+        autostartEnabled: false,
+        newVersionAvailable: false,
       };
 
       if (sshKeyId) {
@@ -224,6 +315,35 @@ export class SshService {
     }
   }
 
+  public async createSshConfig(id: string): Promise<any> {
+    const sshData = await this.getConnection(id);
+
+    let config = {
+      host: sshData.address,
+      port: sshData.port,
+      readyTimeout: 5000,
+    };
+
+    if (sshData.authMethod === "password") {
+      const login: ISSHLogin = await this.dialogService.sshLogin();
+
+      if (login.cancelled || !login.username || !login.password) {
+        console.log("Not connecting");
+        return false;
+      }
+
+      config["username"] = login.username;
+      config["password"] = login.password;
+    } else {
+      const key: ISSHKey = await this.dbService.findById(sshData.keyID);
+
+      config["username"] = key.identity;
+      config["privateKey"] = key.sshPrv;
+    }
+
+    return config;
+  }
+
   public async sshToNode(id: string): Promise<boolean> {
     try {
       console.log("Initialising SSH Connection...");
@@ -233,30 +353,7 @@ export class SshService {
       if (!SshService.connectionPool.has(id)) {
         const sshConnectionData: ISSH = await this.dbService.findById(id);
 
-        let config = {
-          host: sshConnectionData.address,
-          port: sshConnectionData.port,
-          readyTimeout: 5000,
-        };
-
-        if (sshConnectionData.authMethod === "password") {
-          const login: ISSHLogin = await this.dialogService.sshLogin();
-
-          if (login.cancelled || !login.username || !login.password) {
-            console.log("Not connecting");
-            return false;
-          }
-
-          config["username"] = login.username;
-          config["password"] = login.password;
-        } else {
-          const key: ISSHKey = await this.dbService.findById(
-            sshConnectionData.keyID
-          );
-
-          config["username"] = key.identity;
-          config["privateKey"] = key.sshPrv;
-        }
+        const config = await this.createSshConfig(id);
 
         connection = new this.electron.ssh();
 
@@ -321,7 +418,6 @@ export class SshService {
 
   public async restart(id: string): Promise<any> {
     const location = SshService.connectionPool.get(id).location;
-
     await this.execCommand(id, `cd ${location} && activeledger --restart\r\n`);
   }
 
@@ -334,10 +430,6 @@ export class SshService {
     const location = SshService.connectionPool.get(id).location;
     await this.execCommand(id, `cd ${location} && activeledger --stop\r\n`);
   }
-
-  public async installAndSetup(id: string): Promise<any> {}
-  public async update(id: string): Promise<any> {}
-  public async rollback(id: string): Promise<any> {}
 
   public closeConnection(id: string) {
     const stream = SshService.connectionPool.get(id).stream;
@@ -384,7 +476,7 @@ export class SshService {
     });
   }
 
-  private execCommand<T>(id: string, command: string): Promise<string> {
+  private execCommand<T>(id: string, command: string): Promise<void> {
     return new Promise((resolve, reject) => {
       const stream = SshService.connectionPool.get(id).stream;
       stream.write(command);
