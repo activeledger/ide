@@ -67,7 +67,7 @@
           </ng-container>
           <ng-container matColumnDef="refresh">
             <mat-header-cell *matHeaderCellDef>Refresh</mat-header-cell>
-            <mat-cell *matCellDef="let node" (click)="refresh($event)">
+            <mat-cell *matCellDef="let node" (click)="refresh($event, node)">
               <fa-icon [icon]="icons.refresh" class="list-control refresh"></fa-icon>
             </mat-cell>
           </ng-container>
@@ -109,17 +109,52 @@
           </div>
 
           <div class="middle" *ngIf="node">
-            <div class="control">
+            <div class="control" *ngIf="nodeConnected" (click)="disconnect()">
               <fa-icon [icon]="icons.disconnect"></fa-icon>&nbsp;&nbsp;&nbsp;Disconnect
             </div>
 
-            <div class="control">
-              <fa-icon [icon]="icons.restart"></fa-icon>&nbsp;&nbsp;&nbsp;Restart
+            <div class="control" *ngIf="!nodeConnected" (click)="connectTo()">
+              <fa-icon [icon]="icons.disconnect"></fa-icon>&nbsp;&nbsp;&nbsp;Connect
             </div>
 
-            <div class="control">
+            <div class="control" *ngIf="nodeConnected && nodeStats[node._id]?.status === 'alive'" (click)="restart()">
+              <fa-icon [icon]=" icons.restart">
+              </fa-icon>&nbsp;&nbsp;&nbsp;Restart
+            </div>
+
+            <div class="control stop" *ngIf="nodeConnected && nodeStats[node._id]?.status === 'alive'" (click)="stop()">
               <fa-icon [icon]="icons.stop"></fa-icon>&nbsp;&nbsp;&nbsp;Stop
             </div>
+
+            <div class="control start" *ngIf="nodeConnected && nodeStats[node._id]?.status !== 'alive'"
+              (click)="start()">
+              <fa-icon [icon]="icons.stop"></fa-icon>&nbsp;&nbsp;&nbsp;Start
+            </div>
+          </div>
+
+          <!-- <div class="middle" *ngIf="node && nodeConnected"> -->
+          <div class="middle">
+            <!-- <div class="control" *ngIf="!node.installed" (click)="install()"> -->
+            <div class="control" (click)="install()">
+              <fa-icon [icon]="icons.install"></fa-icon>&nbsp;&nbsp;&nbsp;Install
+            </div>
+
+            <!-- <div class="control" *ngIf="node.installed && updateAvailable" (click)="update()"> -->
+            <div class="control" (click)="update()">
+              <fa-icon [icon]="icons.update"></fa-icon>&nbsp;&nbsp;&nbsp;Update
+            </div>
+
+            <!-- <div class="control" *ngIf="node.previousVersion" (click)="rollback()"> -->
+            <div class="control" (click)="rollback()">
+              <fa-icon [icon]=" icons.rollback">
+              </fa-icon>&nbsp;&nbsp;&nbsp;Rollback
+            </div>
+
+            <!-- <div class="control stop" *ngIf="node.installed && !node.joined" (click)="joinNetwork()"> -->
+            <div class="control" (click)="joinNetwork()">
+              <fa-icon [icon]="icons.joinNetwork"></fa-icon>&nbsp;&nbsp;&nbsp;Join Network
+            </div>
+
           </div>
 
           <div class="bottom">
