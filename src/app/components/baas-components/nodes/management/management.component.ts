@@ -12,10 +12,12 @@ import {
   faWifiSlash,
   faTimesCircle,
   faFileAlt,
-  faLink,
-  faUnlink,
   faTag,
   faTags,
+  faComputerClassic,
+  faDownload,
+  faUndoAlt,
+  faFileSignature,
 } from "@fortawesome/pro-light-svg-icons";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
@@ -37,7 +39,10 @@ export class ManagementComponent implements OnInit {
   public connectionData: ISSH[] = [];
   public connections = new MatTableDataSource<ISSH>(this.connectionData);
   public node: ISSH;
+  public nodeConnected = false;
   public nodeStats: { [id: string]: INodeStats } = {};
+
+  public updateAvailable = false;
 
   public icons = {
     refresh: faSync,
@@ -52,6 +57,10 @@ export class ManagementComponent implements OnInit {
     disconnected: faWifiSlash,
     manageTags: faTag,
     manageTagsAll: faTags,
+    install: faComputerClassic,
+    update: faDownload,
+    rollback: faUndoAlt,
+    joinNetwork: faFileSignature,
   };
 
   public displayColumns = [
@@ -78,48 +87,76 @@ export class ManagementComponent implements OnInit {
     this.load();
   }
 
-  private async load(): Promise<void> {
-    await this.getSshConnections();
-    this.checkForIdParam();
-  }
+  public async install(): Promise<void> {}
+  public async update(): Promise<void> {}
+  public async rollback(): Promise<void> {}
+  public async joinNetwork(): Promise<void> {}
 
-  private checkForIdParam(): void {
-    this.route.params.subscribe((params) => {
-      if (params["id"]) {
-        for (const connection of this.connectionData) {
-          if (connection._id === params["id"]) {
-            this.node = connection;
-            break;
-          }
-        }
-        this.connectTo(this.node);
-      }
-    });
-  }
+  public refresh(event, node): void {
+    this.node = node;
 
-  public refresh(event): void {
-    if (this.node) {
-      event.stopPropagation();
-      if (this.ssh.hasOpenConnection(this.node._id)) {
-        this.getNodeStats();
-      } else {
-        this.connectTo(this.node);
-      }
+    event.stopPropagation();
+    if (this.ssh.hasOpenConnection(this.node._id)) {
+      this.getNodeStats();
+    } else {
+      this.connectTo(this.node);
     }
   }
 
-  public async connectTo(row): Promise<void> {
-    try {
+  public async connectTo(row?): Promise<void> {
+    if (row) {
       this.node = row;
-      if (await this.ssh.sshToNode(row._id)) {
-        await this.getNodeStats(row._id);
+    }
+
+    try {
+      if (await this.ssh.sshToNode(this.node._id)) {
+        await this.getNodeStats(this.node._id);
       }
     } catch (error) {
       console.error(error);
     }
   }
 
+  public async disconnect(): Promise<void> {
+    this.nodeConnected = false;
+    await this.ssh.closeConnection(this.node._id);
+    await this.getNodeStats();
+  }
+
+  public async restart(): Promise<void> {
+    try {
+      await this.ssh.restart(this.node._id);
+      setTimeout(async () => {
+        await this.getNodeStats();
+      }, 2000);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  public async start(): Promise<void> {
+    try {
+      await this.ssh.start(this.node._id);
+      setTimeout(async () => {
+        await this.getNodeStats();
+      }, 2000);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  public async stop(): Promise<void> {
+    try {
+      await this.ssh.stop(this.node._id);
+      await this.getNodeStats();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   public async getNodeStats(id?: string): Promise<void> {
+    this.nodeConnected = true;
+
     if (!id) {
       id = this.node._id;
     }
@@ -196,6 +233,72 @@ export class ManagementComponent implements OnInit {
       this.paginator.pageSize = 20;
       this.connections.paginator = this.paginator;
     }
+  }
+
+  public async addConnection(): Promise<void> {
+    try {
+      const sshCreateData: ISSHCreate = await this.dialogService.addSSHConnection();
+
+      // Cancelled
+      if (!sshCreateData) {
+        return;
+      }
+
+      await this.ssh.saveConnection(sshCreateData);
+
+      this.getSshConnections();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  public async removeConnection(): Promise<void> {
+    if (!this.node) {
+      this.dialogService.warning("No node selected!");
+      return;
+    }
+
+    try {
+      const confirm = await this.dialogService.confirm(
+        `Deleting this connection will remove "${this.node.name}" with IP "${this.node.address}", all its details, and the key pair if it exists. Are you sure?`,
+        { width: "500px" }
+      );
+      if (confirm) {
+        await this.ssh.removeConnection(this.node._id);
+        this.getSshConnections();
+      }
+    } catch (error) {
+      this.dialogService.error("There was an error removing the connection.");
+      console.error(error);
+    }
+  }
+
+  public async editConnection(): Promise<void> {
+    try {
+      await this.ssh.editConnection(this.node._id);
+      this.getSshConnections();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  private async load(): Promise<void> {
+    await this.getSshConnections();
+    this.checkForIdParam();
+  }
+
+  private checkForIdParam(): void {
+    this.route.params.subscribe((params) => {
+      if (params["id"]) {
+        for (const connection of this.connectionData) {
+          if (connection._id === params["id"]) {
+            this.node = connection;
+            break;
+          }
+        }
+        this.connectTo(this.node);
+      }
+    });
   }
 
   private formatUptime(uptime: number): string {
@@ -281,55 +384,6 @@ export class ManagementComponent implements OnInit {
     }
 
     return sizeString;
-  }
-
-  public getNodeData(connection: ISSH): void {}
-
-  public async addConnection(): Promise<void> {
-    try {
-      const sshCreateData: ISSHCreate = await this.dialogService.addSSHConnection();
-
-      // Cancelled
-      if (!sshCreateData) {
-        return;
-      }
-
-      await this.ssh.saveConnection(sshCreateData);
-
-      this.getSshConnections();
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  public async removeConnection(): Promise<void> {
-    if (!this.node) {
-      this.dialogService.warning("No node selected!");
-      return;
-    }
-
-    try {
-      const confirm = await this.dialogService.confirm(
-        `Deleting this connection will remove "${this.node.name}" with IP "${this.node.address}", all its details, and the key pair if it exists. Are you sure?`,
-        { width: "500px" }
-      );
-      if (confirm) {
-        await this.ssh.removeConnection(this.node._id);
-        this.getSshConnections();
-      }
-    } catch (error) {
-      this.dialogService.error("There was an error removing the connection.");
-      console.error(error);
-    }
-  }
-
-  public async editConnection(): Promise<void> {
-    try {
-      await this.ssh.editConnection(this.node._id);
-      this.getSshConnections();
-    } catch (error) {
-      console.error(error);
-    }
   }
 
   private async getSshConnections(): Promise<void> {

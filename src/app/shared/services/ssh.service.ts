@@ -62,6 +62,8 @@ export class SshService {
         port: data.port,
         nodeLocation: data.nodeLocation,
         authMethod,
+        installed: false,
+        joined: false,
       };
 
       if (sshKeyId) {
@@ -317,13 +319,25 @@ export class SshService {
     });
   }
 
-  public restart(id: string): Promise<any> {
-    return new Promise(async (resolve, reject) => {});
+  public async restart(id: string): Promise<any> {
+    const location = SshService.connectionPool.get(id).location;
+
+    await this.execCommand(id, `cd ${location} && activeledger --restart\r\n`);
   }
 
-  public start(id: string): Promise<any> {
-    return new Promise(async (resolve, reject) => {});
+  public async start(id: string): Promise<any> {
+    const location = SshService.connectionPool.get(id).location;
+    await this.execCommand(id, `cd ${location} && activeledger\r\n`);
   }
+
+  public async stop(id: string): Promise<any> {
+    const location = SshService.connectionPool.get(id).location;
+    await this.execCommand(id, `cd ${location} && activeledger --stop\r\n`);
+  }
+
+  public async installAndSetup(id: string): Promise<any> {}
+  public async update(id: string): Promise<any> {}
+  public async rollback(id: string): Promise<any> {}
 
   public closeConnection(id: string) {
     const stream = SshService.connectionPool.get(id).stream;

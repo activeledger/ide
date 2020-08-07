@@ -22,6 +22,8 @@ export interface ISSHCreateData {
   keyID?: string;
   nodeLocation: string;
   authMethod: TSSHAuth;
+  installed: boolean;
+  joined: boolean;
 }
 
 export interface ISSH {
@@ -34,6 +36,15 @@ export interface ISSH {
   nodeLocation: string;
   firstSeen?: Date;
   authMethod: TSSHAuth;
+  installed: boolean;
+  currentVersion?: string;
+  versionHistory: IVersionHistory[];
+  joined: boolean;
+}
+
+interface IVersionHistory {
+  date: Date;
+  version: string;
 }
 
 export interface ISSHEdit extends ISSH {
