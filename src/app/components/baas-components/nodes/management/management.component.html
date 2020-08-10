@@ -73,7 +73,7 @@
           </ng-container>
           <ng-container matColumnDef="logs">
             <mat-header-cell *matHeaderCellDef>Logs</mat-header-cell>
-            <mat-cell *matCellDef="let node">
+            <mat-cell *matCellDef="let node" (click)="openLog($event, node)">
               <fa-icon [icon]="icons.logs" class="list-control logs"></fa-icon>
             </mat-cell>
           </ng-container>
@@ -132,26 +132,26 @@
             </div>
           </div>
 
-          <!-- <div class="middle" *ngIf="node && nodeConnected"> -->
-          <div class="middle">
-            <!-- <div class="control" *ngIf="!node.installed" (click)="install()"> -->
-            <div class="control" (click)="install()">
+          <div class="middle" *ngIf="node && nodeConnected">
+            <!-- <div class="middle"> -->
+            <div class="control" *ngIf="!node.installed" (click)="install()">
+              <!-- <div class="control" (click)="install()"> -->
               <fa-icon [icon]="icons.install"></fa-icon>&nbsp;&nbsp;&nbsp;Install
             </div>
 
-            <!-- <div class="control" *ngIf="node.installed && updateAvailable" (click)="update()"> -->
-            <div class="control" (click)="update()">
+            <div class="control" *ngIf="node.installed && updateAvailable" (click)="update()">
+              <!-- <div class="control" (click)="update()"> -->
               <fa-icon [icon]="icons.update"></fa-icon>&nbsp;&nbsp;&nbsp;Update
             </div>
 
-            <!-- <div class="control" *ngIf="node.previousVersion" (click)="rollback()"> -->
-            <div class="control" (click)="rollback()">
+            <div class="control" *ngIf="node.previousVersion" (click)="rollback()">
+              <!-- <div class="control" (click)="rollback()"> -->
               <fa-icon [icon]=" icons.rollback">
               </fa-icon>&nbsp;&nbsp;&nbsp;Rollback
             </div>
 
-            <!-- <div class="control stop" *ngIf="node.installed && !node.joined" (click)="joinNetwork()"> -->
-            <div class="control" (click)="joinNetwork()">
+            <div class="control" *ngIf="node.installed && !node.joined" (click)="joinNetwork()">
+              <!-- <div class="control" (click)="joinNetwork()"> -->
               <fa-icon [icon]="icons.joinNetwork"></fa-icon>&nbsp;&nbsp;&nbsp;Join Network
             </div>
 

@@ -13,6 +13,7 @@ import { ElectronService } from "./electron.service";
 import { DatabaseService } from "../../providers/database.service";
 import { DBTypes } from "../enums/db.enum";
 import { DialogService } from "./dialog.service";
+import { EventEmitter } from "events";
 
 @Injectable({
   providedIn: "root",
@@ -25,6 +26,8 @@ export class SshService {
 
   public tempPrivate: string;
 
+  public logEvent = new EventEmitter();
+
   constructor(
     private readonly keyService: KeyService,
     private readonly electron: ElectronService,
@@ -32,11 +35,29 @@ export class SshService {
     private readonly dialogService: DialogService
   ) {}
 
+  public streamLogs(id: string): void {
+    const stream = SshService.connectionPool.get(id).stream;
+
+    stream.on("data", (data: Buffer) => {
+      this.logEvent.emit("logEvent", { data });
+    });
+
+    stream.write("echo log test\r");
+  }
+
   public hasOpenConnection(id: string): boolean {
     return SshService.connectionPool.has(id);
   }
 
-  private getLatestVersion(id: string): Promise<string> {
+  public async getLatestVersion(): Promise<string> {
+    const unpkg = require("unpkg-json");
+
+    const json = await unpkg("@activeledger/activeledger");
+
+    return json.version;
+  }
+
+  private getNodeLatestVersion(id: string): Promise<string> {
     return new Promise((resolve, reject) => {
       const stream = SshService.connectionPool.get(id).stream;
 
@@ -67,12 +88,18 @@ export class SshService {
         throw new Error("An error occured during installation.");
       });
 
+      const isoString = new Date().toISOString();
+
       await this.execCommand(
         id,
-        `npm i -g @activeledger/activeledger @activeledger/activerestore @activeledger/activecore && cd ${sshData.nodeLocation} && activeledger\r`
+        `npm i -g @activeledger/activeledger @activeledger/activerestore @activeledger/activecore && cd ${sshData.nodeLocation} && activeledger &> install-${isoString}.log\r`
       );
 
       if (autostart) {
+        await this.execCommand(
+          id,
+          `(crontab -l 2>/dev/null; echo "*/5 * * * * ${sshData.nodeLocation}; activeledger &") | crontab -`
+        );
       }
 
       const node = await this.getConnection(id);
@@ -93,9 +120,11 @@ export class SshService {
         throw new Error("An error occured during update.");
       });
 
+      const isoString = new Date().toISOString();
+
       await this.execCommand(
         id,
-        `npm i -g @activeledger/activeledger @activeledger/activerestore @activeledger/activecore && cd ${sshData.nodeLocation} && activeledger --restart --auto\r`
+        `npm i -g @activeledger/activeledger @activeledger/activerestore @activeledger/activecore && cd ${sshData.nodeLocation} && activeledger --restart --auto &> update-${isoString}.log\r`
       );
     } catch (error) {
       throw error;
@@ -114,9 +143,11 @@ export class SshService {
         throw new Error("An error occured during rollback.");
       });
 
+      const isoString = new Date().toISOString();
+
       await this.execCommand(
         id,
-        `npm i -g @activeledger/activeledger@${version} @activeledger/activerestore@${version} @activeledger/activecore@${version} && cd ${sshData.nodeLocation} && activeledger --restart --auto\r`
+        `npm i -g @activeledger/activeledger@${version} @activeledger/activerestore@${version} @activeledger/activecore@${version} && cd ${sshData.nodeLocation} && activeledger --restart --auto &> rollback-${isoString}.log\r`
       );
     } catch (error) {
       throw error;
@@ -381,6 +412,15 @@ export class SshService {
         }
 
         console.log("Connection made");
+
+        if (!sshConnectionData.installed) {
+          const stats = await this.getStats(id);
+          if (stats.version) {
+            sshConnectionData.installed = true;
+            await this.dbService.update(sshConnectionData);
+          }
+        }
+
         return true;
       } else {
         return true;

@@ -23,7 +23,7 @@ import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
 import { DialogService } from "../../../../shared/services/dialog.service";
 import { INodeStats } from "../../../../shared/interfaces/baas.interfaces";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 
 @Component({
   selector: "management",
@@ -80,7 +80,8 @@ export class ManagementComponent implements OnInit {
   constructor(
     private readonly ssh: SshService,
     private readonly dialogService: DialogService,
-    private readonly route: ActivatedRoute
+    private readonly route: ActivatedRoute,
+    private readonly router: Router
   ) {}
 
   ngOnInit(): void {
@@ -90,8 +91,15 @@ export class ManagementComponent implements OnInit {
   public async install(): Promise<void> {
     await this.ssh.install(this.node._id);
   }
-  public async update(): Promise<void> {}
-  public async rollback(): Promise<void> {}
+
+  public async update(): Promise<void> {
+    await this.ssh.update(this.node._id);
+  }
+
+  public async rollback(): Promise<void> {
+    // await this.ssh.rollback(this.node._id);
+  }
+
   public async joinNetwork(): Promise<void> {}
 
   public refresh(event, node): void {
@@ -203,6 +211,12 @@ export class ManagementComponent implements OnInit {
     }
 
     this.tags = await this.ssh.getTags();
+  }
+
+  public openLog(event, node): void {
+    event.stopPropagation();
+
+    this.router.navigateByUrl("nodes/logs/" + node._id);
   }
 
   public async manageConnectionTags(): Promise<void> {

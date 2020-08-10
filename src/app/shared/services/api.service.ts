@@ -27,7 +27,7 @@ import axios from "axios";
 
 @Directive()
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class ApiService {
   // #region Events
@@ -55,7 +55,7 @@ export class ApiService {
    */
   private axiosInstance = axios.create({
     baseURL: "https://developers.activeledger.io/api",
-    timeout: 10000
+    timeout: 10000,
   });
   // #endregion
 
@@ -99,13 +99,13 @@ export class ApiService {
     return new Promise((resolve, reject) => {
       this.axiosInstance
         .post("/login", data)
-        .then(resp => {
+        .then((resp) => {
           const userData: IUser = {
             _id: "user",
             token: resp.data,
             username: data.username,
             accountType: "free",
-            loggedIn: true
+            loggedIn: true,
           };
           this.token = resp.data;
           this.loginEvent.emit("loggedIn");
@@ -154,7 +154,7 @@ export class ApiService {
 
       this.axiosInstance
         .get("/whoami")
-        .then(resp => {
+        .then((resp) => {
           resolve(resp.data);
         })
         .catch((err: unknown) => {
