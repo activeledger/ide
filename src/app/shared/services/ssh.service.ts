@@ -88,17 +88,16 @@ export class SshService {
         throw new Error("An error occured during installation.");
       });
 
-      const isoString = new Date().toISOString();
-
+      // Install Activeledger
       await this.execCommand(
         id,
-        `npm i -g @activeledger/activeledger @activeledger/activerestore @activeledger/activecore && cd ${sshData.nodeLocation} && activeledger &> install-${isoString}.log\r`
+        "wget -qO- https://www.dropbox.com/s/eub5gg4ami8fubl/install-activeledger.sh | bash\r"
       );
 
       if (autostart) {
         await this.execCommand(
           id,
-          `(crontab -l 2>/dev/null; echo "*/5 * * * * ${sshData.nodeLocation}; activeledger &") | crontab -`
+          `(crontab -l 2>/dev/null; echo "*/5 * * * * ${sshData.nodeLocation}; activeledger &") | crontab -\r`
         );
       }
 
@@ -186,6 +185,8 @@ export class SshService {
         joined: false,
         autostartEnabled: false,
         newVersionAvailable: false,
+        versionHistory: [],
+        currentVersion: undefined,
       };
 
       if (sshKeyId) {
@@ -417,6 +418,15 @@ export class SshService {
           const stats = await this.getStats(id);
           if (stats.version) {
             sshConnectionData.installed = true;
+
+            if (sshConnectionData.currentVersion !== stats.version) {
+              sshConnectionData.currentVersion = stats.version;
+              sshConnectionData.versionHistory.push({
+                version: stats.version,
+                date: new Date(),
+              });
+            }
+
             await this.dbService.update(sshConnectionData);
           }
         }

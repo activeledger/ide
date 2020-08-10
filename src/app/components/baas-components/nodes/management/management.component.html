@@ -133,27 +133,23 @@
           </div>
 
           <div class="middle" *ngIf="node && nodeConnected">
-            <!-- <div class="middle"> -->
-            <div class="control" *ngIf="!node.installed" (click)="install()">
-              <!-- <div class="control" (click)="install()"> -->
+            <div class="control" *ngIf="node && !node.installed" (click)="install()">
               <fa-icon [icon]="icons.install"></fa-icon>&nbsp;&nbsp;&nbsp;Install
             </div>
 
-            <div class="control" *ngIf="node.installed && updateAvailable" (click)="update()">
-              <!-- <div class="control" (click)="update()"> -->
+            <div class="control" *ngIf="node && node.installed && updateAvailable" (click)="update()">
               <fa-icon [icon]="icons.update"></fa-icon>&nbsp;&nbsp;&nbsp;Update
             </div>
 
-            <div class="control" *ngIf="node.previousVersion" (click)="rollback()">
-              <!-- <div class="control" (click)="rollback()"> -->
+            <div class="control" *ngIf="node.versionHistory.length > 1" (click)="rollback()">
               <fa-icon [icon]=" icons.rollback">
               </fa-icon>&nbsp;&nbsp;&nbsp;Rollback
             </div>
 
-            <div class="control" *ngIf="node.installed && !node.joined" (click)="joinNetwork()">
-              <!-- <div class="control" (click)="joinNetwork()"> -->
+            <!-- TODO: For automated network joining -->
+            <!-- <div class="control" *ngIf="node && node.installed && !node.joined" (click)="joinNetwork()">
               <fa-icon [icon]="icons.joinNetwork"></fa-icon>&nbsp;&nbsp;&nbsp;Join Network
-            </div>
+            </div> -->
 
           </div>
 

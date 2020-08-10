@@ -89,15 +89,33 @@ export class ManagementComponent implements OnInit {
   }
 
   public async install(): Promise<void> {
-    await this.ssh.install(this.node._id);
+    try {
+      await this.ssh.install(this.node._id);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   public async update(): Promise<void> {
-    await this.ssh.update(this.node._id);
+    try {
+      await this.ssh.update(this.node._id);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   public async rollback(): Promise<void> {
-    // await this.ssh.rollback(this.node._id);
+    try {
+      const version = await this.dialogService.rollbackVersionSelect(
+        this.node.versionHistory
+      );
+
+      if (version) {
+        await this.ssh.rollback(this.node._id, version);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   public async joinNetwork(): Promise<void> {}
@@ -169,6 +187,13 @@ export class ManagementComponent implements OnInit {
 
     if (!id) {
       id = this.node._id;
+    }
+
+    const latestActiveledger = await this.ssh.getLatestVersion();
+    if (latestActiveledger !== this.node.currentVersion) {
+      this.updateAvailable = true;
+    } else {
+      this.updateAvailable = false;
     }
 
     let stats = await this.ssh.getStats(id);

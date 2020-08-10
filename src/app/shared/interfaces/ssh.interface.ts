@@ -27,6 +27,8 @@ export interface ISSHCreateData {
   newVersionAvailable: boolean;
   joined: boolean;
   autostartEnabled: boolean;
+  versionHistory: IVersionHistory[];
+  currentVersion: string;
 }
 
 export interface ISSH {
@@ -47,7 +49,7 @@ export interface ISSH {
   autostartEnabled: boolean;
 }
 
-interface IVersionHistory {
+export interface IVersionHistory {
   date: Date;
   version: string;
 }
