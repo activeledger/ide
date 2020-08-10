@@ -12,10 +12,12 @@ import {
   faWifiSlash,
   faTimesCircle,
   faFileAlt,
-  faLink,
-  faUnlink,
   faTag,
   faTags,
+  faDownload,
+  faUndoAlt,
+  faFileSignature,
+  faUpload,
 } from "@fortawesome/pro-light-svg-icons";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
@@ -37,7 +39,10 @@ export class ManagementComponent implements OnInit {
   public connectionData: ISSH[] = [];
   public connections = new MatTableDataSource<ISSH>(this.connectionData);
   public node: ISSH;
+  public nodeConnected = false;
   public nodeStats: { [id: string]: INodeStats } = {};
+
+  public updateAvailable = false;
 
   public icons = {
     refresh: faSync,
@@ -52,6 +57,10 @@ export class ManagementComponent implements OnInit {
     disconnected: faWifiSlash,
     manageTags: faTag,
     manageTagsAll: faTags,
+    install: faDownload,
+    update: faUpload,
+    rollback: faUndoAlt,
+    joinNetwork: faFileSignature,
   };
 
   public displayColumns = [
@@ -83,31 +92,112 @@ export class ManagementComponent implements OnInit {
     this.router.navigateByUrl("/nodes/logs/" + id);
   }
 
-  public refresh(event): void {
-    if (this.node) {
-      event.stopPropagation();
-      if (this.ssh.hasOpenConnection(this.node._id)) {
-        this.getNodeStats();
-      } else {
-        this.connectTo(this.node);
-      }
+  public async install(): Promise<void> {
+    try {
+      await this.ssh.install(this.node._id);
+    } catch (error) {
+      console.error(error);
     }
   }
 
-  public async connectTo(row): Promise<void> {
+  public async update(): Promise<void> {
     try {
-      this.node = row;
-      if (await this.ssh.sshToNode(row._id)) {
-        await this.getNodeStats(row._id);
+      await this.ssh.update(this.node._id);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  public async rollback(): Promise<void> {
+    try {
+      const version = await this.dialogService.rollbackVersionSelect(
+        this.node.versionHistory
+      );
+
+      if (version) {
+        await this.ssh.rollback(this.node._id, version);
       }
     } catch (error) {
       console.error(error);
     }
   }
 
+  public async joinNetwork(): Promise<void> {}
+
+  public refresh(event, node): void {
+    this.node = node;
+
+    event.stopPropagation();
+    if (this.ssh.hasOpenConnection(this.node._id)) {
+      this.getNodeStats();
+    } else {
+      this.connectTo(this.node);
+    }
+  }
+
+  public async connectTo(row?): Promise<void> {
+    if (row) {
+      this.node = row;
+    }
+
+    try {
+      if (await this.ssh.sshToNode(this.node._id)) {
+        await this.getNodeStats(this.node._id);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  public async disconnect(): Promise<void> {
+    this.nodeConnected = false;
+    await this.ssh.closeConnection(this.node._id);
+    await this.getNodeStats();
+  }
+
+  public async restart(): Promise<void> {
+    try {
+      await this.ssh.restart(this.node._id);
+      setTimeout(async () => {
+        await this.getNodeStats();
+      }, 2000);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  public async start(): Promise<void> {
+    try {
+      await this.ssh.start(this.node._id);
+      setTimeout(async () => {
+        await this.getNodeStats();
+      }, 2000);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  public async stop(): Promise<void> {
+    try {
+      await this.ssh.stop(this.node._id);
+      await this.getNodeStats();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   public async getNodeStats(id?: string): Promise<void> {
+    this.nodeConnected = true;
+
     if (!id) {
       id = this.node._id;
+    }
+
+    const latestActiveledger = await this.ssh.getLatestVersion();
+    if (latestActiveledger !== this.node.currentVersion) {
+      this.updateAvailable = true;
+    } else {
+      this.updateAvailable = false;
     }
 
     let stats = await this.ssh.getStats(id);
@@ -152,6 +242,12 @@ export class ManagementComponent implements OnInit {
     this.tags = await this.ssh.getTags();
   }
 
+  public openLog(event, node): void {
+    event.stopPropagation();
+
+    this.router.navigateByUrl("nodes/logs/" + node._id);
+  }
+
   public async manageConnectionTags(): Promise<void> {
     const tags = await this.dialogService.manageTagsConnection(
       JSON.parse(JSON.stringify(this.tags)),
@@ -182,11 +278,6 @@ export class ManagementComponent implements OnInit {
       this.paginator.pageSize = 20;
       this.connections.paginator = this.paginator;
     }
-  }
-
-  private async load(): Promise<void> {
-    await this.getSshConnections();
-    this.checkForIdParam();
   }
 
   public async addConnection(): Promise<void> {
@@ -234,6 +325,11 @@ export class ManagementComponent implements OnInit {
     } catch (error) {
       console.error(error);
     }
+  }
+
+  private async load(): Promise<void> {
+    await this.getSshConnections();
+    this.checkForIdParam();
   }
 
   private checkForIdParam(): void {

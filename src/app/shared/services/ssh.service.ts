@@ -13,6 +13,7 @@ import { ElectronService } from "./electron.service";
 import { DatabaseService } from "../../providers/database.service";
 import { DBTypes } from "../enums/db.enum";
 import { DialogService } from "./dialog.service";
+import { EventEmitter } from "events";
 
 @Injectable({
   providedIn: "root",
@@ -25,6 +26,8 @@ export class SshService {
 
   public tempPrivate: string;
 
+  public logEvent = new EventEmitter();
+
   constructor(
     private readonly keyService: KeyService,
     private readonly electron: ElectronService,
@@ -32,9 +35,125 @@ export class SshService {
     private readonly dialogService: DialogService
   ) {}
 
+  public streamLogs(id: string): void {
+    const stream = SshService.connectionPool.get(id).stream;
+
+    stream.on("data", (data: Buffer) => {
+      this.logEvent.emit("logEvent", { data });
+    });
+
+    stream.write("echo log test\r");
+  }
+
   public hasOpenConnection(id: string): boolean {
     return SshService.connectionPool.has(id);
   }
+
+  public async getLatestVersion(): Promise<string> {
+    const unpkg = require("unpkg-json");
+
+    const json = await unpkg("@activeledger/activeledger");
+
+    return json.version;
+  }
+
+  private getNodeLatestVersion(id: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const stream = SshService.connectionPool.get(id).stream;
+
+      stream
+        .on("data", (data) => {
+          const regexVersion = new RegExp("\\d+\\.\\d+\\.\\d+");
+          const regexChars = new RegExp("[A-z]+");
+
+          if (!regexChars.test(data) && regexVersion.test(data)) {
+            resolve(data);
+          }
+        })
+        .stderr.on("data", (data) => {
+          reject(data);
+        });
+
+      stream.write("npm show @activeledger/activeledger version\r");
+    });
+  }
+
+  public async install(id: string, autostart: boolean = false): Promise<void> {
+    try {
+      const stream = SshService.connectionPool.get(id).stream;
+      const sshData = await this.getConnection(id);
+
+      stream.stderr.on("data", (data) => {
+        console.log("STDERR: " + data);
+        throw new Error("An error occured during installation.");
+      });
+
+      // Install Activeledger
+      await this.execCommand(
+        id,
+        "wget -qO- https://www.dropbox.com/s/eub5gg4ami8fubl/install-activeledger.sh | bash\r"
+      );
+
+      if (autostart) {
+        await this.execCommand(
+          id,
+          `(crontab -l 2>/dev/null; echo "*/5 * * * * ${sshData.nodeLocation}; activeledger &") | crontab -\r`
+        );
+      }
+
+      const node = await this.getConnection(id);
+      node.installed = true;
+      node.autostartEnabled = autostart;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async update(id: string): Promise<void> {
+    try {
+      const stream = SshService.connectionPool.get(id).stream;
+      const sshData = await this.getConnection(id);
+
+      stream.stderr.on("data", (data) => {
+        console.log("STDERR: " + data);
+        throw new Error("An error occured during update.");
+      });
+
+      const isoString = new Date().toISOString();
+
+      await this.execCommand(
+        id,
+        `npm i -g @activeledger/activeledger @activeledger/activerestore @activeledger/activecore && cd ${sshData.nodeLocation} && activeledger --restart --auto &> update-${isoString}.log\r`
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async autostart(id: string): Promise<void> {}
+
+  public async rollback(id: string, version: string): Promise<void> {
+    try {
+      const stream = SshService.connectionPool.get(id).stream;
+      const sshData = await this.getConnection(id);
+
+      stream.stderr.on("data", (data) => {
+        console.log("STDERR: " + data);
+        throw new Error("An error occured during rollback.");
+      });
+
+      const isoString = new Date().toISOString();
+
+      await this.execCommand(
+        id,
+        `npm i -g @activeledger/activeledger@${version} @activeledger/activerestore@${version} @activeledger/activecore@${version} && cd ${sshData.nodeLocation} && activeledger --restart --auto &> rollback-${isoString}.log\r`
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async joinNetwork(id: string): Promise<void> {}
 
   public async saveConnection(data: ISSHCreate): Promise<void> {
     try {
@@ -62,6 +181,12 @@ export class SshService {
         port: data.port,
         nodeLocation: data.nodeLocation,
         authMethod,
+        installed: false,
+        joined: false,
+        autostartEnabled: false,
+        newVersionAvailable: false,
+        versionHistory: [],
+        currentVersion: undefined,
       };
 
       if (sshKeyId) {
@@ -222,6 +347,35 @@ export class SshService {
     }
   }
 
+  public async createSshConfig(id: string): Promise<any> {
+    const sshData = await this.getConnection(id);
+
+    let config = {
+      host: sshData.address,
+      port: sshData.port,
+      readyTimeout: 5000,
+    };
+
+    if (sshData.authMethod === "password") {
+      const login: ISSHLogin = await this.dialogService.sshLogin();
+
+      if (login.cancelled || !login.username || !login.password) {
+        console.log("Not connecting");
+        return false;
+      }
+
+      config["username"] = login.username;
+      config["password"] = login.password;
+    } else {
+      const key: ISSHKey = await this.dbService.findById(sshData.keyID);
+
+      config["username"] = key.identity;
+      config["privateKey"] = key.sshPrv;
+    }
+
+    return config;
+  }
+
   public async sshToNode(id: string): Promise<boolean> {
     try {
       console.log("Initialising SSH Connection...");
@@ -231,30 +385,7 @@ export class SshService {
       if (!SshService.connectionPool.has(id)) {
         const sshConnectionData: ISSH = await this.dbService.findById(id);
 
-        let config = {
-          host: sshConnectionData.address,
-          port: sshConnectionData.port,
-          readyTimeout: 5000,
-        };
-
-        if (sshConnectionData.authMethod === "password") {
-          const login: ISSHLogin = await this.dialogService.sshLogin();
-
-          if (login.cancelled || !login.username || !login.password) {
-            console.log("Not connecting");
-            return false;
-          }
-
-          config["username"] = login.username;
-          config["password"] = login.password;
-        } else {
-          const key: ISSHKey = await this.dbService.findById(
-            sshConnectionData.keyID
-          );
-
-          config["username"] = key.identity;
-          config["privateKey"] = key.sshPrv;
-        }
+        const config = await this.createSshConfig(id);
 
         connection = new this.electron.ssh();
 
@@ -282,6 +413,24 @@ export class SshService {
         }
 
         console.log("Connection made");
+
+        if (!sshConnectionData.installed) {
+          const stats = await this.getStats(id);
+          if (stats.version) {
+            sshConnectionData.installed = true;
+
+            if (sshConnectionData.currentVersion !== stats.version) {
+              sshConnectionData.currentVersion = stats.version;
+              sshConnectionData.versionHistory.push({
+                version: stats.version,
+                date: new Date(),
+              });
+            }
+
+            await this.dbService.update(sshConnectionData);
+          }
+        }
+
         return true;
       } else {
         return true;
@@ -317,12 +466,19 @@ export class SshService {
     });
   }
 
-  public restart(id: string): Promise<any> {
-    return new Promise(async (resolve, reject) => {});
+  public async restart(id: string): Promise<any> {
+    const location = SshService.connectionPool.get(id).location;
+    await this.execCommand(id, `cd ${location} && activeledger --restart\r\n`);
   }
 
-  public start(id: string): Promise<any> {
-    return new Promise(async (resolve, reject) => {});
+  public async start(id: string): Promise<any> {
+    const location = SshService.connectionPool.get(id).location;
+    await this.execCommand(id, `cd ${location} && activeledger\r\n`);
+  }
+
+  public async stop(id: string): Promise<any> {
+    const location = SshService.connectionPool.get(id).location;
+    await this.execCommand(id, `cd ${location} && activeledger --stop\r\n`);
   }
 
   public closeConnection(id: string) {
@@ -370,7 +526,7 @@ export class SshService {
     });
   }
 
-  private execCommand<T>(id: string, command: string): Promise<string> {
+  private execCommand<T>(id: string, command: string): Promise<void> {
     return new Promise((resolve, reject) => {
       const stream = SshService.connectionPool.get(id).stream;
       stream.write(command);
