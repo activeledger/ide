@@ -14,16 +14,16 @@ import {
   faFileAlt,
   faTag,
   faTags,
-  faComputerClassic,
   faDownload,
   faUndoAlt,
   faFileSignature,
+  faUpload,
 } from "@fortawesome/pro-light-svg-icons";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
 import { DialogService } from "../../../../shared/services/dialog.service";
 import { INodeStats } from "../../../../shared/interfaces/baas.interfaces";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 
 @Component({
   selector: "management",
@@ -57,8 +57,8 @@ export class ManagementComponent implements OnInit {
     disconnected: faWifiSlash,
     manageTags: faTag,
     manageTagsAll: faTags,
-    install: faComputerClassic,
-    update: faDownload,
+    install: faDownload,
+    update: faUpload,
     rollback: faUndoAlt,
     joinNetwork: faFileSignature,
   };
@@ -80,16 +80,44 @@ export class ManagementComponent implements OnInit {
   constructor(
     private readonly ssh: SshService,
     private readonly dialogService: DialogService,
-    private readonly route: ActivatedRoute
+    private readonly route: ActivatedRoute,
+    private readonly router: Router
   ) {}
 
   ngOnInit(): void {
     this.load();
   }
 
-  public async install(): Promise<void> {}
-  public async update(): Promise<void> {}
-  public async rollback(): Promise<void> {}
+  public async install(): Promise<void> {
+    try {
+      await this.ssh.install(this.node._id);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  public async update(): Promise<void> {
+    try {
+      await this.ssh.update(this.node._id);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  public async rollback(): Promise<void> {
+    try {
+      const version = await this.dialogService.rollbackVersionSelect(
+        this.node.versionHistory
+      );
+
+      if (version) {
+        await this.ssh.rollback(this.node._id, version);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   public async joinNetwork(): Promise<void> {}
 
   public refresh(event, node): void {
@@ -161,6 +189,13 @@ export class ManagementComponent implements OnInit {
       id = this.node._id;
     }
 
+    const latestActiveledger = await this.ssh.getLatestVersion();
+    if (latestActiveledger !== this.node.currentVersion) {
+      this.updateAvailable = true;
+    } else {
+      this.updateAvailable = false;
+    }
+
     let stats = await this.ssh.getStats(id);
     // let stats: INodeStats = this.nodeStats[id];
 
@@ -201,6 +236,12 @@ export class ManagementComponent implements OnInit {
     }
 
     this.tags = await this.ssh.getTags();
+  }
+
+  public openLog(event, node): void {
+    event.stopPropagation();
+
+    this.router.navigateByUrl("nodes/logs/" + node._id);
   }
 
   public async manageConnectionTags(): Promise<void> {

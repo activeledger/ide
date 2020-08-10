@@ -1,0 +1,17 @@
+<div>
+  <h1 mat-dialog-title>Select version for Rollback</h1>
+
+  <div>
+    <ul>
+      <li *ngFor="let version of versionData" (click)="selectVersion(version.version)"
+        [ngClass]="version.version === selectedVersion ? 'selected' : ''">
+        {{version.version}} - First seen: {{ version.date | date: "dd-MM-yyy"}}
+      </li>
+    </ul>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-raised-button (click)="ok()" [disabled]="!selectedVersion">Ok</button>
+    <button mat-raised-button (click)="cancel()">Cancel</button>
+  </div>
+
+</div>

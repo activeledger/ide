@@ -61,6 +61,7 @@
     "jsoneditor": "6.4.1",
     "monaco-editor": "^0.18.1",
     "ng-click-outside": "6.0.0",
+    "ng-terminal": "^2.4.0",
     "ngx-clipboard": "^13.0.1",
     "ngx-color-picker": "9.1.0",
     "ngx-echarts": "^5.0.0",
@@ -75,7 +76,8 @@
     "semver": "7.3.2",
     "ssh2": "^0.8.9",
     "sshpk": "^1.16.1",
-    "swagger-ui": "3.25.5"
+    "swagger-ui": "3.25.5",
+    "unpkg-json": "0.0.6"
   },
   "devDependencies": {
     "@activeledger/activedefinitions": "^2.2.0",

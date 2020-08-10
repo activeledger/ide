@@ -41,11 +41,13 @@ import {
   ISSH,
   ISSHEdit,
   ISSHTagsManage,
+  IVersionHistory,
 } from "../interfaces/ssh.interface";
 import { SshLoginDialogComponent } from "../dialogs/ssh-login-dialog/ssh-login-dialog.component";
 import { SshEditConnectionDialogComponent } from "../dialogs/ssh-edit-connection-dialog/ssh-edit-connection-dialog.component";
 import { SshManageTagsDialogComponent } from "../dialogs/ssh-manage-tags-dialog/ssh-manage-tags-dialog.component";
 import { SshManageTagsConnectionDialogComponent } from "../dialogs/ssh-manage-tags-connection-dialog/ssh-manage-tags-connection-dialog.component";
+import { RollbackSelectDialogComponent } from "../dialogs/rollback-select-dialog/rollback-select-dialog.component";
 
 /**
  * Provides dialogs
@@ -401,6 +403,36 @@ export class DialogService {
 
     return new Promise((resolve) => {
       ref.afterClosed().subscribe((result: ISSHTagsManage) => {
+        resolve(result);
+      });
+    });
+  }
+
+  public rollbackVersionSelect(
+    versions: IVersionHistory[],
+    settings?: any
+  ): Promise<string> {
+    let width = "450px";
+    let height = "auto";
+
+    if (settings) {
+      if (settings.width) {
+        width = settings.width;
+      }
+
+      if (settings.height) {
+        height = settings.height;
+      }
+    }
+
+    const ref = this.dialog.open(RollbackSelectDialogComponent, {
+      width,
+      height,
+      data: { versions },
+    });
+
+    return new Promise((resolve) => {
+      ref.afterClosed().subscribe((result: string) => {
         resolve(result);
       });
     });
