@@ -1,4 +1,11 @@
-import { Component, OnInit } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  ElementRef,
+  AfterViewInit,
+  ViewEncapsulation,
+} from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { ISSH } from "../../../../shared/interfaces/ssh.interface";
 import { SshService } from "../../../../shared/services/ssh.service";
@@ -22,9 +29,11 @@ export class LogsComponent implements OnInit {
     clear: faBath,
   };
 
+  private nodeId: string;
+
   constructor(
     private readonly route: ActivatedRoute,
-    private readonly ssh: SshService
+    public readonly ssh: SshService
   ) {}
 
   ngOnInit(): void {
@@ -38,24 +47,15 @@ export class LogsComponent implements OnInit {
 
   private getId(): void {
     this.route.params.subscribe((params) => {
-      this.getConnection(params["id"]);
+      this.nodeId = params["id"];
     });
   }
 
-  private async getConnection(id: string): Promise<void> {
-    try {
-      this.connection = await this.ssh.getConnection(id);
-      this.getLogs();
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  private async getLogs(): Promise<void> {
-    if (this.autoRefresh) {
-      setTimeout(() => {
-        this.getLogs();
-      }, 5000);
-    }
-  }
+  // private async getLogs(): Promise<void> {
+  //   if (this.autoRefresh) {
+  //     setTimeout(() => {
+  //       this.getLogs();
+  //     }, 5000);
+  //   }
+  // }
 }

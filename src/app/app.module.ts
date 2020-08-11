@@ -106,7 +106,8 @@ import { SshLoginDialogComponent } from "./shared/dialogs/ssh-login-dialog/ssh-l
 import { SshEditConnectionDialogComponent } from "./shared/dialogs/ssh-edit-connection-dialog/ssh-edit-connection-dialog.component";
 import { SshManageTagsDialogComponent } from "./shared/dialogs/ssh-manage-tags-dialog/ssh-manage-tags-dialog.component";
 import { SshManageTagsConnectionDialogComponent } from "./shared/dialogs/ssh-manage-tags-connection-dialog/ssh-manage-tags-connection-dialog.component";
-import { RollbackSelectDialogComponent } from './shared/dialogs/rollback-select-dialog/rollback-select-dialog.component';
+import { RollbackSelectDialogComponent } from "./shared/dialogs/rollback-select-dialog/rollback-select-dialog.component";
+import { SharedModule } from "./shared/shared.module";
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -191,6 +192,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ContractsModule,
     SettingsModule,
     ReactiveFormsModule,
+    SharedModule,
   ],
   providers: [
     ElectronService,

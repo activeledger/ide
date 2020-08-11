@@ -1,10 +1,13 @@
 <div class="wrapper">
 
   <section class="left">
-    <div class="log-display"></div>
+    <div class="log-display">
+      <app-log-terminal [sshService]="ssh" [nodeId]="nodeId"></app-log-terminal>
+    </div>
   </section>
 
-  <section class="right">
+  <!-- Disabled as logs will be streamed for the moment -->
+  <!-- <section class="right">
     <div class="controls-wrapper">
       <div class="control auto-refresh-toggle" [ngClass]="autoRefresh ? 'refresh-enabled' : 'refresh-disabled'"
         (click)="toggleAutoRefresh()">
@@ -27,6 +30,6 @@
         Clear
       </div>
     </div>
-  </section>
+  </section> -->
 
 </div>

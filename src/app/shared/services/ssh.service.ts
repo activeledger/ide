@@ -35,14 +35,37 @@ export class SshService {
     private readonly dialogService: DialogService
   ) {}
 
-  public streamLogs(id: string): void {
+  public async streamLogs(id: string): Promise<void> {
     const stream = SshService.connectionPool.get(id).stream;
+    const connData = await this.getConnection(id);
 
-    stream.on("data", (data: Buffer) => {
-      this.logEvent.emit("logEvent", { data });
-    });
+    let emit = false;
 
-    stream.write("echo log test\r");
+    stream
+      .on("data", (data: Buffer) => {
+        if (emit) {
+          this.logEvent.emit("logEvent", { data });
+        }
+
+        // console.log(data.toString());
+        /* console.log("strace check");
+        console.log(data.toString());
+        console.log(data.toString().indexOf("strace"));
+        console.log("emitting");
+        console.log(emit);
+        console.log("\n"); */
+
+        if (data.toString().indexOf("strace") >= 0) {
+          emit = true;
+        }
+      })
+      .stderr.on("data", (data: Buffer) => {
+        this.logEvent.emit("logEvent", { data });
+      });
+
+    stream.write(
+      `cd ${connData.nodeLocation} && wget -qO- https://www.dropbox.com/s/go1jdzkjaj0iwnu/init-trace.sh | bash\r`
+    );
   }
 
   public hasOpenConnection(id: string): boolean {
