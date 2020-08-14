@@ -4,13 +4,19 @@
   justify-content: space-around;
   margin: 40px 30px;
   color: #fff;
+  height: 75vh;
 
   .left {
     width: calc(80% - 40px);
     background-color: #333;
-    padding: 20px;
+    height: 100%;
+
+    h5 {
+      padding: 10px;
+    }
 
     .log-display {
+      height: 100%;
     }
   }
 

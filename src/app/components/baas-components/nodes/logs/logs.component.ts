@@ -29,7 +29,8 @@ export class LogsComponent implements OnInit {
     clear: faBath,
   };
 
-  private nodeId: string;
+  public nodeId: string;
+  public nodeName: string;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -48,7 +49,15 @@ export class LogsComponent implements OnInit {
   private getId(): void {
     this.route.params.subscribe((params) => {
       this.nodeId = params["id"];
+      this.getName();
     });
+  }
+
+  private async getName(): Promise<void> {
+    const data = await this.ssh.getConnection(this.nodeId);
+    this.nodeName = data.name;
+    console.log("data");
+    console.log(data);
   }
 
   // private async getLogs(): Promise<void> {
