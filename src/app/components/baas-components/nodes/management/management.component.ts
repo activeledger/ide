@@ -88,6 +88,10 @@ export class ManagementComponent implements OnInit {
     this.load();
   }
 
+  public openLogs(id: string): void {
+    this.router.navigateByUrl("/nodes/logs/" + id);
+  }
+
   public async install(): Promise<void> {
     try {
       await this.ssh.install(this.node._id);
@@ -373,8 +377,6 @@ export class ManagementComponent implements OnInit {
       uptime = Math.floor(uptime % 1000);
       return `${seconds}s ${uptime}ms`;
     }
-
-    // if (seconds > 0)
 
     return uptimeString;
   }

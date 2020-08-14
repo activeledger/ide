@@ -13,6 +13,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { MatPaginatorModule } from "@angular/material/paginator";
 import { LogsComponent } from "./logs/logs.component";
 import { MatSelectModule } from "@angular/material/select";
+import { SharedModule } from "../../../shared/shared.module";
 
 @NgModule({
   declarations: [DashboardComponent, ManagementComponent, LogsComponent],
@@ -28,6 +29,7 @@ import { MatSelectModule } from "@angular/material/select";
     }),
     FontAwesomeModule,
     MatPaginatorModule,
+    SharedModule,
   ],
 })
 export class NodesModule {}
