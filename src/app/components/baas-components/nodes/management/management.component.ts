@@ -43,6 +43,7 @@ export class ManagementComponent implements OnInit {
   public nodeStats: { [id: string]: INodeStats } = {};
 
   public updateAvailable = false;
+  public latestVersion;
 
   public icons = {
     refresh: faSync,
@@ -151,8 +152,12 @@ export class ManagementComponent implements OnInit {
 
   public async disconnect(): Promise<void> {
     this.nodeConnected = false;
-    await this.ssh.closeConnection(this.node._id);
-    await this.getNodeStats();
+
+    this.ssh.closeConnection(this.node._id);
+    // await this.getNodeStats();
+
+    this.node = undefined;
+    this.getSshConnections();
   }
 
   public async restart(): Promise<void> {
@@ -193,8 +198,11 @@ export class ManagementComponent implements OnInit {
       id = this.node._id;
     }
 
-    const latestActiveledger = await this.ssh.getLatestVersion();
-    if (latestActiveledger !== this.node.currentVersion) {
+    if (!this.latestVersion) {
+      this.latestVersion = await this.ssh.getLatestVersion();
+    }
+
+    if (parseFloat(this.latestVersion) > parseFloat(this.node.currentVersion)) {
       this.updateAvailable = true;
     } else {
       this.updateAvailable = false;

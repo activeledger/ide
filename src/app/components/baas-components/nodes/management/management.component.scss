@@ -26,6 +26,11 @@
       .tags-filter {
         background: rgb(235, 235, 235);
         padding: 4px 6px;
+
+        ::ng-deep .mat-select-value,
+        ::ng-deep .mat-select-arrow {
+          color: #333 !important;
+        }
       }
     }
 

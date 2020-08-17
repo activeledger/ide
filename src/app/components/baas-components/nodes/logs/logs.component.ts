@@ -43,7 +43,6 @@ export class LogsComponent implements OnInit {
 
   public toggleAutoRefresh(): void {
     this.autoRefresh = !this.autoRefresh;
-    console.log(this.autoRefresh);
   }
 
   private getId(): void {
@@ -56,8 +55,6 @@ export class LogsComponent implements OnInit {
   private async getName(): Promise<void> {
     const data = await this.ssh.getConnection(this.nodeId);
     this.nodeName = data.name;
-    console.log("data");
-    console.log(data);
   }
 
   // private async getLogs(): Promise<void> {

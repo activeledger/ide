@@ -79,7 +79,6 @@ export class QuickBarComponent implements OnInit {
     private generalService: GeneralService,
     private dialogService: DialogService,
     private dbService: DatabaseService,
-    private userService: UserService,
     private menuService: MenuService
   ) {}
 
@@ -92,7 +91,10 @@ export class QuickBarComponent implements OnInit {
   public txBaasSwitch(): void {
     this.setup.isTx = this.setup.isTx ? false : true;
     this.menuService.txBaasSwitch(this.setup.isTx ? "tx" : "baas");
-    this.goTo("/nodes/dashboard", "Dashboard");
+
+    this.setup.isTx
+      ? this.goTo("/", "Home")
+      : this.goTo("/nodes/dashboard", "Dashboard");
   }
 
   public getWorkspaces(): Promise<void> {
@@ -142,6 +144,14 @@ export class QuickBarComponent implements OnInit {
    * @memberof AppComponent
    */
   public goTo(url: string, title: string): void {
+    if (url.includes("/network/") || url.includes("/nodes/")) {
+      this.setup.isTx = false;
+      this.menuService.txBaasSwitch("baas");
+    } else {
+      this.setup.isTx = true;
+      this.menuService.txBaasSwitch("tx");
+    }
+
     this.router.navigateByUrl(url);
 
     this.setPageTitle(title);

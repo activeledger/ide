@@ -40,6 +40,7 @@ export class ManagementComponent implements OnInit {
     updated: Date;
     onboarded: boolean;
   }[] = [];
+
   public networks = new MatTableDataSource<any>(this.networkData);
 
   public icons = {
@@ -72,7 +73,6 @@ export class ManagementComponent implements OnInit {
   public async getTimeline(): Promise<void> {
     try {
       this.timelineEntries = await this.networkBuilderService.getTimeline();
-      console.log(this.timelineEntries);
     } catch (error) {
       console.error(error);
     }
@@ -92,7 +92,7 @@ export class ManagementComponent implements OnInit {
       this.getNetworks();
       this.getTimeline();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 
@@ -106,7 +106,7 @@ export class ManagementComponent implements OnInit {
       this.getNetworks();
       this.getTimeline();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 
@@ -130,7 +130,7 @@ export class ManagementComponent implements OnInit {
       this.getNetworks();
       this.getTimeline();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 
@@ -145,7 +145,7 @@ export class ManagementComponent implements OnInit {
       );
       this.getTimeline();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 

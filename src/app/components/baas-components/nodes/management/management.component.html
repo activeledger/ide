@@ -50,7 +50,12 @@
           <ng-container matColumnDef="uptime">
             <mat-header-cell *matHeaderCellDef>Uptime</mat-header-cell>
             <mat-cell *matCellDef="let node">
-              {{nodeStats[node._id] ? nodeStats[node._id].uptime : "Down"}}
+              <span *ngIf="nodeStats[node._id]">
+                {{nodeStats[node._id] ? nodeStats[node._id].uptime : "Down"}}
+              </span>
+              <span *ngIf="!nodeStats[node._id]">
+                Not connected
+              </span>
             </mat-cell>
           </ng-container>
           <ng-container matColumnDef="autoRestarts">
@@ -209,7 +214,7 @@
           <div class="version">
             <div class="current-version">Version:
               {{node && nodeStats[node._id] ? nodeStats[node._id].version : "Unknown"}}</div>
-            <!-- <div class="latest-version">Latest: 2.3.5</div> -->
+            <div class="latest-version">Latest: {{this.latestVersion}}</div>
           </div>
 
           <br />
