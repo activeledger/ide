@@ -57,10 +57,10 @@ export class MainmenuComponent implements OnInit, OnDestroy {
 
   @Input()
   set menuSize(size: string) {
-    if (size === "max") {
-      this.setup.hideMenuNames = false;
-    } else {
+    if (size === "min") {
       this.setup.hideMenuNames = true;
+    } else {
+      this.setup.hideMenuNames = false;
     }
   }
 

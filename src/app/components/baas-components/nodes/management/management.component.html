@@ -137,7 +137,8 @@
             </div>
           </div>
 
-          <div class="middle" *ngIf="node && nodeConnected">
+          <div class="middle"
+            *ngIf="node && nodeConnected && !node.installed && updateAvailable && node.versionHistory.length > 1">
             <div class="control" *ngIf="node && !node.installed" (click)="install()">
               <fa-icon [icon]="icons.install"></fa-icon>&nbsp;&nbsp;&nbsp;Install
             </div>

@@ -202,17 +202,20 @@ export class ManagementComponent implements OnInit {
       this.latestVersion = await this.ssh.getLatestVersion();
     }
 
-    if (parseFloat(this.latestVersion) > parseFloat(this.node.currentVersion)) {
-      this.updateAvailable = true;
-    } else {
-      this.updateAvailable = false;
-    }
-
-    let stats = await this.ssh.getStats(id);
+    let stats: INodeStats = await this.ssh.getStats(id);
     // let stats: INodeStats = this.nodeStats[id];
 
     if (!stats) {
       return;
+    }
+
+    console.log("stats version");
+    console.log(parseFloat(this.latestVersion) > parseFloat(stats.version));
+
+    if (parseFloat(this.latestVersion) > parseFloat(stats.version)) {
+      this.updateAvailable = true;
+    } else {
+      this.updateAvailable = false;
     }
 
     stats = this.ramToString(stats);
