@@ -111,10 +111,29 @@ export class SshService {
         throw new Error("An error occured during installation.");
       });
 
-      // Install Activeledger
+      let installTriggered = false;
+
+      stream.on("data", async (data) => {
+        console.log("NVM install output");
+        console.log(data.toString());
+
+        if (
+          data.toString().toLowerCase().indexOf("now using node") > -1 &&
+          !installTriggered
+        ) {
+          installTriggered = true;
+          // Start the activeledger install
+          await this.execCommand(
+            id,
+            "wget -qO- https://www.dropbox.com/s/eub5gg4ami8fubl/install-activeledger.sh | bash\r"
+          );
+        }
+      });
+
+      // Trigger nvm install/check - this will trigger the activeledger install script
       await this.execCommand(
         id,
-        "wget -qO- https://www.dropbox.com/s/eub5gg4ami8fubl/install-activeledger.sh | bash\r"
+        "wget -qO- https://www.dropbox.com/s/o50cktjgf6td9r9/install-nvm.sh | bash\r"
       );
 
       if (autostart) {

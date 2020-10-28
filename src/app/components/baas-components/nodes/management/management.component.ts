@@ -96,6 +96,7 @@ export class ManagementComponent implements OnInit {
   public async install(): Promise<void> {
     try {
       await this.ssh.install(this.node._id);
+      this.refresh(null, this.node);
     } catch (error) {
       console.error(error);
     }
