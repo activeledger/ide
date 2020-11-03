@@ -98,7 +98,7 @@ import { KeysModule } from "./components/tx-components/keys/keys.module";
 import { NamespaceModule } from "./components/tx-components/namespace/namespace.module";
 import { SwaggerModule } from "./components/tx-components/swagger/swagger.module";
 import { SigningModule } from "./components/tx-components/signing/signing.module";
-import { MonacoEditorModule } from "@materia-ui/ngx-monaco-editor";
+// import { MonacoEditorModule } from "@materia-ui/ngx-monaco-editor";
 import { MatButtonToggleModule } from "@angular/material/button-toggle";
 import { MainmenuComponent } from "./shared/components/mainmenu/mainmenu.component";
 import { AddSshConnectionDialogComponent } from "./shared/dialogs/add-ssh-connection/add-ssh-connection.component";
@@ -171,7 +171,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatBadgeModule,
     MatIconModule,
     MatSnackBarModule,
-    MonacoEditorModule,
+    // MonacoEditorModule,
     MatRadioModule,
     MatListModule,
     TranslateModule.forRoot({

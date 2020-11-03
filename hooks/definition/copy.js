@@ -57,51 +57,73 @@ packages.forEach((element) => {
     // Loop all items
     for (var i = 0; i < items.length; i++) {
       // Write out
+      //console.log(outFolder + element + "/" + items[i]);
 
-      // Use switch if need to do it on multiple files
-      if (items[i] == "stream.d.ts") {
-        // Read File
-        let contents = fs.readFileSync(path + "/" + items[i]).toString();
+      // HACK - Just Copy
+      fs.copySync(path + "/" + items[i], outFolder + element + "/" + items[i]);
 
-        // Hide "private" methods which are public for internal usage
-        contents = contents
-          .replace("export2Ledger", "private export2Ledger")
-          .replace("throwTo", "private throwTo")
-          .replace("updated:", "private updated:")
-          .replace("setKey", "private setKey");
+      if (items[i].indexOf("d.ts") !== -1) {
+        let contents = fs
+          .readFileSync(path + "/" + items[i])
+          .toString()
+          .replace(`/// <reference types="node" />`, "")
+          .replace(/\n|\r/g, "");
+        //replace(/\"/g, `\\"`);
+
+        // Use switch if need to do it on multiple files
+        if (items[i] == "stream.d.ts") {
+          // Hide "private" methods which are public for internal usage
+          contents = contents
+            .replace("export2Ledger", "private export2Ledger")
+            .replace("throwTo", "private throwTo")
+            .replace("updated:", "private updated:")
+            .replace("setKey", "private setKey");
+        }
+
+        // Make sure directory exists
+        fs.ensureDirSync(outFolder + element);
 
         // Write file
         fs.writeFileSync(outFolder + element + "/" + items[i], contents);
-      } else {
-        // Just Copy
-        fs.copySync(
-          path + "/" + items[i],
-          outFolder + element + "/" + items[i]
-        );
       }
+
+      // else {
+      //   // Just Copy
+      //   fs.copySync(
+      //     path + "/" + items[i],
+      //     outFolder + element + "/" + items[i]
+      //   );
+
+      // if (items[i].indexOf(".d.ts") !== -1) {
+      //   let contents = fs.readFileSync(path + "/" + items[i]).toString();
+      //   contents = contents.replace(`/// <reference types="node" />`, "");
+      //   fs.mkdirSync(outFolder + element, { recursive: true });
+      //   fs.writeFileSync(outFolder + element + "/" + items[i], contents);
+      // }
+      // }
     }
   });
 });
 
 // Node Typescript slightly different
-console.log("** Processing Node Definitions **");
+// console.log("** Processing Node Definitions **");
 
-// Read & strip comments
-let tsNode = fs
-  .readFileSync(
-    `${__dirname}/../../node_modules/@types/node/index.d.ts`,
-    "utf8"
-  )
-  .replace(/\/\*[\s\S]*?\*\/|([^\\:]|^)\/\/.*$/gm, "$1");
+// // Read & strip comments
+// let tsNode = fs
+//   .readFileSync(
+//     `${__dirname}/node.d.ts`,
+//     "utf8"
+//   )
+//   .replace(/\/\*[\s\S]*?\*\/|([^\\:]|^)\/\/.*$/gm, "$1");
 
-// Make path
-fs.mkdirsSync(`${__dirname}/../../src/assets/definitions/@types/node/`);
+// // Make path
+// fs.mkdirsSync(`${__dirname}/../../src/assets/definitions_NEW/@types/node/`);
 
-// Write without .ts as it had build issues on start (duplicate definition error)
-fs.writeFileSync(
-  `${__dirname}/../../src/assets/definitions/@types/node/index.d`,
-  tsNode
-);
+// // Write without .ts as it had build issues on start (duplicate definition error)
+// fs.writeFileSync(
+//   `${__dirname}/../../src/assets/definitions_NEW/@types/node/index.d`,
+//   tsNode
+// );
 
 console.log("====================");
 console.log("Definitions Complete");

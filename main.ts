@@ -69,6 +69,7 @@ function createWindow() {
     width: size.width,
     height: size.height,
     webPreferences: {
+      webviewTag: true,
       webSecurity: false,
       nodeIntegrationInWorker: true,
       nodeIntegration: true,
