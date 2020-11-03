@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import {
-  faExternalLink,
+  faExternalLinkSquareAlt,
   faPen,
   faTrash,
   faPlus,
@@ -8,7 +8,7 @@ import {
   faFileExport,
   faCopy,
   faShip,
-} from "@fortawesome/pro-light-svg-icons";
+} from "@fortawesome/free-solid-svg-icons";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
 import { Router } from "@angular/router";
@@ -44,7 +44,7 @@ export class ManagementComponent implements OnInit {
   public networks = new MatTableDataSource<any>(this.networkData);
 
   public icons = {
-    view: faExternalLink,
+    view: faExternalLinkSquareAlt,
     add: faPlus,
     duplicate: faCopy,
     edit: faPen,

@@ -8,8 +8,6 @@ import {
   faTrash,
   faPowerOff,
   faRedo,
-  faWifi,
-  faWifiSlash,
   faTimesCircle,
   faFileAlt,
   faTag,
@@ -18,7 +16,9 @@ import {
   faUndoAlt,
   faFileSignature,
   faUpload,
-} from "@fortawesome/pro-light-svg-icons";
+  faUnlink,
+  faLink,
+} from "@fortawesome/free-solid-svg-icons";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
 import { DialogService } from "../../../../shared/services/dialog.service";
@@ -54,8 +54,8 @@ export class ManagementComponent implements OnInit {
     disconnect: faTimesCircle,
     restart: faRedo,
     stop: faPowerOff,
-    connected: faWifi,
-    disconnected: faWifiSlash,
+    connected: faLink,
+    disconnected: faUnlink,
     manageTags: faTag,
     manageTagsAll: faTags,
     install: faDownload,

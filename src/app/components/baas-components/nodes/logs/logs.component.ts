@@ -9,7 +9,11 @@ import {
 import { ActivatedRoute } from "@angular/router";
 import { ISSH } from "../../../../shared/interfaces/ssh.interface";
 import { SshService } from "../../../../shared/services/ssh.service";
-import { faSyncAlt, faRedoAlt, faBath } from "@fortawesome/pro-light-svg-icons";
+import {
+  faSyncAlt,
+  faRedoAlt,
+  faBath,
+} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: "logs",

@@ -4,8 +4,8 @@ import {
   faFileExport,
   faBath,
   faSave,
-  faLayerPlus,
-} from "@fortawesome/pro-light-svg-icons";
+  faLayerGroup,
+} from "@fortawesome/free-solid-svg-icons";
 import { DialogService } from "../../../../shared/services/dialog.service";
 import { INetworkBuilderConfig } from "../../../../shared/interfaces/baas.interfaces";
 import { NetworkBuilderService } from "../../../../shared/services/network-builder.service";
@@ -21,7 +21,7 @@ export class BuilderComponent implements OnInit {
     save: faSave,
     clear: faBath,
     export: faFileExport,
-    addNode: faLayerPlus,
+    addNode: faLayerGroup,
   };
 
   public configForm = new FormGroup({
