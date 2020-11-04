@@ -117,6 +117,13 @@ export class SshService {
         console.log("NVM install output");
         console.log(data.toString());
 
+        if (data.toString().indexOf("GET:/a/status") < -1) {
+          const node = await this.getConnection(id);
+          node.installed = true;
+          node.autostartEnabled = autostart;
+          await this.dbService.update(node);
+        }
+
         if (
           data.toString().toLowerCase().indexOf("now using node") > -1 &&
           !installTriggered
@@ -125,7 +132,7 @@ export class SshService {
           // Start the activeledger install
           await this.execCommand(
             id,
-            "wget -qO- https://www.dropbox.com/s/eub5gg4ami8fubl/install-activeledger.sh | bash\r"
+            `wget -qO- https://www.dropbox.com/s/eub5gg4ami8fubl/install-activeledger.sh | bash /dev/stdin ${sshData.nodeLocation}\r`
           );
         }
       });
@@ -142,10 +149,6 @@ export class SshService {
           `(crontab -l 2>/dev/null; echo "*/5 * * * * ${sshData.nodeLocation}; activeledger &") | crontab -\r`
         );
       }
-
-      const node = await this.getConnection(id);
-      node.installed = true;
-      node.autostartEnabled = autostart;
     } catch (error) {
       throw error;
     }
@@ -509,23 +512,28 @@ export class SshService {
   }
 
   public async restart(id: string): Promise<any> {
-    const location = SshService.connectionPool.get(id).location;
+    const connection = SshService.connectionPool.get(id);
+    const location = connection.location;
+
     await this.execCommand(id, `cd ${location} && activeledger --restart\r\n`);
   }
 
   public async start(id: string): Promise<any> {
-    const location = SshService.connectionPool.get(id).location;
+    const connection = SshService.connectionPool.get(id);
+    const location = connection.location;
     await this.execCommand(id, `cd ${location} && activeledger\r\n`);
   }
 
   public async stop(id: string): Promise<any> {
-    const location = SshService.connectionPool.get(id).location;
+    const connection = SshService.connectionPool.get(id);
+    const location = connection.location;
     await this.execCommand(id, `cd ${location} && activeledger --stop\r\n`);
   }
 
   public closeConnection(id: string) {
-    const stream = SshService.connectionPool.get(id).stream;
-    const connection = SshService.connectionPool.get(id).connection;
+    const connectionData = SshService.connectionPool.get(id);
+    const stream = connectionData.stream;
+    const connection = connectionData.connection;
 
     // Listen for stream close and end connection
     stream.on("close", (code, signal) => {

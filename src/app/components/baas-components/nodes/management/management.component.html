@@ -138,7 +138,7 @@
           </div>
 
           <div class="middle"
-            *ngIf="node && nodeConnected && (!node.installed || updateAvailable || node.versionHistory.length > 1)">
+            *ngIf="node && nodeConnected && (!node.installed || updateAvailable || node.versionHistory?.length > 1)">
             <div class="control" *ngIf="node && !node.installed" (click)="install()">
               <fa-icon [icon]="icons.install"></fa-icon>&nbsp;&nbsp;&nbsp;Install
             </div>
@@ -147,7 +147,7 @@
               <fa-icon [icon]="icons.update"></fa-icon>&nbsp;&nbsp;&nbsp;Update
             </div>
 
-            <div class="control" *ngIf="node.versionHistory.length > 1" (click)="rollback()">
+            <div class="control" *ngIf="node.versionHistory?.length > 1" (click)="rollback()">
               <fa-icon [icon]=" icons.rollback">
               </fa-icon>&nbsp;&nbsp;&nbsp;Rollback
             </div>

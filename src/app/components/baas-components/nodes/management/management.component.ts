@@ -126,11 +126,13 @@ export class ManagementComponent implements OnInit {
 
   public async joinNetwork(): Promise<void> {}
 
-  public refresh(event, node): void {
-    this.node = node;
+  public refresh(event, nodeID): void {
+    // this.node = node;
 
-    event.stopPropagation();
-    if (this.ssh.hasOpenConnection(this.node._id)) {
+    if (event) {
+      event.stopPropagation();
+    }
+    if (this.ssh.hasOpenConnection(nodeID)) {
       this.getNodeStats();
     } else {
       this.connectTo(this.node);
@@ -143,8 +145,9 @@ export class ManagementComponent implements OnInit {
     }
 
     try {
-      if (await this.ssh.sshToNode(this.node._id)) {
+      if (this.node?._id && (await this.ssh.sshToNode(this.node._id))) {
         await this.getNodeStats(this.node._id);
+        this.refresh(null, this.node._id);
       }
     } catch (error) {
       console.error(error);
@@ -177,6 +180,7 @@ export class ManagementComponent implements OnInit {
       await this.ssh.start(this.node._id);
       setTimeout(async () => {
         await this.getNodeStats();
+        this.refresh(null, this.node._id);
       }, 2000);
     } catch (error) {
       console.error(error);
@@ -209,9 +213,6 @@ export class ManagementComponent implements OnInit {
     if (!stats) {
       return;
     }
-
-    console.log("stats version");
-    console.log(parseFloat(this.latestVersion) > parseFloat(stats.version));
 
     if (parseFloat(this.latestVersion) > parseFloat(stats.version)) {
       this.updateAvailable = true;
@@ -322,6 +323,8 @@ export class ManagementComponent implements OnInit {
       );
       if (confirm) {
         await this.ssh.removeConnection(this.node._id);
+        this.node = null;
+        this.nodeConnected = false;
         this.getSshConnections();
       }
     } catch (error) {
