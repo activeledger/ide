@@ -523,7 +523,6 @@ export class EditContractsComponent
    * @memberof EditContractsComponent
    */
   public loadContract() {
-    console.log("HELLO 2222");
     if (this.contract && this.contract._id) {
       if (!this.versions) {
         this.getVersions();

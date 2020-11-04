@@ -91,7 +91,7 @@ export class MonacoEditorComponent implements OnInit {
       .replace(/\"/g, `\\"`);
 
     if (this.monacoLoaded) {
-      this.wv.executeJavaScript(`setNewValue("${bodyValue}");`);
+      this.wv.executeJavaScript(`{ setNewValue("${bodyValue}"); }`);
     } else {
       this.body = body;
       this.waitingLoad = true;
@@ -99,12 +99,12 @@ export class MonacoEditorComponent implements OnInit {
   }
 
   public clearEditor(): void {
-    this.wv.executeJavaScript(`clearEditor()`);
+    this.wv.executeJavaScript(`{ clearEditor() }`);
   }
 
   public setDefault(): void {
     this.clearEditor();
-    this.wv.executeJavaScript(`reset();`);
+    this.wv.executeJavaScript(`{ reset(); }`);
   }
 
   /**
@@ -170,7 +170,7 @@ export class MonacoEditorComponent implements OnInit {
 
       // Send to Monaco inside webview element
       wv.executeJavaScript(
-        `def("${fileContents}","node_modules/${importName}");`
+        `{def("${fileContents}","node_modules/${importName}");}`
       );
     }
   }
