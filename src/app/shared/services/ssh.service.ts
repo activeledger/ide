@@ -14,6 +14,7 @@ import { DatabaseService } from "../../providers/database.service";
 import { DBTypes } from "../enums/db.enum";
 import { DialogService } from "./dialog.service";
 import { EventEmitter } from "events";
+import { ConsoleService } from "./console.service";
 
 @Injectable({
   providedIn: "root",
@@ -32,7 +33,8 @@ export class SshService {
     private readonly keyService: KeyService,
     private readonly electron: ElectronService,
     private readonly dbService: DatabaseService,
-    private readonly dialogService: DialogService
+    private readonly dialogService: DialogService,
+    private readonly consoleService: ConsoleService
   ) {}
 
   public async streamLogs(id: string): Promise<void> {
@@ -107,15 +109,14 @@ export class SshService {
       const sshData = await this.getConnection(id);
 
       stream.stderr.on("data", (data) => {
-        console.log("STDERR: " + data);
+        this.consoleService.warning("STDERR: " + data);
         throw new Error("An error occured during installation.");
       });
 
       let installTriggered = false;
 
       stream.on("data", async (data) => {
-        console.log("NVM install output");
-        console.log(data.toString());
+        this.consoleService.info(`NVM Install Output:\n${data.toString()}`);
 
         if (data.toString().indexOf("GET:/a/status") < -1) {
           const node = await this.getConnection(id);
@@ -160,7 +161,7 @@ export class SshService {
       const sshData = await this.getConnection(id);
 
       stream.stderr.on("data", (data) => {
-        console.log("STDERR: " + data);
+        this.consoleService.warning(`STDERR: ${data}`);
         throw new Error("An error occured during update.");
       });
 
@@ -183,7 +184,10 @@ export class SshService {
       const sshData = await this.getConnection(id);
 
       stream.stderr.on("data", (data) => {
-        console.log("STDERR: " + data);
+        this.consoleService.warning(`STDERR: ${data}`);
+        this.consoleService.warning(
+          `An error occured rolling back node ${sshData.name}`
+        );
         throw new Error("An error occured during rollback.");
       });
 
@@ -276,7 +280,9 @@ export class SshService {
         await this.dbService.update(tags);
       }
     } catch (error) {
-      console.log(error);
+      this.consoleService.error(
+        `SSH Error: Error adding tags\n${JSON.stringify(error, null, 2)}`
+      );
     }
   }
 
@@ -405,7 +411,9 @@ export class SshService {
       const login: ISSHLogin = await this.dialogService.sshLogin();
 
       if (login.cancelled || !login.username || !login.password) {
-        console.log("Not connecting");
+        this.consoleService.warning(
+          `SSH: Creating SSH config cancelled, missing username, or missing password.`
+        );
         return false;
       }
 
@@ -423,7 +431,7 @@ export class SshService {
 
   public async sshToNode(id: string): Promise<boolean> {
     try {
-      console.log("Initialising SSH Connection...");
+      this.consoleService.info(`Initialising SSH Connection...`);
       let connection, stream;
 
       // Check if there is an open connection/stream for this node
@@ -457,7 +465,9 @@ export class SshService {
           SshService.connectionPool.delete(pool.keys().next().value);
         }
 
-        console.log("Connection made");
+        this.consoleService.info(
+          `Connection made to ${sshConnectionData.name}`
+        );
 
         if (!sshConnectionData.installed) {
           const stats = await this.getStats(id);
@@ -514,30 +524,42 @@ export class SshService {
   public async restart(id: string): Promise<any> {
     const connection = SshService.connectionPool.get(id);
     const location = connection.location;
+    this.consoleService.info(`SSH - Restarting node`);
 
-    await this.execCommand(id, `cd ${location} && activeledger --restart\r\n`);
+    await this.execCommand(
+      id,
+      `cd ${location} && activeledger --restart & disown\r\n`
+    );
   }
 
   public async start(id: string): Promise<any> {
     const connection = SshService.connectionPool.get(id);
     const location = connection.location;
-    await this.execCommand(id, `cd ${location} && activeledger\r\n`);
+    this.consoleService.info("SSH - Starting node");
+    await this.execCommand(id, `cd ${location} && activeledger & disown\r\n`);
   }
 
   public async stop(id: string): Promise<any> {
     const connection = SshService.connectionPool.get(id);
     const location = connection.location;
-    await this.execCommand(id, `cd ${location} && activeledger --stop\r\n`);
+    this.consoleService.info("SSH - Stopping node");
+    await this.execCommand(
+      id,
+      `cd ${location} && activeledger --stop & disown\r\n`
+    );
   }
 
   public closeConnection(id: string) {
     const connectionData = SshService.connectionPool.get(id);
     const stream = connectionData.stream;
     const connection = connectionData.connection;
+    this.consoleService.info("SSH - Closing connection");
 
     // Listen for stream close and end connection
     stream.on("close", (code, signal) => {
-      console.log("Stream :: close :: code: " + code + ", signal: " + signal);
+      this.consoleService.info(
+        "SSH - Stream :: close :: code: " + code + ", signal: " + signal
+      );
       connection.end();
     });
 
@@ -618,14 +640,18 @@ export class SshService {
       },
     };
 
-    console.log("Initialising SSH Connection...");
+    this.consoleService.info("Initialising SSH Connection...");
     ssh
       .on("ready", () => {
-        console.log("SSH Client :: Ready");
-        console.log("SSH Client :: Attempting to onboard key");
+        this.consoleService.info("SSH Client :: Ready");
+        this.consoleService.info("SSH Client :: Attempting to onboard key");
+
         const onboardCmd = `if [ ! -d ~/.ssh ]; then mkdir ~/.ssh; echo "${key.sshPub}" >> ~/.ssh/authorized_keys; else echo "${key.sshPub}" >> ~/.ssh/authorized_keys; fi`;
-        console.log("SSH Client :: Running the following command.");
-        console.log(onboardCmd);
+
+        this.consoleService.info(
+          `SSH Client :: Running the onboard command.\n${onboardCmd}`
+        );
+
         ssh.exec(onboardCmd, (err, stream) => {
           if (err) {
             console.error("SSH Client :: Error onboarding key");
@@ -634,16 +660,17 @@ export class SshService {
 
           stream
             .on("close", (code, signal) => {
-              console.log(
-                "Stream :: close :: code: " + code + ", signal: " + signal
+              this.consoleService.info(
+                "SSH - Stream :: close :: code: " + code + ", signal: " + signal
               );
+
               ssh.end();
             })
             .on("data", (data) => {
-              console.log("STDOUT: " + data);
+              this.consoleService.info("SSH - STDOUT: " + data);
             })
             .stderr.on("data", (data) => {
-              console.log("STDERR: " + data);
+              this.consoleService.warning("SSH - STDERR: " + data);
             });
         });
       })

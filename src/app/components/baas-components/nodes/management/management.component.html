@@ -184,6 +184,11 @@
             <fa-icon [icon]="icons.connected" class="online" *ngIf="node && nodeStats[node._id]?.status === 'alive'">
             </fa-icon>
           </span>
+          <div class="activity-indicator" *ngIf="showStartActivityIndicator">
+            <div class="lds-heart">
+              <div></div>
+            </div>
+          </div>
         </div>
 
 

@@ -36,6 +36,8 @@ export class ManagementComponent implements OnInit {
   public filter: string;
   public tags: string[];
 
+  public showStartActivityIndicator = false;
+
   public connectionData: ISSH[] = [];
   public connections = new MatTableDataSource<ISSH>(this.connectionData);
   public node: ISSH;
@@ -166,10 +168,13 @@ export class ManagementComponent implements OnInit {
 
   public async restart(): Promise<void> {
     try {
+      this.showStartActivityIndicator = true;
       await this.ssh.restart(this.node._id);
       setTimeout(async () => {
-        await this.getNodeStats();
-      }, 2000);
+        const nodeData = JSON.parse(JSON.stringify(this.node));
+        await this.disconnect();
+        await this.connectTo(nodeData);
+      }, 4000);
     } catch (error) {
       console.error(error);
     }
@@ -177,11 +182,13 @@ export class ManagementComponent implements OnInit {
 
   public async start(): Promise<void> {
     try {
+      this.showStartActivityIndicator = true;
       await this.ssh.start(this.node._id);
       setTimeout(async () => {
-        await this.getNodeStats();
-        this.refresh(null, this.node._id);
-      }, 2000);
+        const nodeData = JSON.parse(JSON.stringify(this.node));
+        await this.disconnect();
+        await this.connectTo(nodeData);
+      }, 4000);
     } catch (error) {
       console.error(error);
     }
@@ -208,7 +215,6 @@ export class ManagementComponent implements OnInit {
     }
 
     let stats: INodeStats = await this.ssh.getStats(id);
-    // let stats: INodeStats = this.nodeStats[id];
 
     if (!stats) {
       return;
@@ -223,9 +229,13 @@ export class ManagementComponent implements OnInit {
     stats = this.ramToString(stats);
     stats = this.hddToString(stats);
 
-    stats.cpu.currentPercent = Math.ceil(
-      (stats.cpu.one / stats.cpu.cores) * 100
-    );
+    if (stats.cpu.cores) {
+      stats.cpu.currentPercent = Math.ceil(
+        (stats.cpu.one / stats.cpu.cores) * 100
+      );
+    } else {
+      stats.cpu.currentPercent = 0;
+    }
 
     stats.uptime = this.formatUptime(stats.uptime as number);
 
@@ -236,6 +246,8 @@ export class ManagementComponent implements OnInit {
     } else {
       this.nodeStats[id] = stats;
     }
+
+    this.showStartActivityIndicator = false;
   }
 
   public async manageTags(): Promise<void> {
