@@ -8,8 +8,6 @@ import {
   faTrash,
   faPowerOff,
   faRedo,
-  faWifi,
-  faWifiSlash,
   faTimesCircle,
   faFileAlt,
   faTag,
@@ -18,7 +16,9 @@ import {
   faUndoAlt,
   faFileSignature,
   faUpload,
-} from "@fortawesome/pro-light-svg-icons";
+  faUnlink,
+  faLink,
+} from "@fortawesome/free-solid-svg-icons";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
 import { DialogService } from "../../../../shared/services/dialog.service";
@@ -36,6 +36,8 @@ export class ManagementComponent implements OnInit {
   public filter: string;
   public tags: string[];
 
+  public showStartActivityIndicator = false;
+
   public connectionData: ISSH[] = [];
   public connections = new MatTableDataSource<ISSH>(this.connectionData);
   public node: ISSH;
@@ -43,6 +45,7 @@ export class ManagementComponent implements OnInit {
   public nodeStats: { [id: string]: INodeStats } = {};
 
   public updateAvailable = false;
+  public latestVersion;
 
   public icons = {
     refresh: faSync,
@@ -53,8 +56,8 @@ export class ManagementComponent implements OnInit {
     disconnect: faTimesCircle,
     restart: faRedo,
     stop: faPowerOff,
-    connected: faWifi,
-    disconnected: faWifiSlash,
+    connected: faLink,
+    disconnected: faUnlink,
     manageTags: faTag,
     manageTagsAll: faTags,
     install: faDownload,
@@ -95,6 +98,7 @@ export class ManagementComponent implements OnInit {
   public async install(): Promise<void> {
     try {
       await this.ssh.install(this.node._id);
+      this.refresh(null, this.node);
     } catch (error) {
       console.error(error);
     }
@@ -124,11 +128,13 @@ export class ManagementComponent implements OnInit {
 
   public async joinNetwork(): Promise<void> {}
 
-  public refresh(event, node): void {
-    this.node = node;
+  public refresh(event, nodeID): void {
+    // this.node = node;
 
-    event.stopPropagation();
-    if (this.ssh.hasOpenConnection(this.node._id)) {
+    if (event) {
+      event.stopPropagation();
+    }
+    if (this.ssh.hasOpenConnection(nodeID)) {
       this.getNodeStats();
     } else {
       this.connectTo(this.node);
@@ -136,13 +142,15 @@ export class ManagementComponent implements OnInit {
   }
 
   public async connectTo(row?): Promise<void> {
+    this.showStartActivityIndicator = true;
     if (row) {
       this.node = row;
     }
 
     try {
-      if (await this.ssh.sshToNode(this.node._id)) {
+      if (this.node?._id && (await this.ssh.sshToNode(this.node._id, true))) {
         await this.getNodeStats(this.node._id);
+        this.refresh(null, this.node._id);
       }
     } catch (error) {
       console.error(error);
@@ -151,16 +159,23 @@ export class ManagementComponent implements OnInit {
 
   public async disconnect(): Promise<void> {
     this.nodeConnected = false;
-    await this.ssh.closeConnection(this.node._id);
-    await this.getNodeStats();
+
+    this.ssh.closeConnection(this.node._id);
+    // await this.getNodeStats();
+
+    this.node = undefined;
+    this.getSshConnections();
   }
 
   public async restart(): Promise<void> {
     try {
+      this.showStartActivityIndicator = true;
       await this.ssh.restart(this.node._id);
       setTimeout(async () => {
-        await this.getNodeStats();
-      }, 2000);
+        const nodeData = JSON.parse(JSON.stringify(this.node));
+        await this.disconnect();
+        await this.connectTo(nodeData);
+      }, 4000);
     } catch (error) {
       console.error(error);
     }
@@ -168,10 +183,13 @@ export class ManagementComponent implements OnInit {
 
   public async start(): Promise<void> {
     try {
+      this.showStartActivityIndicator = true;
       await this.ssh.start(this.node._id);
       setTimeout(async () => {
-        await this.getNodeStats();
-      }, 2000);
+        const nodeData = JSON.parse(JSON.stringify(this.node));
+        await this.disconnect();
+        await this.connectTo(nodeData);
+      }, 4000);
     } catch (error) {
       console.error(error);
     }
@@ -193,26 +211,32 @@ export class ManagementComponent implements OnInit {
       id = this.node._id;
     }
 
-    const latestActiveledger = await this.ssh.getLatestVersion();
-    if (latestActiveledger !== this.node.currentVersion) {
-      this.updateAvailable = true;
-    } else {
-      this.updateAvailable = false;
+    if (!this.latestVersion) {
+      this.latestVersion = await this.ssh.getLatestVersion();
     }
 
-    let stats = await this.ssh.getStats(id);
-    // let stats: INodeStats = this.nodeStats[id];
+    let stats: INodeStats = await this.ssh.getStats(id);
 
     if (!stats) {
       return;
     }
 
+    if (parseFloat(this.latestVersion) > parseFloat(stats.version)) {
+      this.updateAvailable = true;
+    } else {
+      this.updateAvailable = false;
+    }
+
     stats = this.ramToString(stats);
     stats = this.hddToString(stats);
 
-    stats.cpu.currentPercent = Math.ceil(
-      (stats.cpu.one / stats.cpu.cores) * 100
-    );
+    if (stats.cpu.cores) {
+      stats.cpu.currentPercent = Math.ceil(
+        (stats.cpu.one / stats.cpu.cores) * 100
+      );
+    } else {
+      stats.cpu.currentPercent = 0;
+    }
 
     stats.uptime = this.formatUptime(stats.uptime as number);
 
@@ -223,6 +247,8 @@ export class ManagementComponent implements OnInit {
     } else {
       this.nodeStats[id] = stats;
     }
+
+    this.showStartActivityIndicator = false;
   }
 
   public async manageTags(): Promise<void> {
@@ -310,6 +336,8 @@ export class ManagementComponent implements OnInit {
       );
       if (confirm) {
         await this.ssh.removeConnection(this.node._id);
+        this.node = null;
+        this.nodeConnected = false;
         this.getSshConnections();
       }
     } catch (error) {

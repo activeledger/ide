@@ -1,7 +1,10 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { DialogService } from "../../../../shared/services/dialog.service";
 import { EChartOption } from "echarts";
-import { faExternalLink, faSync } from "@fortawesome/pro-light-svg-icons";
+import {
+  faExternalLinkSquareAlt,
+  faSync,
+} from "@fortawesome/free-solid-svg-icons";
 import { INodeStats } from "../../../../shared/interfaces/baas.interfaces";
 import { ISSH } from "../../../../shared/interfaces/ssh.interface";
 import { MatTableDataSource } from "@angular/material/table";
@@ -62,7 +65,7 @@ export class DashboardComponent implements OnInit {
 
   public icons = {
     refresh: faSync,
-    view: faExternalLink,
+    view: faExternalLinkSquareAlt,
   };
 
   public cpuChartOptions: EChartOption = {

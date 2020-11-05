@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from "@angular/core";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
-import { faTrashAlt } from "@fortawesome/pro-light-svg-icons";
+import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: "ssh-manage-tags-connection-dialog",

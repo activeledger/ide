@@ -35,6 +35,7 @@ import {
   faAngleDown,
   faCartArrowDown,
   faBuilding,
+  faQuestion,
 } from "@fortawesome/free-solid-svg-icons";
 import { DialogService } from "../../services/dialog.service";
 import { WorkspaceHolder } from "../../interfaces/workspace.interfaces";
@@ -55,6 +56,7 @@ export class QuickBarComponent implements OnInit {
   public arrowIco = faAngleDown;
   public marketIco = faCartArrowDown;
   public workspaceIco = faBuilding;
+  public helpIco = faQuestion;
   public showQuickCreate = false;
   public showWorkspaceSelect = false;
   public workspaces = [];
@@ -79,7 +81,6 @@ export class QuickBarComponent implements OnInit {
     private generalService: GeneralService,
     private dialogService: DialogService,
     private dbService: DatabaseService,
-    private userService: UserService,
     private menuService: MenuService
   ) {}
 
@@ -89,10 +90,19 @@ export class QuickBarComponent implements OnInit {
     this.setPageTitle();
   }
 
+  public openHelp(): void {
+    this.electronService.shell.openExternal(
+      "https://developers.activeledger.io/articles/harmony-user-guide/introduction"
+    );
+  }
+
   public txBaasSwitch(): void {
     this.setup.isTx = this.setup.isTx ? false : true;
     this.menuService.txBaasSwitch(this.setup.isTx ? "tx" : "baas");
-    this.goTo("/nodes/dashboard", "Dashboard");
+
+    this.setup.isTx
+      ? this.goTo("/", "Home")
+      : this.goTo("/nodes/dashboard", "Dashboard");
   }
 
   public getWorkspaces(): Promise<void> {
@@ -142,6 +152,14 @@ export class QuickBarComponent implements OnInit {
    * @memberof AppComponent
    */
   public goTo(url: string, title: string): void {
+    if (url.includes("/network/") || url.includes("/nodes/")) {
+      this.setup.isTx = false;
+      this.menuService.txBaasSwitch("baas");
+    } else {
+      this.setup.isTx = true;
+      this.menuService.txBaasSwitch("tx");
+    }
+
     this.router.navigateByUrl(url);
 
     this.setPageTitle(title);

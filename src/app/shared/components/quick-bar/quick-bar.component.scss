@@ -1,6 +1,10 @@
 .wrapper {
   padding: 4px 14px;
 
+  .accent {
+    background-color: #6e49ff;
+  }
+
   .left {
     display: inline-block;
     height: 100%;
@@ -87,6 +91,7 @@
     float: right;
 
     padding-top: 2px;
+    margin-right: 10px;
 
     div {
       display: inline-block;
@@ -146,6 +151,10 @@
 
       border-radius: 50%;
       border: 2px solid #fff;
+    }
+
+    .help {
+      padding: 4px 8px;
     }
   }
 }

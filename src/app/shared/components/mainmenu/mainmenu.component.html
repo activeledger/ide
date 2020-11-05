@@ -3,7 +3,7 @@
   <ul *ngIf="setup.isTx">
     <li (click)="goTo('/', 'Home')" matTooltip="Home" class="accentFont-hover">
       <fa-icon [icon]="homeIco"></fa-icon>
-      <span [hidden]="setup.hideMenuNames" class="sideMenu-item">&nbsp;&nbsp;&nbsp;&nbsp;Home</span>
+      <span *ngIf="!setup.hideMenuNames" class="sideMenu-item">&nbsp;&nbsp;&nbsp;&nbsp;Home</span>
     </li>
     <li (click)="goTo('/contracts', 'Contracts')" matTooltip="Contracts" class="accentFont-hover">
       <fa-icon [icon]="contractsIco"></fa-icon>

@@ -9,7 +9,11 @@ import {
 import { ActivatedRoute } from "@angular/router";
 import { ISSH } from "../../../../shared/interfaces/ssh.interface";
 import { SshService } from "../../../../shared/services/ssh.service";
-import { faSyncAlt, faRedoAlt, faBath } from "@fortawesome/pro-light-svg-icons";
+import {
+  faSyncAlt,
+  faRedoAlt,
+  faBath,
+} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: "logs",
@@ -43,7 +47,6 @@ export class LogsComponent implements OnInit {
 
   public toggleAutoRefresh(): void {
     this.autoRefresh = !this.autoRefresh;
-    console.log(this.autoRefresh);
   }
 
   private getId(): void {
@@ -56,8 +59,6 @@ export class LogsComponent implements OnInit {
   private async getName(): Promise<void> {
     const data = await this.ssh.getConnection(this.nodeId);
     this.nodeName = data.name;
-    console.log("data");
-    console.log(data);
   }
 
   // private async getLogs(): Promise<void> {

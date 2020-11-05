@@ -21,7 +21,7 @@
  * SOFTWARE.
  */
 
-import { NgModule } from "@angular/core";
+import { NgModule, NO_ERRORS_SCHEMA } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { EditContractsComponent } from "./edit-contracts/edit-contracts.component";
 import { InfoContractsComponent } from "./info-contracts/info-contracts.component";
@@ -32,17 +32,20 @@ import { MatTableModule } from "@angular/material/table";
 import { ContractsComponent } from "./contracts/contracts.component";
 import { ContractsRoutingModule } from "./contracts-routing.module";
 import { WorkflowModule } from "../../../shared/components/workflow/workflow.module";
+import { MonacoEditorComponent } from "../../../shared/components/monaco-editor/monaco-editor.component";
+
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
 import { MatDividerModule } from "@angular/material/divider";
-import { MonacoEditorModule } from "@materia-ui/ngx-monaco-editor";
 import { FormsModule } from "@angular/forms";
 
 @NgModule({
+  schemas: [NO_ERRORS_SCHEMA],
   declarations: [
     ContractsComponent,
     EditContractsComponent,
     InfoContractsComponent,
+    MonacoEditorComponent,
   ],
   imports: [
     CommonModule,
@@ -55,7 +58,6 @@ import { FormsModule } from "@angular/forms";
     MatCardModule,
     MatButtonModule,
     MatDividerModule,
-    MonacoEditorModule,
     FormsModule,
   ],
 })

@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import {
-  faExternalLink,
+  faExternalLinkSquareAlt,
   faPen,
   faTrash,
   faPlus,
@@ -8,7 +8,7 @@ import {
   faFileExport,
   faCopy,
   faShip,
-} from "@fortawesome/pro-light-svg-icons";
+} from "@fortawesome/free-solid-svg-icons";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
 import { Router } from "@angular/router";
@@ -40,10 +40,11 @@ export class ManagementComponent implements OnInit {
     updated: Date;
     onboarded: boolean;
   }[] = [];
+
   public networks = new MatTableDataSource<any>(this.networkData);
 
   public icons = {
-    view: faExternalLink,
+    view: faExternalLinkSquareAlt,
     add: faPlus,
     duplicate: faCopy,
     edit: faPen,
@@ -72,7 +73,6 @@ export class ManagementComponent implements OnInit {
   public async getTimeline(): Promise<void> {
     try {
       this.timelineEntries = await this.networkBuilderService.getTimeline();
-      console.log(this.timelineEntries);
     } catch (error) {
       console.error(error);
     }
@@ -92,7 +92,7 @@ export class ManagementComponent implements OnInit {
       this.getNetworks();
       this.getTimeline();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 
@@ -106,7 +106,7 @@ export class ManagementComponent implements OnInit {
       this.getNetworks();
       this.getTimeline();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 
@@ -130,7 +130,7 @@ export class ManagementComponent implements OnInit {
       this.getNetworks();
       this.getTimeline();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 
@@ -145,7 +145,7 @@ export class ManagementComponent implements OnInit {
       );
       this.getTimeline();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 

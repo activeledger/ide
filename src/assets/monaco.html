@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <style type="text/css">
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div
+      id="container"
+      style="width: 100%; height: 100%; padding: 0; margin: 0"
+    ></div>
+    <script src="monaco/min/vs/loader.js"></script>
+    <script>
+      require.config({ paths: { vs: "monaco/min/vs" } });
+      require(["vs/editor/editor.main"], function () {
+        var editor;
+
+        var defaultBody = `import { Activity, Standard } from "@activeledger/activecontracts";
+
+/**
+ * New Activeledger Smart Contract
+ *
+ * @export
+ * @class MyContract
+ * @extends {Standard}
+ */
+export default class MyContract extends Standard {
+  /**
+   * Quick Transaction Check - Verify Input Properties (Known & Relevant Transaction?)
+   * Signatureless - Verify if this contract is happy to run with selfsigned transactions
+   *
+   * @param {boolean} selfsigned
+   * @returns {Promise<boolean>}
+   * @memberof MyContract
+   */
+  public verify(selfsigned: boolean): Promise<boolean> {
+    return new Promise<boolean>((resolve, reject) => {
+      if (!selfsigned) {
+        resolve(true);
+      } else {
+        reject("Identity Signatures Needed");
+      }
+    });
+  }
+
+  /**
+   * Voting Round, Is the transaction request valid?
+   *
+   * @returns {Promise<boolean>}
+   * @memberof MyContract
+   */
+  public vote(): Promise<boolean> {
+    return new Promise<boolean>((resolve, reject) => {
+
+      // Get Stream Activity
+      let activity: Activity = this.getActivityStreams(this.transactions.$i.PROPERTY.$stream);
+
+      // Run Checks on input stream data object
+      let data = activity.getState();
+
+      this.ActiveLogger.debug("Voting Round - Automatic True");
+      resolve(true);
+    });
+  }
+
+  /**
+   * Prepares the new streams state to be comitted to the ledger
+   *
+   * @returns {Promise<any>}
+   * @memberof MyContract
+   */
+  public commit(): Promise<any> {
+    return new Promise<any>((resolve, reject) => {      
+        // Update Activity Streams
+        // Create New Activity Streams        
+      resolve(true);
+    });
+  }
+}
+
+`;
+
+        monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
+          target: monaco.languages.typescript.ScriptTarget.ES2016,
+          allowNonTsExtensions: true,
+          module: monaco.languages.typescript.ModuleKind.CommonJS,
+          moduleResolution:
+            monaco.languages.typescript.ModuleResolutionKind.NodeJs,
+          noEmit: true,
+        });
+
+        window.def = function (code, path) {
+          monaco.languages.typescript.typescriptDefaults.addExtraLib(
+            code,
+            path
+          );
+          monaco.editor.createModel(
+            code,
+            "typescript",
+            new monaco.Uri().with({ path: path })
+          );
+          //return [code, path];
+        };
+
+        window.load = function (a, b) {
+          editor = monaco.editor.create(document.getElementById("container"), {
+            model: monaco.editor.createModel(
+              defaultBody,
+              "typescript",
+              new monaco.Uri("main.ts")
+            ),
+            language: "typescript",
+            theme: "vs-dark",
+            autoClosingBrackets: true,
+            autoIndent: true,
+          });
+
+          window.onresize = function () {
+            editor.layout();
+          };
+
+          window.getValue = function () {
+            return editor.getValue();
+          };
+
+          window.setNewValue = function (body, _readOnly) {
+            editor.setValue(body);
+            editor.updateOptions({
+              readOnly: _readOnly | false,
+            });
+          };
+
+          window.reset = function () {
+            editor.setValue(defaultBody);
+          };
+
+          window.clearEditor = function () {
+            editor.setValue("");
+            editor.updateOptions({
+              readOnly: false,
+            });
+          };
+        };
+      });
+    </script>
+  </body>
+</html>

@@ -76,7 +76,9 @@
             </div>
 
             <div class="control" (click)="onboard()">
-              <fa-icon [icon]="icons.onboarded"></fa-icon>&nbsp;&nbsp;&nbsp;Onboard
+              <fa-icon [icon]="icons.onboarded"></fa-icon>
+              <span *ngIf="!network.onboarded">&nbsp;&nbsp;&nbsp;Onboard</span>
+              <span *ngIf="network.onboarded">&nbsp;&nbsp;&nbsp;Offboard</span>
             </div>
           </div>
 

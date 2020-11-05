@@ -1,0 +1,9 @@
+<webview
+  (did-finish-load)="finishLoading('monaco')"
+  (console-message)="electronConsole($event)"
+  id="monaco"
+  attr.src="{{ monaco }}"
+  class="h-100"
+  disablewebsecurity
+>
+</webview>

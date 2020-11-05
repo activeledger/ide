@@ -39,6 +39,10 @@
     <div class="option-button settings accent-hover" (click)="goTo('/settings', 'Settings')" matTooltip="Settings">
       <fa-icon [icon]="settingsIco"></fa-icon>
     </div>
+
+    <div class="option-button help accent-hover" (click)="openHelp()" matTooltip="Help" matTooltipPosition="below">
+      <fa-icon [icon]="helpIco"></fa-icon>
+    </div>
   </div>
 </div>
 <div class="overlay">
@@ -62,6 +66,16 @@
         goTo('/settings/connection/create', 'Settings'); showQuickCreate = false
       ">
       Connection
+    </div>
+    <div class="qc-item" (click)="
+        goTo('/network/builder', 'Network Builder'); showQuickCreate = false
+      ">
+      Network
+    </div>
+    <div class="qc-item" (click)="
+        goTo('/nodes/nodes', 'Nodes'); showQuickCreate = false
+      ">
+      Node
     </div>
     <!--
       <div

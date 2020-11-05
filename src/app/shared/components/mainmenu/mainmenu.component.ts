@@ -51,19 +51,16 @@ export class MainmenuComponent implements OnInit, OnDestroy {
   public setup = {
     isTx: true,
     hideMenuNames: false,
-    isMaximised: true,
   };
 
   public txBaasSwitchSub: Subscription;
 
   @Input()
   set menuSize(size: string) {
-    if (size === "max") {
-      this.setup.hideMenuNames = false;
-      this.setup.isMaximised = true;
-    } else {
+    if (size === "min") {
       this.setup.hideMenuNames = true;
-      this.setup.isMaximised = false;
+    } else {
+      this.setup.hideMenuNames = false;
     }
   }
 
