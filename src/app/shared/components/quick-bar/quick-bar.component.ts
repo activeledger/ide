@@ -35,6 +35,7 @@ import {
   faAngleDown,
   faCartArrowDown,
   faBuilding,
+  faQuestion,
 } from "@fortawesome/free-solid-svg-icons";
 import { DialogService } from "../../services/dialog.service";
 import { WorkspaceHolder } from "../../interfaces/workspace.interfaces";
@@ -55,6 +56,7 @@ export class QuickBarComponent implements OnInit {
   public arrowIco = faAngleDown;
   public marketIco = faCartArrowDown;
   public workspaceIco = faBuilding;
+  public helpIco = faQuestion;
   public showQuickCreate = false;
   public showWorkspaceSelect = false;
   public workspaces = [];
@@ -86,6 +88,12 @@ export class QuickBarComponent implements OnInit {
     this.getWorkspaces();
 
     this.setPageTitle();
+  }
+
+  public openHelp(): void {
+    this.electronService.shell.openExternal(
+      "https://developers.activeledger.io/articles/harmony-user-guide/introduction"
+    );
   }
 
   public txBaasSwitch(): void {

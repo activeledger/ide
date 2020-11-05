@@ -142,12 +142,13 @@ export class ManagementComponent implements OnInit {
   }
 
   public async connectTo(row?): Promise<void> {
+    this.showStartActivityIndicator = true;
     if (row) {
       this.node = row;
     }
 
     try {
-      if (this.node?._id && (await this.ssh.sshToNode(this.node._id))) {
+      if (this.node?._id && (await this.ssh.sshToNode(this.node._id, true))) {
         await this.getNodeStats(this.node._id);
         this.refresh(null, this.node._id);
       }

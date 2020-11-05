@@ -429,13 +429,13 @@ export class SshService {
     return config;
   }
 
-  public async sshToNode(id: string): Promise<boolean> {
+  public async sshToNode(id: string, reconnect?: boolean): Promise<boolean> {
     try {
       this.consoleService.info(`Initialising SSH Connection...`);
       let connection, stream;
 
       // Check if there is an open connection/stream for this node
-      if (!SshService.connectionPool.has(id)) {
+      if (reconnect || !SshService.connectionPool.has(id)) {
         const sshConnectionData: ISSH = await this.dbService.findById(id);
 
         const config = await this.createSshConfig(id);
