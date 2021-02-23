@@ -37,10 +37,11 @@ import { KeyService } from "../../../../shared/services/key.service";
 import { IKeyData } from "../../../../shared/interfaces/key.interfaces";
 import * as url from "url";
 
-import * as ace from "brace";
-import "brace/mode/json";
-import "brace/theme/merbivore_soft";
-import "brace/ext/beautify";
+import * as ace from 'ace-builds'; // ace module ..
+// language package, choose your own 
+import 'ace-builds/src-noconflict/mode-javascript';
+// ui-theme package
+import 'ace-builds/src-noconflict/theme-github';
 import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { IResponse } from "../../../../shared/interfaces/run.interface";
 import { TransactionService } from "../../../../shared/services/transaction.service";
