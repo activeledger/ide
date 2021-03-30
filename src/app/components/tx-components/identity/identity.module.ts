@@ -39,9 +39,9 @@ import { NgxSpinnerModule } from "ngx-spinner";
   declarations: [IdentityComponent],
   imports: [
     CommonModule,
+    FormsModule,
     IdentityRoutingModule,
     NgxSpinnerModule,
-    FormsModule,
     MatTabsModule,
     MatExpansionModule,
     MatSelectModule,

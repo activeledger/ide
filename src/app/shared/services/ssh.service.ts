@@ -570,7 +570,7 @@ export class SshService {
     SshService.connectionPool.delete(id);
   }
 
-  private openConnection(connection, config): Promise<any> {
+  private openConnection(connection, config): Promise<void> {
     return new Promise((resolve, reject) => {
       try {
         connection.connect(config);

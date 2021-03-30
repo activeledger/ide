@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { DialogService } from "../../../../shared/services/dialog.service";
-import { EChartOption } from "echarts";
+import { EChartsOption } from "echarts";
 import {
   faExternalLinkSquareAlt,
   faSync,
@@ -68,7 +68,7 @@ export class DashboardComponent implements OnInit {
     view: faExternalLinkSquareAlt,
   };
 
-  public cpuChartOptions: EChartOption = {
+  public cpuChartOptions: EChartsOption = {
     height: "100px",
     xAxis: [
       {

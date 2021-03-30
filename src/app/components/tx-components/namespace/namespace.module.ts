@@ -47,12 +47,12 @@ import { FormsModule } from "@angular/forms";
   ],
   imports: [
     CommonModule,
+    FormsModule,
     NamespaceRoutingModule,
     NgxSpinnerModule,
     MatTabsModule,
     MatExpansionModule,
     MatSelectModule,
-    FormsModule,
     MatCardModule,
     MatInputModule,
     MatButtonModule

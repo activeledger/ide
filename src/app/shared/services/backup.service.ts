@@ -66,7 +66,7 @@ export class BackupService {
     private electron: ElectronService,
     private generalService: GeneralService,
     private dialogService: DialogService
-  ) {}
+  ) { }
 
   // #region Import
 
@@ -185,7 +185,7 @@ export class BackupService {
           }
         })
         .then(() => {
-          resolve();
+          resolve({ cancelled: false });
         })
         .catch((err: any) => {
           reject(err);

@@ -33,7 +33,6 @@ import { DeveloperComponent } from "./sub-settings/developer/developer.component
 import { UpdateComponent } from "./sub-settings/update/update.component";
 import { WorkspaceComponent } from "./sub-settings/workspace/workspace.component";
 import { SettingsComponent } from "./settings/settings.component";
-// import { KonamiModule } from "ngx-konami";
 import { ColorPickerModule } from "ngx-color-picker";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatOptionModule } from "@angular/material/core";
@@ -63,7 +62,6 @@ import { SettingsRoutingModule } from "./settings-routing.module";
   ],
   imports: [
     CommonModule,
-    // KonamiModule,
     ColorPickerModule,
     FormsModule,
     MatFormFieldModule,

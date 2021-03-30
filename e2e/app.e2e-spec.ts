@@ -1,7 +1,7 @@
 import { AngularElectronPage } from "./app.po";
 import { element, by } from "protractor";
 
-describe("Active Harmony", () => {
+describe("Activeledger IDE", () => {
   let page: AngularElectronPage;
 
   beforeEach(() => {

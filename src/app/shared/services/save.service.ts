@@ -365,7 +365,7 @@ export class SaveService {
    * @returns {Promise<any>}
    * @memberof SaveService
    */
-  private saveVersion(): Promise<any> {
+  private saveVersion(): Promise<void> {
     return new Promise((resolve, reject) => {
       // Check if version has been used
       let versionUsed = false;
@@ -414,7 +414,7 @@ export class SaveService {
         .then(overwrite => {
           if (overwrite) {
             this.overwrite = true;
-            resolve();
+            resolve(true);
 
             // We don't want to save/overwrite the contract
           } else {
@@ -477,7 +477,7 @@ export class SaveService {
    * @returns {Promise<any>}
    * @memberof SaveService
    */
-  private processContract(): Promise<any> {
+  private processContract(): Promise<void> {
     return new Promise((resolve, reject) => {
       if (this.contract._id) {
         this.updateContract()
@@ -508,7 +508,7 @@ export class SaveService {
    * @returns {Promise<any>}
    * @memberof SaveService
    */
-  private updateContract(): Promise<any> {
+  private updateContract(): Promise<void> {
     return new Promise((resolve, reject) => {
       this.contractService
         .clearLatest(this.contract._id, this.contract)
@@ -539,7 +539,7 @@ export class SaveService {
    * @returns {Promise<any>}
    * @memberof SaveService
    */
-  private saveContractData(body: string): Promise<any> {
+  private saveContractData(body: string): Promise<void> {
     return new Promise((resolve, reject) => {
       const bodyValid = body && body.length > 0;
 

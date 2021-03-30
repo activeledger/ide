@@ -38,11 +38,11 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
   declarations: [RunComponent],
   imports: [
     CommonModule,
+    FormsModule,
     RunRoutingModule,
     NgJsonEditorModule,
     MatInputModule,
     MatSelectModule,
-    FormsModule,
     MatButtonModule,
     RunSidemenuModule,
     FontAwesomeModule,

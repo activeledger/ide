@@ -26,7 +26,6 @@ import "reflect-metadata";
 import "../polyfills";
 import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 import { HttpClientModule, HttpClient } from "@angular/common/http";
 
@@ -60,7 +59,6 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 
 import { PrettyJsonModule } from "angular2-prettyjson";
-import { NgxSpinnerModule } from "ngx-spinner";
 
 import { ElectronService } from "./shared/services/electron.service";
 import { ConfigService } from "./shared/services/config.service";
@@ -98,7 +96,6 @@ import { KeysModule } from "./components/tx-components/keys/keys.module";
 import { NamespaceModule } from "./components/tx-components/namespace/namespace.module";
 import { SwaggerModule } from "./components/tx-components/swagger/swagger.module";
 import { SigningModule } from "./components/tx-components/signing/signing.module";
-// import { MonacoEditorModule } from "@materia-ui/ngx-monaco-editor";
 import { MatButtonToggleModule } from "@angular/material/button-toggle";
 import { MainmenuComponent } from "./shared/components/mainmenu/mainmenu.component";
 import { AddSshConnectionDialogComponent } from "./shared/dialogs/add-ssh-connection/add-ssh-connection.component";
@@ -107,7 +104,7 @@ import { SshEditConnectionDialogComponent } from "./shared/dialogs/ssh-edit-conn
 import { SshManageTagsDialogComponent } from "./shared/dialogs/ssh-manage-tags-dialog/ssh-manage-tags-dialog.component";
 import { SshManageTagsConnectionDialogComponent } from "./shared/dialogs/ssh-manage-tags-connection-dialog/ssh-manage-tags-connection-dialog.component";
 import { RollbackSelectDialogComponent } from "./shared/dialogs/rollback-select-dialog/rollback-select-dialog.component";
-import { SharedModule } from "./shared/shared.module";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -139,21 +136,19 @@ export function HttpLoaderFactory(http: HttpClient) {
     RollbackSelectDialogComponent,
   ],
   imports: [
-    NgxSpinnerModule,
     BrowserModule,
-    BrowserAnimationsModule,
     FormsModule,
+    ReactiveFormsModule,
+    BrowserAnimationsModule,
     HttpClientModule,
     AppRoutingModule,
     MatInputModule,
     MatFormFieldModule,
     MatSelectModule,
     MatButtonModule,
-    // BrowserAnimationsModule,
     NoopAnimationsModule,
     PrettyJsonModule,
     MatTabsModule,
-    // AngularSplitModule,
     MatExpansionModule,
     FontAwesomeModule,
     MatListModule,
@@ -171,7 +166,6 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatBadgeModule,
     MatIconModule,
     MatSnackBarModule,
-    // MonacoEditorModule,
     MatRadioModule,
     MatListModule,
     TranslateModule.forRoot({
@@ -191,8 +185,6 @@ export function HttpLoaderFactory(http: HttpClient) {
     SwaggerModule,
     ContractsModule,
     SettingsModule,
-    ReactiveFormsModule,
-    SharedModule,
   ],
   providers: [
     ElectronService,
@@ -209,4 +201,4 @@ export function HttpLoaderFactory(http: HttpClient) {
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

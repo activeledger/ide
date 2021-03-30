@@ -101,7 +101,7 @@ export class ConsoleComponent implements OnInit {
   }
 
   private showWelcome(): void {
-    const message = `Welcome to Active Harmony! \nYou are using ${this.generalService.version}, enjoy...`;
+    const message = `Welcome to Activeledger IDE! \nYou are using ${this.generalService.version}, enjoy...`;
     this.data.output += message + "\r\n\n";
   }
 

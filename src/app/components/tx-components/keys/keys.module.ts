@@ -40,11 +40,11 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
   declarations: [KeysComponent],
   imports: [
     CommonModule,
+    FormsModule,
     KeysRoutingModule,
     NgxSpinnerModule,
     MatTabsModule,
     MatExpansionModule,
-    FormsModule,
     MatSelectModule,
     MatCardModule,
     MatInputModule,

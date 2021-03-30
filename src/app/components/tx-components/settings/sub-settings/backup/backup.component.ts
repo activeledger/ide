@@ -118,7 +118,7 @@ export class BackupComponent implements OnInit {
       const saveLocation = await dialog.showSaveDialog({
         filters: [
           {
-            name: "Active Harmony Backup",
+            name: "Activeledger IDE Backup",
             extensions: ["ahb"],
           },
         ],

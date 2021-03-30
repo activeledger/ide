@@ -91,7 +91,7 @@ function createWindow() {
         label: app.getName(),
         submenu: [
           {
-            label: "About Active Harmony",
+            label: "About Activeledger IDE",
           },
           {
             type: "separator",

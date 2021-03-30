@@ -36,10 +36,10 @@ import { FormsModule } from "@angular/forms";
   declarations: [SwaggerComponent],
   imports: [
     CommonModule,
+    FormsModule,
     SwaggerRoutingModule,
     MatCardModule,
     MatSelectModule,
-    FormsModule,
     MatInputModule,
     MatSelectModule,
     MatButtonModule

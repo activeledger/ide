@@ -75,7 +75,7 @@ export class DataService {
    * @private
    * @memberof ContractsComponent
    */
-  private getKeys(): Promise<any> {
+  private getKeys(): Promise<void> {
     return new Promise((resolve, reject) => {
       this.keyService
         .getKeys()
@@ -95,7 +95,7 @@ export class DataService {
    * @private
    * @memberof ContractsComponent
    */
-  private getNamespaces(): Promise<any> {
+  private getNamespaces(): Promise<void> {
     return new Promise((resolve, reject) => {
       this.namespaceService
         .getNamespaces()
@@ -115,7 +115,7 @@ export class DataService {
    * @private
    * @memberof ContractsComponent
    */
-  private getConnections(): Promise<any> {
+  private getConnections(): Promise<void> {
     return new Promise((resolve, reject) => {
       this.ledgerService
         .getConnections()

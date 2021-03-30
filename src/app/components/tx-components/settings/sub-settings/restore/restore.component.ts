@@ -64,9 +64,9 @@ export class RestoreComponent implements OnInit {
     public electronService: ElectronService,
     private dialogService: DialogService,
     private backupService: BackupService
-  ) {}
+  ) { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   // #region Import
 
@@ -82,7 +82,7 @@ export class RestoreComponent implements OnInit {
     const filenames = dialog.showOpenDialog({
       filters: [
         {
-          name: "Active Harmony Backup",
+          name: "Activeledger IDE Backup",
           extensions: ["ahb"]
         }
       ]
@@ -104,7 +104,7 @@ export class RestoreComponent implements OnInit {
   private importFile(file: string, snapshot: boolean): void {
     this.setup.importInProgress = true;
 
-    let importPromise: Promise<void>;
+    let importPromise: Promise<any>;
 
     if (snapshot) {
       importPromise = this.backupService.importSnapshot(file);

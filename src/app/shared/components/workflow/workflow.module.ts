@@ -34,17 +34,17 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
 import { MatSelectModule } from "@angular/material/select";
 import { MatSlideToggleModule } from "@angular/material/slide-toggle";
-import { FormsModule } from "@angular/forms";
 import { ClickOutsideModule } from "ng-click-outside";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { FormsModule } from "@angular/forms";
+
 
 @NgModule({
   declarations: [WorkflowCreateComponent, WorkflowContractsComponent],
   imports: [
     CommonModule,
-    WorkflowRoutingModule,
     FormsModule,
-    // MatFormFieldModule,
+    WorkflowRoutingModule,
     MatSelectModule,
     MatCardModule,
     MatIconModule,

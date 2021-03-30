@@ -73,7 +73,7 @@ export class ContractInfoDialogComponent implements OnInit {
     }
   }
 
-  private getIdentityName(identity: string): Promise<string> {
+  private getIdentityName(identity: string): Promise<void> {
     return new Promise((resolve, reject) => {
       this.identityService
         .findById(identity)

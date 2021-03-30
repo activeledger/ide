@@ -39,9 +39,10 @@ import * as url from "url";
 
 import * as ace from 'ace-builds'; // ace module ..
 // language package, choose your own 
-import 'ace-builds/src-noconflict/mode-javascript';
+import 'ace-builds/src-noconflict/mode-json';
 // ui-theme package
-import 'ace-builds/src-noconflict/theme-github';
+import 'ace-builds/src-noconflict/theme-merbivore_soft';
+
 import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { IResponse } from "../../../../shared/interfaces/run.interface";
 import { TransactionService } from "../../../../shared/services/transaction.service";
@@ -180,16 +181,17 @@ export class RunComponent implements OnInit, OnDestroy {
   // #region Angular control
   ngOnInit() {
     // Setup the editors
-    console.log("Loading editor - run");
-    this.editor = ace.edit("json-editor-run");
-    console.log(this.editor);
-    this.editor.getSession().setMode("ace/mode/json");
-    this.editor.setTheme("ace/theme/merbivore_soft");
 
-    this.responseViewer = ace.edit("response-output");
-    this.responseViewer.getSession().setMode("ace/mode/json");
-    this.responseViewer.setTheme("ace/theme/merbivore_soft");
-    this.responseViewer.setReadOnly(true);
+    this.editor = ace.edit("json-editor-run", {
+      theme: "ace/theme/merbivore_soft",
+      mode: "ace/mode/json"
+    });
+
+    this.responseViewer = ace.edit("response-output", {
+      theme: "ace/theme/merbivore_soft",
+      mode: "ace/mode/json",
+      readOnly: true
+    });
 
     // TODO: Pull through templates from contracts
 

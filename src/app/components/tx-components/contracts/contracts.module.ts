@@ -49,6 +49,7 @@ import { FormsModule } from "@angular/forms";
   ],
   imports: [
     CommonModule,
+    FormsModule,
     NgxSpinnerModule,
     ContractsRoutingModule,
     WorkflowModule,
@@ -58,7 +59,6 @@ import { FormsModule } from "@angular/forms";
     MatCardModule,
     MatButtonModule,
     MatDividerModule,
-    FormsModule,
   ],
 })
 export class ContractsModule {}

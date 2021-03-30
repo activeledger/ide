@@ -16,11 +16,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Homepage improvements
 - Warning when no connections exist when creating an identity and option to create one
 - Option to backup all workspaces at once
-- Contract editor improvements
 - Key generation using WASM from Rust code - JS implementation takes ~10s, Rust takes ~<2s (Requires testing)
+- Contract editor improvements
 - Terminal GUI for direct SSH/Shell access to servers
 - Node management - Automate adding/removing nodes in an established but not yet asserted network
 - Node management - Transaction signing/Node joining - Automated transaction signing process to enable new nodes to join an asserted network
+
+## [1.5.0] - 2021-03-30
+
+### Changed
+
+- Fixed JSON views
+- Improved Contract editor performance
+- Upgraded Contract editor IntelliSense
+- Upgraded Electron
+- Upgraded Angular
+- Upgraded other dependencies
 
 ## [1.4.0] - 2020-11-05
 

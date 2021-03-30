@@ -26,10 +26,11 @@ import { KeyService } from "../../../../shared/services/key.service";
 import { IKeyData } from "../../../../shared/interfaces/key.interfaces";
 import { IKey, TransactionHandler } from "@activeledger/sdk";
 
-import * as ace from "brace";
-import "brace/mode/json";
-import "brace/theme/merbivore_soft";
-import "brace/ext/beautify";
+import * as ace from 'ace-builds'; // ace module ..
+// language package, choose your own 
+import 'ace-builds/src-noconflict/mode-json';
+// ui-theme package
+import 'ace-builds/src-noconflict/theme-merbivore_soft';
 
 @Component({
   selector: "app-signing",
@@ -99,10 +100,11 @@ export class SigningComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.getKeys();
 
-    this.editor = ace.edit("json-editor-signing");
-    this.editor.getSession().setMode("ace/mode/json");
-    this.editor.setTheme("ace/theme/merbivore_soft");
-
+    this.editor = ace.edit("json-editor-signing",{
+      theme:"ace/theme/merbivore_soft",
+      mode:"ace/mode/json"
+    });
+    
     // Insert a transaction template
     const cachedData = window.localStorage.getItem("signing-cache");
     if (cachedData) {
