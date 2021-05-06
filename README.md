@@ -11,11 +11,7 @@ Activeledger IDE (Codename - Active Harmony) is for developers to create and man
 
 ### IDE Download
 
-Register at our [Developer Portal](https://developers.activeledger.io/) to download the latest version of the IDE
-
-or
-
-Alternatively visit [Release section](https://github.com/activeledger/ide/releases)
+Visit [Release section](https://github.com/activeledger/ide/releases)
 
 ## Building from source
 
