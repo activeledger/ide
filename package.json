@@ -54,7 +54,7 @@
     "bootstrap": "^4.6.0",
     "brace": "0.11.1",
     "echarts": "^5.0.2",
-    "jsoneditor": "9.2.0",
+    "jsoneditor": "9.5.6",
     "moment": "^2.29.1",
     "monaco-editor": "^0.23.0",
     "ng-click-outside": "8.0.0",
